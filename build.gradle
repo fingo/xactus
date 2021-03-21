@@ -7,3 +7,19 @@ java {
         languageVersion = JavaLanguageVersion.of(8)
     }
 }
+
+repositories {
+    mavenCentral()
+    jcenter()
+    google()
+
+    maven {
+        url 'https://maven.repository.redhat.com/ga/'
+    }
+}
+
+dependencies {
+    implementation 'xerces:xercesImpl:2.12.1'
+    implementation 'com.ibm.icu:icu4j:68.2'
+    implementation 'java-cup:java-cup:0.11a-redhat-1'
+}
