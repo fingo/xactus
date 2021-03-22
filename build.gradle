@@ -10,16 +10,65 @@ java {
 
 repositories {
     mavenCentral()
-    jcenter()
-    google()
+}
 
-    maven {
-        url 'https://maven.repository.redhat.com/ga/'
+def codeGenerationTasksGroup = 'code generation'
+def packageDirectory = 'org/eclipse/wst/xml/xpath2/processor/internal'
+
+def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) { exec ->
+    def generateJFlexDestinationDirectory = "$buildDir/jflex-generated"
+    def jFlexClassesTargetDirectory = "$generateJFlexDestinationDirectory/$packageDirectory"
+    def jFlexInputFile = file('src/main/jflex/xpath.lex')
+
+    exec.group codeGenerationTasksGroup
+    exec.classpath(configurations.named('jflex'))
+
+    exec.inputs.file(jFlexInputFile)
+    exec.outputs.dir("$generateJFlexDestinationDirectory")
+
+    exec.workingDir = jFlexClassesTargetDirectory
+
+    exec.args '-d', file(jFlexClassesTargetDirectory).absolutePath, jFlexInputFile.absolutePath
+
+    exec.doFirst {
+        file(jFlexClassesTargetDirectory).mkdirs()
     }
+}
+
+def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) { exec ->
+    def generateJCupDestinationDirectory = "$buildDir/jcup-generated"
+    def jcupClassesTargetDirectory = "$generateJCupDestinationDirectory/$packageDirectory"
+    def jCupInputFile = file('src/main/jcup/xpath.cup')
+
+    exec.group codeGenerationTasksGroup
+
+    exec.classpath(configurations.named('jcup'))
+    exec.main = 'java_cup.Main'
+
+    exec.workingDir = jcupClassesTargetDirectory
+
+    exec.inputs.file(jCupInputFile)
+    exec.outputs.dir("$generateJCupDestinationDirectory")
+
+    exec.args '-symbols', 'XpathSym', '-parser', 'XPathCup', jCupInputFile.absolutePath
+
+    exec.doFirst {
+        file(jcupClassesTargetDirectory).mkdirs()
+    }
+}
+
+sourceSets.main.java.srcDir(generateJCupTaskProvider)
+sourceSets.main.java.srcDir(generateJFlexTaskProvider)
+
+configurations {
+    jflex
+    jcup
+    implementation.extendsFrom jcup
 }
 
 dependencies {
     implementation 'xerces:xercesImpl:2.12.1'
     implementation 'com.ibm.icu:icu4j:68.2'
-    implementation 'java-cup:java-cup:0.11a-redhat-1'
+    jcup 'edu.princeton.cup:java-cup:10k'
+    jflex 'de.jflex:jflex:1.4.3'
 }

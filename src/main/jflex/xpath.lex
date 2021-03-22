@@ -12,7 +12,7 @@
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     David Carver - bug 280987 - fixed literal issues for integer and decimal
  *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
- *     Jesper S Moller - bug 286061   correct handling of quoted string 
+ *     Jesper S Moller - bug 286061   correct handling of quoted string
  *     Jesper Moller - bug 297707 - Missing the empty-sequence() type
  *     Jesper Moller - bug 388504 - XPath scanner does not detect non-ASCII names
  *******************************************************************************/
@@ -29,6 +29,9 @@ import java_cup.runtime.*;
 %cup
 %line
 %column
+%eofval{
+  return new java_cup.runtime.Symbol(XpathSym.EOF);
+%eofval}
 
 Whitespace 	= [ \t\r\n]
 StringLiteral 	= (\" ((\"\") | [^\"])* \") | (\' ((\'\') | [^\'])* \')
@@ -44,7 +47,7 @@ LowSurrogate = [\uDC00-\uDFFF]
 Surrogate = ({HighSurrogate} {LowSurrogate})
 
 //NCNameStartChar		= [A-Z] | "_" | [a-z] | [\u00C0-\u00D6] | [\u00D8-\u00F6] | [\u00F8-\u02FF] | [\u0370-\u037D] | [\u037F-\u1FFF] | [\u200C-\u200D] | [\u2070-\u218F] | [\u2C00-\u2FEF] | [\u3001-\uD7FF] | [\uF900-\uFDCF] | [\uFDF0-\uFFFD]
-//NCNameChar      = {NCNameStartChar} | [0-9] | \. | \- 
+//NCNameChar      = {NCNameStartChar} | [0-9] | \. | \-
 //NCName		= ( ( {NameStartChar} | Surrogate ) ( {NCNameChar} | Surrogate )*
 
 Letter		= [A-Z] | "_" | [a-z] | [\u00C0-\u00D6] | [\u00D8-\u00F6] | [\u00F8-\u02FF] | [\u0370-\u037D] | [\u037F-\u1FFF] | [\u200C-\u200D] | [\u2070-\u218F] | [\u2C00-\u2FEF] | [\u3001-\uD7FF] | [\uF900-\uFDCF] | [\uFDF0-\uFFFD] | {Surrogate}
@@ -73,7 +76,7 @@ NCName		= ( {Letter} | "_") ( {NCNameChar} )*
 <YYINITIAL> {
 
 "(:"			{ commentLevel++; // int overflow =P
-			  yybegin(COMMENT); 
+			  yybegin(COMMENT);
 			}
 
 "\["	{ return symbol(XpathSym.LBRACKET); }
@@ -177,7 +180,7 @@ NCName		= ( {Letter} | "_") ( {NCNameChar} )*
 				// get rid of quotes
 				String str = yytext();
 				assert str.length() >= 2;
-				return symbol(XpathSym.STRING, org.eclipse.wst.xml.xpath2.processor.internal.utils.LiteralUtils.unquote(str)); 
+				return symbol(XpathSym.STRING, org.eclipse.wst.xml.xpath2.processor.internal.utils.LiteralUtils.unquote(str));
 			}
 {Digits}		{ return symbol(XpathSym.INTEGER, new java.math.BigInteger(yytext())); }
 {DoubleLiteral}		{ return symbol(XpathSym.DOUBLE, new Double(yytext())); }
@@ -190,19 +193,19 @@ NCName		= ( {Letter} | "_") ( {NCNameChar} )*
 {Whitespace} { /* ignore */ }
 
 
-.	{ 
-		String err = "Unknown character at line " + lineno(); 
+.	{
+		String err = "Unknown character at line " + lineno();
 		err += " col " + colno();
-		err += ": " + yytext(); 
-			     
-		throw new JFlexError(err); 
+		err += ": " + yytext();
+
+		throw new JFlexError(err);
 	}
 
 }
 
 <COMMENT> {
 	"(:"		{ commentLevel++; }
-	":)"		{ commentLevel--; 
+	":)"		{ commentLevel--;
 			  if(commentLevel == 0)
 		          	yybegin(YYINITIAL);
 			}
