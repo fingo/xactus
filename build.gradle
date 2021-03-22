@@ -2,63 +2,68 @@ plugins {
     id 'java-library'
 }
 
+repositories {
+    mavenCentral()
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
-repositories {
-    mavenCentral()
+def codeGenerationTaskGroup = 'code generation'
+def generatedCodeDestinationPackageDirectory = 'org/eclipse/wst/xml/xpath2/processor/internal'
+
+def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
+    jFlexExec ->
+        def outputDirectory = "$buildDir/jflex-generated"
+        def classesDestinationDirectory = file("$outputDirectory/$generatedCodeDestinationPackageDirectory")
+        def inputFile = file('src/main/jflex/xpath.lex')
+
+        jFlexExec.group codeGenerationTaskGroup
+        jFlexExec.classpath(configurations.named('jflex'))
+
+        jFlexExec.inputs.file(inputFile)
+        jFlexExec.outputs.dir("$outputDirectory")
+
+        jFlexExec.workingDir = classesDestinationDirectory
+
+        jFlexExec.args '-d', classesDestinationDirectory.absolutePath, inputFile.absolutePath
+
+        jFlexExec.doFirst {
+            classesDestinationDirectory.mkdirs()
+        }
 }
 
-def codeGenerationTasksGroup = 'code generation'
-def packageDirectory = 'org/eclipse/wst/xml/xpath2/processor/internal'
+def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
+    jCupExec ->
+        def outputDirectory = "$buildDir/jcup-generated"
+        def classesDestinationDirectory = file("$outputDirectory/$generatedCodeDestinationPackageDirectory")
+        def inputFile = file('src/main/jcup/xpath.cup')
 
-def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) { exec ->
-    def generateJFlexDestinationDirectory = "$buildDir/jflex-generated"
-    def jFlexClassesTargetDirectory = "$generateJFlexDestinationDirectory/$packageDirectory"
-    def jFlexInputFile = file('src/main/jflex/xpath.lex')
+        jCupExec.group codeGenerationTaskGroup
 
-    exec.group codeGenerationTasksGroup
-    exec.classpath(configurations.named('jflex'))
+        jCupExec.classpath(configurations.named('jcup'))
+        jCupExec.main = 'java_cup.Main'
 
-    exec.inputs.file(jFlexInputFile)
-    exec.outputs.dir("$generateJFlexDestinationDirectory")
+        jCupExec.workingDir = classesDestinationDirectory
 
-    exec.workingDir = jFlexClassesTargetDirectory
+        jCupExec.inputs.file(inputFile)
+        jCupExec.outputs.dir("$outputDirectory")
 
-    exec.args '-d', file(jFlexClassesTargetDirectory).absolutePath, jFlexInputFile.absolutePath
+        jCupExec.args '-symbols', 'XpathSym', '-parser', 'XPathCup', inputFile.absolutePath
 
-    exec.doFirst {
-        file(jFlexClassesTargetDirectory).mkdirs()
-    }
+        jCupExec.doFirst {
+            classesDestinationDirectory.mkdirs()
+        }
 }
 
-def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) { exec ->
-    def generateJCupDestinationDirectory = "$buildDir/jcup-generated"
-    def jcupClassesTargetDirectory = "$generateJCupDestinationDirectory/$packageDirectory"
-    def jCupInputFile = file('src/main/jcup/xpath.cup')
-
-    exec.group codeGenerationTasksGroup
-
-    exec.classpath(configurations.named('jcup'))
-    exec.main = 'java_cup.Main'
-
-    exec.workingDir = jcupClassesTargetDirectory
-
-    exec.inputs.file(jCupInputFile)
-    exec.outputs.dir("$generateJCupDestinationDirectory")
-
-    exec.args '-symbols', 'XpathSym', '-parser', 'XPathCup', jCupInputFile.absolutePath
-
-    exec.doFirst {
-        file(jcupClassesTargetDirectory).mkdirs()
-    }
+sourceSets.main.java {
+    SourceDirectorySet sourceDirectorySet ->
+        sourceDirectorySet.srcDir(generateJCupTaskProvider)
+        sourceDirectorySet.srcDir(generateJFlexTaskProvider)
 }
-
-sourceSets.main.java.srcDir(generateJCupTaskProvider)
-sourceSets.main.java.srcDir(generateJFlexTaskProvider)
 
 configurations {
     jflex
