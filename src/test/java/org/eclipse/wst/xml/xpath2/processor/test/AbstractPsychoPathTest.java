@@ -6,13 +6,13 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     David Carver (STAR) - initial API and implementation
  *     Jin Mingjan - bug 262765 -  extractXPathExpression and getExpectedResults
  *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
  *     Jesper S Moller - bug 283214 - fix XML result serialization
- *     Jesper S Moller - bug 283404 - fixed locale  
+ *     Jesper S Moller - bug 283404 - fixed locale
  *     Jesper S Moller - bug 281159 - fix document URIs and also filter XML namespace
  *     Jesper S Moller - bug 275610 - Avoid big time and memory overhead for externals
  *     Jesper Steen Moeller - bug 282096 - make test harness handle all string encoding
@@ -34,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.ProtectionDomain;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +60,7 @@ import org.apache.xerces.xs.XSNamedMap;
 import org.apache.xerces.xs.XSObject;
 import org.apache.xerces.xs.XSSimpleTypeDefinition;
 import org.custommonkey.xmlunit.XMLTestCase;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
@@ -103,7 +102,7 @@ import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesUserDefi
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.osgi.framework.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
@@ -124,7 +123,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	protected boolean useNewApi = true;
 	private StaticContextBuilder staticContextBuilder;
 	private DynamicContextBuilder dynamicContextBuilder;
-	
+
 	private static final String INPUT_CONTEXT = "input-context";
 	private static final String INPUT_CONTEXT1 = "input-context1";
 	private static final String INPUT_CONTEXT2 = "input-context2";
@@ -145,7 +144,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 		}
 		System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema","org.apache.xerces.jaxp.validation.XMLSchemaFactory");
-		
+
 		staticContextBuilder = new StaticContextBuilder();
 	}
 
@@ -165,7 +164,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			return url.openStream();
 		}
 	}
-	
+
 	protected InputSource getTestSource(String systemId) {
 		if (systemId.startsWith("http://")) {
 			try {
@@ -181,10 +180,10 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		}
 		return new InputSource(systemId);
 	}
-	
+
 	protected EntityResolver makeTestResolver() {
 		return new EntityResolver2() {
-			
+
 			public InputSource resolveEntity(String publicId, String systemId) {
 				if (systemId.startsWith("http://")) {
 					URL u;
@@ -211,24 +210,24 @@ public class AbstractPsychoPathTest extends XMLTestCase {
                     String systemId) throws SAXException, IOException {
 				return resolveEntity(publicId, systemId);
 			}
-			
+
 		};
 	}
-	
+
 	protected void loadDOMDocument(URL fileURL, Schema schema) throws IOException, DOMLoaderException {
 		InputStream is = testResolve(fileURL);
 		DOMLoader domloader = new XercesLoader(schema);
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
 		domDoc.setDocumentURI(fileURL.toString());
-		
+
 	}
-	
+
 	protected void load2DOMDocument(URL fileURL, URL fileURL2) throws IOException,
 			DOMLoaderException {
 		InputStream is = testResolve(fileURL);
 		InputStream is2 = testResolve(fileURL2);
-		
+
 		DOMLoader domloader = new XercesLoader();
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
@@ -237,7 +236,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		domDoc2.setDocumentURI(fileURL2.toString());
 		is.close();
 		is2.close();
-	}	
+	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -265,8 +264,8 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
 	}
-	
-	
+
+
 
 	private Schema getSchema(InputStream schemaIs) throws SAXException {
 		SchemaFactory sf = SchemaFactory
@@ -308,8 +307,8 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		   if (value != null) {
 				staticContextBuilder.withVariable(new javax.xml.namespace.QName(
 						name), new SimpleAtomicItemTypeImpl(value.getTypeDefinition(), ItemType.OCCURRENCE_ONE));
-		   } else {		
-				staticContextBuilder.withVariable(new javax.xml.namespace.QName( 
+		   } else {
+				staticContextBuilder.withVariable(new javax.xml.namespace.QName(
 						name), new SimpleAtomicItemTypeImpl(BuiltinTypeLibrary.XS_UNTYPEDATOMIC, ItemType.OCCURRENCE_OPTIONAL));
 		   }
 		   dynamicContextBuilder.withVariable(new javax.xml.namespace.QName(name), value);
@@ -317,31 +316,31 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		   dynamicContext.set_variable(new QName(name), value);
 	   }
    }
-	
+
    void setCollationProvider(final CollationProvider cp) {
 	   if (useNewApi) {
 		   staticContextBuilder.withCollationProvider(cp);
 	   } else {
 		   dynamicContext.set_collation_provider(new org.eclipse.wst.xml.xpath2.processor.CollationProvider() {
-			
+
 			public Comparator get_collation(String name) {
 				return cp.getCollation(name);
 			}
 		});
 	   }
    }
-   
+
 	protected DefaultDynamicContext setupDynamicContext(XSModel schema) {
 		XercesTypeModel typeModel = schema != null ? new XercesTypeModel(
 				schema) : null;
 		if (useNewApi) {
 			staticContextBuilder.withTypeModel(typeModel);
-			
+
 			staticContextBuilder.withNamespace("xs", "http://www.w3.org/2001/XMLSchema");
 			staticContextBuilder.withNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
 			staticContextBuilder.withNamespace("fn", "http://www.w3.org/2005/xpath-functions");
 			staticContextBuilder.withNamespace("xml", "http://www.w3.org/XML/1998/namespace");
-			
+
 			dynamicContextBuilder = new DynamicContextBuilder(staticContextBuilder);
 			setupVariables(dynamicContext);
 			try {
@@ -351,7 +350,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			}
 			return null;
 		}
-	
+
 		DefaultDynamicContext dc = new DefaultDynamicContext(typeModel);
 		dynamicContext = dc;
 
@@ -373,7 +372,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			dynamicContext.set_collections(map);
 		}
 	}
-	
+
 	protected void addNamespace(String prefix, String nsURI) {
 		if (useNewApi) {
 			if (prefix == null || "".equals(prefix)) {
@@ -395,7 +394,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	}
 
 	protected void addXPathDefaultNamespace(String uri) {
-	   addNamespace(null, uri);	
+	   addNamespace(null, uri);
 	}
 
 	protected void setDefaultCollation(String uri) {
@@ -404,12 +403,12 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		} else {
 			dynamicContext.set_default_collation(uri);
 		}
-		
+
 	}
 
 	protected XPath2Expression newXPath = null;
 	private XPath oldXPath = null;
-	
+
 	protected XPath compileXPath( String xpath) throws XPathParserException, StaticError {
 		if (useNewApi) {
 			newXPath = new Engine().parseExpression(xpath, staticContextBuilder);
@@ -417,7 +416,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		} else {
 			XPathParser xpp = new JFlexCupParser();
 			XPath path = oldXPath = xpp.parse(xpath);
-			
+
 			StaticChecker name_check = new StaticNameResolver(dynamicContext);
 			name_check.check(path);
 			return path;
@@ -426,14 +425,14 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 
 	protected XPath compileXPath(String xpath, boolean isRootlessAccess) throws XPathParserException, StaticError {
        XPathParser xpp = new JFlexCupParser();
-       XPath path = null; 
+       XPath path = null;
        if (isRootlessAccess) {
           path = xpp.parse(xpath, isRootlessAccess);
        }
        else {
-    	   path = xpp.parse(xpath); 
+    	   path = xpp.parse(xpath);
        }
-       
+
        StaticChecker name_check = new StaticNameResolver(dynamicContext);
        name_check.check(path);
        return path;
@@ -504,7 +503,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	public String unwrapResult(String expectedResult, String elemName) {
 		return trimSurrounding(expectedResult, "<"+ elemName + ">", "</" + elemName + ">");
 	}
-	
+
 	protected String getExpectedResult(String resultFile, String elemName) {
 		return unwrapResult(getExpectedResult(resultFile), elemName);
 	}
@@ -552,14 +551,14 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			} else if (content.indexOf(INPUT_CONTEXT2) != -1) {
 				inputMap.put(INPUT_CONTEXT2, inputFile);
 			}
-			//	        
+			//
 			if (content.indexOf(DECLARE_NAMESPACE) != -1 || content.indexOf(IMPORT_SCHEMA_NAMESPACE) != -1) {
 				setupNamespace(content);
 			}
 			//
 			assertTrue(content.lastIndexOf(S_COMMENT2) != -1);// assert to get
 			xpath2Expr = content.substring(content.lastIndexOf(S_COMMENT2) + 2)
-					.trim();			
+					.trim();
 			xqreader.close();
 			isxq.close();
 		} catch (IOException e) {
@@ -592,7 +591,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		int indexOfStart = xpath2Expr.indexOf(str);
 		int indexOfEnd = xpath2Expr.indexOf(endStr);
 		if (indexOfStart >= 0 && indexOfEnd >= 0) {
-			xpath2Expr = xpath2Expr.substring(indexOfStart + str.length(), indexOfEnd).trim(); 
+			xpath2Expr = xpath2Expr.substring(indexOfStart + str.length(), indexOfEnd).trim();
 		}
 		return xpath2Expr;
 	}
@@ -611,7 +610,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	protected DynamicContext setupVariables(DynamicContext dc) {
 		setVariable("x", (AnyType)null);
 		setVariable("var", (AnyType)null);
-		
+
 		if (domDoc != null) {
 			TypeModel typeModel = dynamicContext != null ? dynamicContext.getTypeModel(domDoc) : staticContextBuilder.getTypeModel();
 			AnyType docType = new DocType(domDoc, typeModel);
@@ -633,19 +632,19 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			dynamicContext.set_base_uri(uri);
 		}
 	}
-	
+
 	protected String buildResultString(ResultSequence rs) {
 		String actual = new String();
 		Iterator iterator = rs.iterator();
 		while (iterator.hasNext()) {
 			AnyType anyType = (AnyType)iterator.next();
-			
+
 			actual = actual + anyType.getStringValue() + " ";
 		}
 
 		return actual.trim();
 	}
-	
+
 	protected String buildXMLResultString(ResultSequence rs) throws Exception {
         DOMImplementationLS domLS = (DOMImplementationLS) domDoc.getImplementation().getFeature("LS", "3.0");
         LSOutput outputText = domLS.createLSOutput();
@@ -661,7 +660,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputText.setByteStream(outputStream);
-        
+
 		String actual = new String();
 		Iterator iterator = rs.iterator();
 		boolean queueSpace = false;
@@ -685,7 +684,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		outputStream.close();
 		return actual.trim();
 	}
-	
+
 	// org/apache/xml/serializer/Encodings.properties
 	private static class DelegatingLoader extends ClassLoader {
 		private ClassLoader delegate;
@@ -714,18 +713,18 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			}
 		}
 
-				
+
 	}
-	
+
 	protected String formatResultString(String resultFile) throws Exception {
 		DOMLoader domloader = new XercesLoader(null);
 		domloader.set_validating(false);
-		InputStream is = bundle.getEntry(resultFile).openStream();		
+		InputStream is = bundle.getEntry(resultFile).openStream();
 		Document resultDoc = domloader.load(is);
 
         DOMImplementationLS domLS = (DOMImplementationLS) resultDoc.getImplementation().getFeature("LS", "3.0");
         LSSerializer serializer = domLS.createLSSerializer();
-        
+
 		ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
 		DelegatingLoader newContext = new DelegatingLoader(originalLoader);
 		Thread.currentThread().setContextClassLoader(newContext);
@@ -767,10 +766,10 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	      if (xstypes.getLength() == 0) {
 	    	  return;
 	      }
-	      
+
 	      addNamespace("myType", "http://www.w3.org/XQueryTest/userDefinedTypes");
 	      UserDefinedCtrLibrary udl = new UserDefinedCtrLibrary("http://www.w3.org/XQueryTest/userDefinedTypes");
-	      
+
 	      for (int i = 0; i < xstypes.getLength(); i++) {
 	    	  XSObject xsobject = xstypes.item(i);
 	    	  if ("http://www.w3.org/XQueryTest/userDefinedTypes".equals(xsobject.getNamespace())) {
@@ -780,7 +779,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	    				  if (xsobject.getName().equals("floatBased") || xsobject.getName().equals("shoesize")) {
 		    				  XercesFloatUserDefined fudt = new XercesFloatUserDefined(xsobject);
 		    				  udl.add_type(fudt);
-	    					  
+
 	    				  } else {
 		    				  XercesIntegerUserDefined iudt = new XercesIntegerUserDefined(xsobject);
 		    				  udl.add_type(iudt);
@@ -797,9 +796,9 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	    		  }
 	    	  }
 	      }
-	      
+
 	      addFunctionLibrary(udl);
-	 
+
 	   }
 
 	protected void assertXPathTrue(String xpath, Document domDoc) {
@@ -810,7 +809,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 	protected XSBoolean evaluateBoolXPath(String xpath, Document doc) {
 		return  (XSBoolean) evaluateSimpleXPath(xpath, doc, XSBoolean.class);
 	}
-		
+
 	protected AnyType evaluateSimpleXPath(String xpath, Document doc, Class resultClass) {
 		try {
 			compileXPath(xpath);
@@ -821,7 +820,7 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 		catch (StaticError e) {
 			throw new RuntimeException("Static error: " + e.getMessage(), e);
 		}
-	
+
 		ResultSequence rs;
 		try {
 			rs = evaluate(domDoc);
@@ -830,10 +829,10 @@ public class AbstractPsychoPathTest extends XMLTestCase {
 			throw new RuntimeException("Evaluation error: " + e.getMessage(), e);
 		}
 		assertEquals("Expected single result from \'" + xpath + "\'", 1, rs.size());
-		
+
 		AnyType result = rs.first();
 		assertTrue("Exected XPath result instanceof class " + resultClass.getSimpleName() + " from \'" + xpath + "\', got " + result.getClass(), resultClass.isInstance(result));
-		
+
 		return result;
 	}
 

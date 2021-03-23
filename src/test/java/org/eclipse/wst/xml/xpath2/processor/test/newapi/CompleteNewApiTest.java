@@ -6,7 +6,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Jesper Steen Moller  - initial API and implementation
  *******************************************************************************/
@@ -31,7 +31,7 @@ import org.apache.xerces.xs.ElementPSVI;
 import org.apache.xerces.xs.XSModel;
 import org.custommonkey.xmlunit.XMLConstants;
 import org.custommonkey.xmlunit.XMLTestCase;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
@@ -43,7 +43,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.xerces.XercesTypeModel;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.osgi.framework.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -111,12 +111,12 @@ public class CompleteNewApiTest extends XMLTestCase {
 
 		return actual.trim();
 	}
-		
+
 	protected Object evaluateSimpleXPath(String xpath, StaticContext sc, Document doc, Class resultClass) {
 		XPath2Expression path = new Engine().parseExpression(xpath, sc);
-	
+
 		DynamicContext dynamicContext = new DynamicContextBuilder(sc);
-		
+
 		org.eclipse.wst.xml.xpath2.api.ResultSequence rs = path.evaluate(dynamicContext, doc != null ? new Object[] { doc } : new Object[0]);
 		assertEquals("Expected single result from \'" + xpath + "\'", 1, rs.size());
 		Object result = rs.value(0);
@@ -127,7 +127,7 @@ public class CompleteNewApiTest extends XMLTestCase {
 	public void testSimpleMath() throws Exception {
 //		String xpath = "($input-context/atomic:root/atomic:integer) union ($input-context/atomic:root/atomic:integer)";
 		String xpath = "2+2 = 4";
-		
+
 		Boolean b = (Boolean)evaluateSimpleXPath(xpath, new StaticContextBuilder(), null, Boolean.class);
 
 		assertEquals(Boolean.TRUE, b);
@@ -146,7 +146,7 @@ public class CompleteNewApiTest extends XMLTestCase {
 
 //		String xpath = "($input-context/atomic:root/atomic:integer) union ($input-context/atomic:root/atomic:integer)";
 		String xpath = "((/element/eq eq 'eq') or //child::xs:*) and false";
-		
+
 		Boolean b = (Boolean)evaluateSimpleXPath(xpath, new StaticContextBuilder().withNamespace("xs", "urn:joe").withTypeModel(new XercesTypeModel(schema)), domDoc, Boolean.class);
 
 		assertEquals(Boolean.FALSE, b);

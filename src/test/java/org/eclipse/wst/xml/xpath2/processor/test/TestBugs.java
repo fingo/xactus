@@ -6,7 +6,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     David Carver (STAR) - initial API and implementation
  *     Mukul Gandhi - bug 273719 - improvements to fn:string-length function
@@ -31,16 +31,16 @@
  *                    bug 279373   improvements to multiply operation on xs:yearMonthDuration
  *                                 data type.
  *                    bug 279376   improvements to xs:yearMonthDuration division operation
- *                    bug 281046   implementation of xs:base64Binary data type                                
- *  Jesper S Moller - bug 286061   correct handling of quoted string 
+ *                    bug 281046   implementation of xs:base64Binary data type
+ *  Jesper S Moller - bug 286061   correct handling of quoted string
  *  Jesper S Moller - bug 280555 - Add pluggable collation support
  *  Jesper S Moller - bug 297958   Fix fn:nilled for elements
  *  Mukul Gandhi    - bug 298519   improvements to fn:number implementation, catering
  *                                 to node arguments.
  *  Mukul Gandhi    - bug 301539   fix for "context undefined" bug in case of zero
  *                                 arity of fn:name function.
- *  Mukul Gandhi    - bug 309585   implementation of xs:normalizedString data type                             
- * Jesper S Moller  - bug 311480 - fix problem with name matching on keywords 
+ *  Mukul Gandhi    - bug 309585   implementation of xs:normalizedString data type
+ * Jesper S Moller  - bug 311480 - fix problem with name matching on keywords
  * Jesper S Moller  - bug 312191 - instance of test fails with partial matches
  *  Mukul Gandhi    - bug 318313 - improvements to computation of typed values of nodes,
  *                                 when validated by XML Schema primitive types
@@ -50,18 +50,18 @@
  *  Mukul Gandhi    - bug 325262 - providing ability to store an XPath2 sequence into
  *                                 an user-defined variable.
  *  Mukul Gandhi    - bug 334478   implementation of xs:token data type
- *  Mukul Gandhi    - bug 334842 - improving support for the data types Name, NCName, ENTITY, 
+ *  Mukul Gandhi    - bug 334842 - improving support for the data types Name, NCName, ENTITY,
  *                                 ID, IDREF and NMTOKEN.
- *  Mukul Gandhi    - bug 338494 - prohibiting xpath expressions starting with / or // to be parsed.                                
+ *  Mukul Gandhi    - bug 338494 - prohibiting xpath expressions starting with / or // to be parsed.
  *  Mukul Gandhi    - bug 280798 - PsychoPath support for JDK 1.4
  *  Mukul Gandhi    - bug 338494 - prohibiting xpath expressions starting with / or // to be parsed.
  *  Mukul Gandhi    - bug 338999 - improving compliance of function 'fn:subsequence'. implementing full arity support.
  *  Mukul Gandhi    - bug 339025 - fixes to fn:distinct-values function. ability to find distinct values on node items.
- *  Mukul Gandhi    - bug 341862 - improvements to computation of typed value of xs:boolean nodes.                                 
+ *  Mukul Gandhi    - bug 341862 - improvements to computation of typed value of xs:boolean nodes.
  *  Jesper Steen Moller  - bug 340933 - Migrate tests to new XPath2 API
  *  Lukasz Wycisk   - bug 361060 - Aggregations with nil='true' throw exceptions.
  *  Lukasz Wycisk   - bug 361059 - FnRoundHalfToEven is wrong in case of 2 arguments
- *  Jesper Moller   - bug 388504 - XPath scanner does not detect non-ASCII names                              
+ *  Jesper Moller   - bug 388504 - XPath scanner does not detect non-ASCII names
  ******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.test;
@@ -83,7 +83,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.Function;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
@@ -106,7 +106,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSFloat;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSInteger;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
-import org.osgi.framework.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
 import org.xml.sax.InputSource;
 
 public class TestBugs extends AbstractPsychoPathTest {
@@ -196,10 +196,10 @@ public class TestBugs extends AbstractPsychoPathTest {
 			public TypeDefinition getDefaultCollectionType() {
 				return null;
 			}
-			
+
 		});
 	}
-	
+
 	public void testNamesInUnicode() throws Exception {
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug388504.xml");
 		loadDOMDocument(fileURL);
@@ -213,7 +213,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("1", actual);
 	}
-	
+
 	public void testNamesWhichAreKeywords() throws Exception {
 		// Bug 273719
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug311480.xml");
@@ -236,7 +236,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testStringLengthWithElementArg() throws Exception {
 		// Bug 273719
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug273719.xml");
@@ -430,7 +430,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		// Bug 274731
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-		
+
 		InputSource inputSource = getTestSource("http://resolved-locally/xml/note.xml");
 		domDoc = docBuilder.parse(inputSource);
 
@@ -1184,7 +1184,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("Don't try this at \"home\", she said", resultValue);
 	}
-	
+
 	public void testNumericFunctionOnEmptySequence() throws Exception {
 
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -1195,16 +1195,16 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar();
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = null;
 		ResultSequence rs = null;
-				
+
 		//a)
 		xpath = "fn:abs(())";
           compileXPath(xpath);
           rs = evaluate(domDoc);
 		assertEquals(0,rs.size());
-		
+
 		//b)
 		xpath = "fn:ceiling(())";
           compileXPath(xpath);
@@ -1216,26 +1216,26 @@ public class TestBugs extends AbstractPsychoPathTest {
           compileXPath(xpath);
           rs = evaluate(domDoc);
 		assertEquals(0,rs.size());
-		
+
 		//d)
 		xpath = "fn:round(())";
           compileXPath(xpath);
           rs = evaluate(domDoc);
 		assertEquals(0,rs.size());
-		
+
 		//e)
 		xpath = "fn:round-half-to-even(())";
           compileXPath(xpath);
           rs = evaluate(domDoc);
 		assertEquals(0,rs.size());
-		
+
 		//f)
 		xpath = "fn:round-half-to-even((),1)";
           compileXPath(xpath);
           rs = evaluate(domDoc);
 		assertEquals(0,rs.size());
 	}
-	
+
 	public void testSequenceAggregationOnEmpty() throws Exception {
 
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -1246,10 +1246,10 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar();
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = null;
 		ResultSequence rs = null;
-				
+
 		//a)
 		xpath = "fn:sum((1,2,3,() ))";
           compileXPath(xpath);
@@ -1300,7 +1300,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXPathInstanceOf1() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/elementTypedValueBug.xml");
@@ -1363,7 +1363,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXPathInstanceOf3() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/elementTypedValueBug.xml");
@@ -1388,7 +1388,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXPathInstanceOf4() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/elementTypedValueBug.xml");
@@ -1413,7 +1413,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testXPathInstanceOf5() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1547,7 +1547,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXPathInstanceOf7() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1571,28 +1571,28 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXPathNotInstanceOf() throws Exception {
 		// Bug 298267
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
 		URL schemaURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xsd");
-	
+
 		loadDOMDocument(fileURL, schemaURL);
-	
+
 		// Get XSModel object for the Schema
 		XSModel schema = getGrammar(schemaURL);
-	
+
 		setupDynamicContext(schema);
-	
+
 		String xpath = "/Example/x[1] instance of element(*, x_Type) and not (/Example/x[1] instance of element(*, y_Type))";
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-	
+
 		XSBoolean result = (XSBoolean) rs.first();
-	
+
 		String actual = result.getStringValue();
-	
+
 		assertEquals("true", actual);
 	}
 
@@ -1620,7 +1620,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testFnNumber_Evaluation1() throws Exception {
 		// Bug 298519
 		URL fileURL = bundle.getEntry("/bugTestFiles/fnNumberBug.xml");
@@ -1644,7 +1644,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testFnNumber_Evaluation2() throws Exception {
 		// Bug 298519
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -1667,7 +1667,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testAttrNode_Test1() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1691,7 +1691,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testAttrNode_Test2() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1715,7 +1715,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testAttrNode_Test3() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1739,7 +1739,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testAttrNode_Test4() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1763,7 +1763,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testAttrNode_Test5() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1787,7 +1787,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testAttrNode_Test6() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1811,7 +1811,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testAttrNode_Test7() throws Exception {
 		// Bug 298535
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1835,7 +1835,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testFnNameContextUndefined() throws Exception {
 		// Bug 301539
 		URL fileURL = bundle.getEntry("/bugTestFiles/attrNodeTest.xml");
@@ -1857,7 +1857,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testXSNormalizedString() throws Exception {
 		// Bug 309585
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -1877,13 +1877,13 @@ public class TestBugs extends AbstractPsychoPathTest {
 		  ResultSequence rs = evaluate(domDoc);
 		}
 		catch(DynamicError ex) {
-		  // a 'DynamicError' exception indicates, that this test is a success 
+		  // a 'DynamicError' exception indicates, that this test is a success
 		  testSuccess = true;
 		}
-		
+
 		assertTrue(testSuccess);
 	}
-	
+
 	public void testParseElementKeywordsAsNodes() throws Exception {
 		// Bug 311480
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -1898,7 +1898,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		String xpath = "/element/attribute";
 		compileXPath(xpath);
 	}
-	
+
 	public void testTypedValueEnhancement_primitiveTypes() throws Exception {
 		// Bug 318313
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug318313.xml");
@@ -1922,7 +1922,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testFunctionAtomization() throws Exception {
 		// Bug 318313
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug318313.xml");
@@ -1946,7 +1946,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("100", actual);
 	}
-	
+
 	public void testFunctionAtomization2() throws Exception {
 		// Bug 318313
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug318313.xml");
@@ -1970,7 +1970,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("100", actual);
 	}
-	
+
 	public void testTypedValueEnhancement_Bug323900_1() throws Exception {
 		// Bug 323900
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug323900_1.xml");
@@ -1994,7 +1994,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testTypedValueEnhancement_Bug323900_2() throws Exception {
 		// Bug 323900
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug323900_2.xml");
@@ -2019,7 +2019,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("false", actual);
 	}
-	
+
 	public void testTypedValueEnhancement_Bug323900_3() throws Exception {
 		// Bug 323900
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug323900_2.xml");
@@ -2040,11 +2040,11 @@ public class TestBugs extends AbstractPsychoPathTest {
 
   		assertTrue(rs.get(1) instanceof XSInteger);
   		assertEquals(BigInteger.valueOf(2), ((XSInteger) rs.get(1)).int_value());
-          
+
   		assertTrue(rs.get(2) instanceof XSString);
   		assertEquals("3.3", ((XSString) rs.get(2)).getStringValue());
 	}
-	
+
 	public void testTypedValueEnhancement_Bug323900_4() throws Exception {
 		// Bug 323900
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug323900_3.xml");
@@ -2060,11 +2060,11 @@ public class TestBugs extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-        
+
 		XSString result = (XSString) rs.get(0);
 		assertEquals("3.3", result.getStringValue());
 	}
-	
+
 	public void testTypedValueEnhancement_Bug323900_5() throws Exception {
 		// Bug 323900
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug323900_4.xml");
@@ -2080,71 +2080,71 @@ public class TestBugs extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-        
+
 		XSInteger result = (XSInteger) rs.get(0);
 		assertEquals("10", result.getStringValue());
 	}
-	
-	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_1() 
+
+	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_1()
 	                                                       throws Exception {
 		// Bug 325262
 		setupDynamicContext(null);
-		
+
         ResultSequence rs = ResultSequenceFactory.create_new();
         setVariable("value",rs);
-        
+
 		String xpath = "deep-equal($value,())";
 		compileXPath(xpath);
 		ResultSequence rsRes = evaluate(domDoc);
-        
+
 		XSBoolean result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
 	}
-	
-	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_2() 
+
+	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_2()
 	                                                       throws Exception {
 		// Bug 325262
 		setupDynamicContext(null);
-		
+
         ResultSequence rs = ResultSequenceFactory.create_new();
         rs.add(new XSInteger(BigInteger.valueOf(2)));
         rs.add(new XSInteger(BigInteger.valueOf(4)));
         rs.add(new XSInteger(BigInteger.valueOf(6)));
         setVariable("value",rs);
-        
+
         // test a
 		String xpath = "$value instance of xs:integer+";
 		compileXPath(xpath);
-		ResultSequence rsRes = evaluate(domDoc);        
+		ResultSequence rsRes = evaluate(domDoc);
 		XSBoolean result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
-		
+
 		// test b
 		xpath = "deep-equal($value, (2, 4, 6))";
 		compileXPath(xpath);
-		rsRes = evaluate(domDoc);        
+		rsRes = evaluate(domDoc);
 		result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
 	}
-	
-	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_3() 
+
+	public void testTypedValueEnhancement_BugUsingSeqIntoVariable_3()
 	                                                      throws Exception {
 		// Bug 325262
 		setupDynamicContext(null);
-		
+
 		ResultSequence rs = ResultSequenceFactory.create_new();
         rs.add(new XSInteger(BigInteger.valueOf(2)));
         rs.add(new XSInteger(BigInteger.valueOf(4)));
         rs.add(new XSInteger(BigInteger.valueOf(6)));
         setVariable("value",rs);
-        
+
 		String xpath = "count(data($value)) = 3";
 		compileXPath(xpath);
-		ResultSequence rsRes = evaluate(domDoc);        
+		ResultSequence rsRes = evaluate(domDoc);
 		XSBoolean result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
 	}
-	
+
 	public void testXSToken() throws Exception {
 		// Bug 334478
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -2165,13 +2165,13 @@ public class TestBugs extends AbstractPsychoPathTest {
 		   ResultSequence rs = evaluate(domDoc);
 		}
 		catch(DynamicError ex) {
-		   // a 'DynamicError' exception indicates, that this test is a success 
+		   // a 'DynamicError' exception indicates, that this test is a success
 		   testSuccess = true;
 		}
-		
+
 		assertTrue(testSuccess);
 	}
-	
+
 	public void testBug334842() throws Exception {
 		// Bug 334842
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
@@ -2184,51 +2184,51 @@ public class TestBugs extends AbstractPsychoPathTest {
 		setupDynamicContext(schema);
 
 		// test a)
-		String xpath = "xs:Name('x:abc') eq xs:Name('x:abc')"; 
+		String xpath = "xs:Name('x:abc') eq xs:Name('x:abc')";
 		compileXPath(xpath);
 		ResultSequence rsRes = evaluate(domDoc);
 		XSBoolean result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
-		
+
 		// test b)
-		xpath = "xs:NCName('x:abc') eq xs:NCName('x:abc')"; 
+		xpath = "xs:NCName('x:abc') eq xs:NCName('x:abc')";
 		compileXPath(xpath);
 		try {
 		   rsRes = evaluate(domDoc);
 		   assertTrue(false);
 		}
 		catch(DynamicError ex) {
-		   // a 'DynamicError' exception indicates, that this test is a success 
+		   // a 'DynamicError' exception indicates, that this test is a success
 		   assertTrue(true);
 		}
-		
+
 		// test c)
-		xpath = "xs:NCName('abc') eq xs:NCName('abc')"; 
+		xpath = "xs:NCName('abc') eq xs:NCName('abc')";
 		compileXPath(xpath);
 		rsRes = evaluate(domDoc);
 		result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
-		
+
 		// test d)
-		xpath = "xs:ID('x:abc') eq xs:ID('x:abc')"; 
+		xpath = "xs:ID('x:abc') eq xs:ID('x:abc')";
 		compileXPath(xpath);
 		try {
 		   rsRes = evaluate(domDoc);
 		   assertTrue(false);
 		}
 		catch(DynamicError ex) {
-		   // a 'DynamicError' exception indicates, that this test is a success 
+		   // a 'DynamicError' exception indicates, that this test is a success
 		   assertTrue(true);
 		}
-		
+
 		// test e)
-		xpath = "xs:ID('abc') eq xs:ID('abc')"; 
+		xpath = "xs:ID('abc') eq xs:ID('abc')";
 		compileXPath(xpath);
 		rsRes = evaluate(domDoc);
 		result = (XSBoolean) rsRes.get(0);
 		assertEquals("true", result.getStringValue());
 	}
-	
+
 	public void testDefNamespaceOnbuiltInTypes() throws Exception {
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
 		URL fileURL = bundle.getEntry("/TestSources/emptydoc.xml");
@@ -2252,7 +2252,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		assertEquals("true", actual);
 	}
-	
+
 	public void testExprParsingBeginnigWithRootNode_bug338494() throws Exception {
 		// Bug 338494
 		boolean useNew = useNewApi;
@@ -2280,7 +2280,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 				assertTrue(true);
 			}
 		}
-		
+
 		// test b)
 		xpath = "//x";
 		try {
@@ -2294,7 +2294,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 				assertTrue(true);
 			}
 		}
-		
+
 		// test c)
 		xpath = "/";
 		try {
@@ -2308,7 +2308,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 				assertTrue(true);
 			}
 		}
-		
+
 		// test d)
 		xpath = "x/y[/a]";
 		try {
@@ -2322,7 +2322,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 				assertTrue(true);
 			}
 		}
-		
+
 		// test e)
 		xpath = ".//x";
 		try {
@@ -2334,12 +2334,12 @@ public class TestBugs extends AbstractPsychoPathTest {
 		   // test fails
 		   assertTrue(false);
 		}
-		} finally { useNewApi = useNew; }		
+		} finally { useNewApi = useNew; }
 	}
 
 	public void testExprParsingBeginnigWithRootNode_new_API_bug338494() throws Exception {
 		useNewApi = true;
-		
+
 		// Bug 338494
 		bundle = Platform.getBundle("org.w3c.xqts.testsuite");
 		URL fileURL = bundle.getEntry("/TestSources/emptydoc.xml");
@@ -2359,50 +2359,50 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 	    // test b)
 	    compileXPath("//x");
-	    assertTrue("//x means x anywhere under root, so root path should be true", newXPath.isRootPathUsed());		    
+	    assertTrue("//x means x anywhere under root, so root path should be true", newXPath.isRootPathUsed());
 
 		// test c)
 	    compileXPath("/");
-	    assertTrue("/ is root, so root path should be true", newXPath.isRootPathUsed());		    
-		
+	    assertTrue("/ is root, so root path should be true", newXPath.isRootPathUsed());
+
 		// test d)
 	    compileXPath("x/y[/a]");
-	    assertTrue("a predicate refers to root, so root path should be true", newXPath.isRootPathUsed());		    
+	    assertTrue("a predicate refers to root, so root path should be true", newXPath.isRootPathUsed());
 
 	    // test e)
 	    compileXPath(".//x");
-	    assertFalse(".//x is just relative, so root path should be false", newXPath.isRootPathUsed());		    
+	    assertFalse(".//x is just relative, so root path should be false", newXPath.isRootPathUsed());
 	}
 
 	public void testExpression_variables_API() throws Exception {
 		useNewApi = true;
 		setupDynamicContext(null);
-		
+
 		setVariable("x", ResultSequenceFactory.create_new());
 		String xpath = "count(subsequence($x/parent::*, 2)) eq (for $y in (1) return $y+1)";
 		compileXPath(xpath);
-	    assertTrue(newXPath.getFreeVariables().contains(new javax.xml.namespace.QName("x")));		    
-	    assertFalse(newXPath.getFreeVariables().contains(new javax.xml.namespace.QName("y")));		    
+	    assertTrue(newXPath.getFreeVariables().contains(new javax.xml.namespace.QName("x")));
+	    assertFalse(newXPath.getFreeVariables().contains(new javax.xml.namespace.QName("y")));
 	}
 
 	public void testExpression_functions_API() throws Exception {
 		useNewApi = true;
 		setupDynamicContext(null);
-		
+
 		String xpath = "count(subsequence(parent::*, 2)) eq (for $y in (1) return $y+1)";
 		compileXPath(xpath);
 	    javax.xml.namespace.QName fnCount = new javax.xml.namespace.QName(FnFunctionLibrary.XPATH_FUNCTIONS_NS, "count");
 
 	    assertTrue(newXPath.getResolvedFunctions().contains(fnCount));
 	    javax.xml.namespace.QName fnSubsequence = new javax.xml.namespace.QName(FnFunctionLibrary.XPATH_FUNCTIONS_NS, "subsequence");
-		
+
 	    assertTrue(newXPath.getResolvedFunctions().contains(fnSubsequence));
-	    assertEquals(2, newXPath.getResolvedFunctions().size());		    
+	    assertEquals(2, newXPath.getResolvedFunctions().size());
 	}
-	
+
 	public void testNamespaceAxis() {
 		setupDynamicContext(null);
-		
+
 		String xpath = "count(namespace::*)";
 		try {
 			compileXPath(xpath);
@@ -2411,15 +2411,15 @@ public class TestBugs extends AbstractPsychoPathTest {
 			assertEquals("XPST0010", se.code());
 		}
 	}
-	
+
 	public void testExpression_axis_API() throws Exception {
 		useNewApi = true;
 		setupDynamicContext(null);
-		
+
 		String xpath = "count(subsequence(./parent::*, 2)) + count(ancestor-or-self::*)";
 		compileXPath(xpath);
-	    assertTrue(newXPath.getAxes().contains("parent"));		    
-	    assertTrue(newXPath.getAxes().contains("ancestor-or-self"));		    
+	    assertTrue(newXPath.getAxes().contains("parent"));
+	    assertTrue(newXPath.getAxes().contains("ancestor-or-self"));
 	    assertEquals(2, newXPath.getAxes().size());
 
 	    xpath = "(child::*, descendant::*, attribute::*, self::*, descendant-or-self::*, following-sibling::*,  following::*, parent::*," +
@@ -2442,7 +2442,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 	    "preceding",
 	    "ancestor-or-self" })), newXPath.getAxes());
 	}
-	
+
 	public void testBug338999_Fnsubsequence() throws Exception {
 		// bug 338999
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug338999.xml");
@@ -2454,45 +2454,45 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar(schemaURL);
 
 		setupDynamicContext(schema);
-		
+
 		// test a)
 		String xpath = "count(subsequence(X/*, 2)) eq 2";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		ResultSequence rs = evaluate(domDoc);
 		String actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test b)
 		xpath = "subsequence(X/*, 2) instance of element(*, xs:integer)+";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test c)
 		xpath = "deep-equal(subsequence((1,2,3,4), 2), (2,3,4))";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test d)
 		// hetrogeneous sequence as input. arity 3 mode.
 		xpath = "deep-equal(subsequence(('a', 1, 1.5), 2, 2), (1, 1.5))";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test e)
 		// hetrogeneous sequence as input. arity 3 mode (startingLoc is < 0).
 		xpath = "deep-equal(subsequence(('a', 1, 1.5, 'b'), -2, 3), ())";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
 	}
-	
+
 	public void testFnIndexOf_onQName() throws Exception {
 		// bug 338999
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug338999.xml");
@@ -2504,16 +2504,16 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar(schemaURL);
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = "fn:index-of( for $e in X/* return fn:node-name($e), fn:node-name(X/b) )";
 		compileXPath(xpath);
 		ResultSequence rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		String actual = ((XSInteger) rs.first()).getStringValue();
 		assertEquals("2", actual);
 	}
-	
+
 	public void testFnIndexOf_onQName2() throws Exception {
 		// bug 338999
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug338999.xml");
@@ -2525,16 +2525,16 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar(schemaURL);
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = "fn:index-of( for $e in X/* return fn:node-name($e), fn:QName('','b') )";
 		compileXPath(xpath);
 		ResultSequence rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		String actual = ((XSInteger) rs.first()).getStringValue();
 		assertEquals("2", actual);
 	}
-	
+
 	public void testNumberAggregationWithNill() throws Exception {
 
 		URL fileURL = bundle.getEntry("/bugTestFiles/bugNilled.xml");
@@ -2546,61 +2546,61 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar(schemaURL);
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = null;
 		ResultSequence rs = null;
 		String actual = null;
-		
+
 		//a
 		xpath = "fn:count(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("3", actual);
-		
+
 		//b
 		xpath = "fn:sum(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("43", actual);
-		
+
 		//b2
 		xpath = "fn:sum(( /root/element1, /root/element2, /root/element3 ), 100)";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("143", actual);
-		
+
 		//c
 		xpath = "fn:avg(( /root/element1, /root/element2, /root/element3, 1 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("11", actual);
-		
+
 		//d
 		xpath = "fn:max(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("42", actual);
-		
+
 		//e
 		xpath = "fn:min(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("1", actual);
@@ -2614,61 +2614,61 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSModel schema = getGrammar();
 
 		setupDynamicContext(schema);
-		
+
 		String xpath = null;
 		ResultSequence rs = null;
 		String actual = null;
-		
+
 		//a
 		xpath = "fn:count(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((XSDecimal) rs.first()).getStringValue();
 		assertEquals("3", actual);
-		
+
 		//b
 		xpath = "fn:sum(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((NumericType) rs.first()).getStringValue();
 		assertEquals("43", actual);
-		
+
 		//b2
 		xpath = "fn:sum(( /root/element1, /root/element2, /root/element3 ), 100)";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((NumericType) rs.first()).getStringValue();
 		assertEquals("143", actual);
-		
+
 		//c
 		xpath = "fn:avg(( /root/element1, /root/element2, /root/element3, 1 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((NumericType) rs.first()).getStringValue();
 		assertEquals("11", actual);
-		
+
 		//d
 		xpath = "fn:max(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((NumericType) rs.first()).getStringValue();
 		assertEquals("42", actual);
-		
+
 		//e
 		xpath = "fn:min(( /root/element1, /root/element2, /root/element3 ))";
 		compileXPath(xpath);
 		rs = evaluate(domDoc);
-		
+
 		assertTrue( rs.size()>0 );
 		actual = ((NumericType) rs.first()).getStringValue();
 		assertEquals("1", actual);
@@ -2683,31 +2683,31 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		// Get XSModel object for the Schema
 		XSModel schema = getGrammar(schemaURL);
-		
-		setupDynamicContext(schema);;		
-		
+
+		setupDynamicContext(schema);;
+
 		// test a)
 		String xpath = "count(//a) = count(distinct-values(//a))";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		ResultSequence rs = evaluate(domDoc);
 		String actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test b)
 		xpath = "count(X/a) = count(distinct-values(X/a))";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test c)
 		xpath = "count(//b) = count(distinct-values(//b))";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("false", actual);
 	}
-	
+
 	public void testBug341862_TypedBooleanNode() throws Exception {
 		// bug 341862
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug341862.xml");
@@ -2717,68 +2717,68 @@ public class TestBugs extends AbstractPsychoPathTest {
 
 		// Get XSModel object for the Schema
 		XSModel schema = getGrammar(schemaURL);
-		
-		setupDynamicContext(schema);		
+
+		setupDynamicContext(schema);
 
 		// test a)
 		String xpath = "/X/a[1] = true()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		ResultSequence rs = evaluate(domDoc);
 		String actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test b)
 		xpath = "/X/a[1]/@att = true()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test c)
 		xpath = "/X/a[2] = true()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test d)
 		xpath = "/X/a[2]/@att = true()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test e)
 		xpath = "/X/a[3] = false()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test f)
 		xpath = "/X/a[3]/@att = false()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test g)
 		xpath = "/X/a[4] = false()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
-		
+
 		// test h)
 		xpath = "/X/a[4]/@att = false()";
-		compileXPath(xpath);		
+		compileXPath(xpath);
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
 	}
-	
+
 	/*   "added for future use"
-	 * 
+	 *
      public void testReverse_axes() throws Exception {
 		// Bug 353373
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug353373_1.xml");
@@ -2797,7 +2797,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSBoolean result = (XSBoolean) rs.first();
 		String actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (b)
 		xpath = "deep-equal((x/q/preceding-sibling::*[1]/name(),x/q/preceding-sibling::*[2]/name()),('p','uu'))";
 		path = compileXPath(dc, xpath);
@@ -2806,7 +2806,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (c)
 		xpath = "count(//u/preceding::*) = 7";
 		path = compileXPath(dc, xpath);
@@ -2815,7 +2815,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (d)
 		xpath = "deep-equal((//u/preceding::*[1]/name(),//u/preceding::*[2]/name(),//u/preceding::*[3]/name(),//u/preceding::*[4]/name(),//u/preceding::*[5]/name(),//u/preceding::*[6]/name(),//u/preceding::*[7]/name()), " +
 				           "('m2','m1','z','c','q','p','uu'))";
@@ -2825,7 +2825,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (e)
 		xpath = "count(//u/ancestor::*) = 2";
 		path = compileXPath(dc, xpath);
@@ -2834,7 +2834,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (f)
 		xpath = "deep-equal((//u/ancestor::*[1]/name(),//u/ancestor::*[2]/name()),('y','x'))";
 		path = compileXPath(dc, xpath);
@@ -2843,7 +2843,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (g)
 		xpath = "count(//u/ancestor-or-self::*) = 3";
 		path = compileXPath(dc, xpath);
@@ -2852,7 +2852,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (h)
 		xpath = "deep-equal((//u/ancestor-or-self::*[1]/name(),//u/ancestor-or-self::*[2]/name(),//u/ancestor-or-self::*[3]/name()),('u','y','x'))";
 		path = compileXPath(dc, xpath);
@@ -2863,9 +2863,9 @@ public class TestBugs extends AbstractPsychoPathTest {
 		assertEquals("true", actual);
 	}
 	*/
-	
+
 	/*   "added for future use"
-	 * 
+	 *
 	public void testForward_axes() throws Exception {
 		// Bug 353373
 		URL fileURL = bundle.getEntry("/bugTestFiles/bug353373_2.xml");
@@ -2884,7 +2884,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		XSBoolean result = (XSBoolean) rs.first();
 		String actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (b)
 		xpath = "deep-equal((x/q/following-sibling::*[1]/name(),x/q/following-sibling::*[2]/name()),('c','y'))";
 		path = compileXPath(dc, xpath);
@@ -2893,7 +2893,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (c)
 		xpath = "count(//a5/following::*) = 8";
 		path = compileXPath(dc, xpath);
@@ -2902,7 +2902,7 @@ public class TestBugs extends AbstractPsychoPathTest {
 		result = (XSBoolean) rs.first();
 		actual = result.string_value();
 		assertEquals("true", actual);
-		
+
 		// test (d)
 		xpath = "deep-equal((//n1/following::*[1]/name(),//n1/following::*[2]/name(),//n1/following::*[3]/name(),//n1/following::*[4]/name(),//n1/following::*[5]/name(),//n1/following::*[6]/name(),//n1/following::*[7]/name(),//n1/following::*[8]/name())," +
 				           "('p','q','c','y','z','m1','m2','u'))";
@@ -2913,9 +2913,9 @@ public class TestBugs extends AbstractPsychoPathTest {
 		actual = result.string_value();
 		assertEquals("true", actual);
 	} */
-	
+
 	/* "added for future use"
-	 * 
+	 *
 	public void testResolveQName_1() throws Exception {
 		// Bug 360306
 		URL fileURL = bundle.getEntry("/bugTestFiles/resQName.xml");
@@ -2935,11 +2935,11 @@ public class TestBugs extends AbstractPsychoPathTest {
 		String actual = result.string_value();
 		assertEquals("true", actual);
 	} */
-	
+
 	private CollationProvider createLengthCollatorProvider() {
 		final CollationProvider oldProvider = getStaticContext().getCollationProvider();
 		return new CollationProvider() {
-			
+
 			public Comparator getCollation(String name) {
 				if (name.equals(URN_X_ECLIPSE_XPATH20_FUNKY_COLLATOR)) {
 					return new Comparator() {
@@ -2956,5 +2956,5 @@ public class TestBugs extends AbstractPsychoPathTest {
 			}
 		};
 	}
-	
+
 }
