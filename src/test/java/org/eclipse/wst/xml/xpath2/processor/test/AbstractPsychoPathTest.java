@@ -113,7 +113,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.EntityResolver2;
 
-public class AbstractPsychoPathTest extends XMLTestCase {
+public abstract class AbstractPsychoPathTest extends XMLTestCase {
 
 	protected Document domDoc = null;
 	protected Document domDoc2 = null;
