@@ -71,6 +71,11 @@ configurations {
     implementation.extendsFrom jcup
 }
 
+tasks.named('test', Test).configure {
+    // exclude test suites
+    it.exclude('**/All*Tests.java')
+}
+
 dependencies {
     implementation 'xerces:xercesImpl:2.12.1'
     implementation 'com.ibm.icu:icu4j:68.2'
