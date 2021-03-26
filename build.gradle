@@ -74,6 +74,8 @@ configurations {
 tasks.named('test', Test).configure {
     // exclude test suites
     it.exclude('**/All*Tests.java')
+
+    it.useJUnitPlatform()
 }
 
 dependencies {
