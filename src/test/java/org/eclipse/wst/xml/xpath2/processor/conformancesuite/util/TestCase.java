@@ -10,10 +10,9 @@ class TestCase {
     private final String scenario;
 
     private final String filePath;
-    private final Collection<String> inputFiles;
     private final String xqFile;
 
-    // one of
+    private final Collection<String> inputFiles;
     private final Collection<String> outputFiles;
     private final Collection<String> expectedErrors;
 
@@ -30,8 +29,8 @@ class TestCase {
         this.description = description;
         this.scenario = scenario;
         this.filePath = filePath;
-        this.inputFiles = unmodifiableCopy(inputFiles);
         this.xqFile = xqFile;
+        this.inputFiles = unmodifiableCopy(inputFiles);
         this.outputFiles = unmodifiableCopy(outputFiles);
         this.expectedErrors = unmodifiableCopy(expectedErrors);
     }
@@ -52,12 +51,12 @@ class TestCase {
         return filePath;
     }
 
-    public Collection<String> getInputFiles() {
-        return inputFiles;
-    }
-
     public String getXqFile() {
         return xqFile;
+    }
+
+    public Collection<String> getInputFiles() {
+        return inputFiles;
     }
 
     public Collection<String> getOutputFiles() {
