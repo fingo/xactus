@@ -1,0 +1,78 @@
+name: Test and release a package
+on: [push]
+
+jobs:
+    build_test_publish:
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Generate build number
+              id: buildnumber
+              uses: einaregilsson/build-number@v3
+              with:
+                  token: ${{secrets.github_token}}
+
+            - name: Setup Java
+              uses: actions/setup-java@v1
+              with:
+                  java-version: '8.0.275'
+                  java-package: jdk
+                  architecture: x64
+#                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+#                  server-username: MAVEN_USERNAME # env variable for username in deploy
+#                  server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+#                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+#                  gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+
+            - name: Unit tests
+              run: "./gradlew test"
+
+            # @todo: Publish to Maven Central
+
+            - name: Archive test results as annotations
+              uses: dorny/test-reporter@v1
+              if: always()
+              with:
+                  name: jUnit tests
+                  path: build/test-results/**/*.xml
+                  reporter: java-junit
+
+            - name: Archive Gradle HTML test report as ZIP artifact
+              uses: actions/upload-artifact@v2
+              if: always()
+              with:
+                  name: tests-results
+                  path: build/reports/tests/test
+
+            - name: Archive Gradle HTML test report as Github Page
+              uses: peaceiris/actions-gh-pages@v3
+              if: always()
+              with:
+                  external_repository: fingo/results-xactus
+                  deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
+                  publish_dir: ./build/reports/tests/test
+                  destination_dir: "${{ steps.buildnumber.outputs.build_number }}"
+                  keep_files: true
+
+            - name: Slack Notification
+              uses: rtCamp/action-slack-notify@v2
+              if: always()
+              env:
+                  SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
+                  SLACK_COLOR: "${{job.status}}"
+                  SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                  SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ steps.buildnumber.outputs.build_number }}/index.html"
+                  SLACK_USERNAME: "Github"
+
+# @todo: Result XML needs to be a single file
+#            - name: Notify on Slack
+#              uses: ivanklee86/xunit-slack-reporter@master
+#              if: always()
+#              env:
+#                  EXIT_CODE_FROM_REPORT: "True"
+#                  SLACK_CHANNEL: damian_dev_test
+#                  SLACK_TOKEN: ${{ secrets.XPATH_SLACK_URL }}
+#                  XUNIT_PATH: build/test-results/**/*.xml
+
