@@ -4,12 +4,14 @@ import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.Collect
 
 import java.util.Collection;
 
-class TestGroup {
+public class TestGroup {
     private final String name;
     private final String title;
     private final String description;
     private final Collection<TestGroup> testGroups;
     private final Collection<TestCase> testCases;
+
+    private final boolean isEmpty;
 
     TestGroup(String name,
               String title,
@@ -21,6 +23,8 @@ class TestGroup {
         this.description = description;
         this.testGroups = unmodifiableCopy(testGroups);
         this.testCases = unmodifiableCopy(testCases);
+        this.isEmpty = testGroups.stream().allMatch(TestGroup::isEmpty) &&
+            testCases.isEmpty();
     }
 
     public String getName() {
@@ -41,5 +45,9 @@ class TestGroup {
 
     public Collection<TestCase> getTestCases() {
         return testCases;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
     }
 }
