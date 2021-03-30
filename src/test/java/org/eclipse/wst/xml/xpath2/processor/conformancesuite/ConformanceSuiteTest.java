@@ -107,12 +107,10 @@ class ConformanceSuiteTest {
     }
 
     private static Bundle bundle;
-    private static TestSources testSources;
 
     @BeforeAll
-    static void beforeAll() throws Exception {
+    static void beforeAll() {
         bundle = getXQTSBundle();
-        testSources = TestSuiteParser.parseTestSources(getTestsuiteElement());
     }
 
     @ParameterizedTest
@@ -122,9 +120,6 @@ class ConformanceSuiteTest {
               String xqFile,
               List<String> expectedOutputs,
               List<String> expectedErrors) {
-        DOMLoader domloader = new XercesLoader();
-        domloader.set_validating(false);
-
         List<Document> inputDocuments = getInputDocuments(inputFileNames);
         List<XSModel> inputDocumentSchemas = inputDocuments.stream()
             .map(Document::getDocumentElement)
@@ -134,6 +129,10 @@ class ConformanceSuiteTest {
             .collect(toList());
 
         System.out.println(inputDocumentSchemas);
+
+        if (inputDocumentSchemas.size() > 1) {
+            throw new IllegalStateException();
+        }
 
 //        setupDynamicContext(schema);
 //
