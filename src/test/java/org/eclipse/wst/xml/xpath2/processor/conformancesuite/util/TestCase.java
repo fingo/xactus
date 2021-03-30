@@ -4,7 +4,7 @@ import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.Collect
 
 import java.util.Collection;
 
-class TestCase {
+public class TestCase {
     private final String name;
     private final String description;
     private final String scenario;
@@ -24,7 +24,6 @@ class TestCase {
              Collection<String> inputFiles,
              Collection<String> outputFiles,
              Collection<String> expectedErrors) {
-        // TODO Interpretation of: both expectedErrors and outputFiles defined, multiple input and output files
         this.name = name;
         this.description = description;
         this.scenario = scenario;

@@ -17,6 +17,20 @@ public final class TestSuiteParser {
             getChildElements(testSuiteElement, "test-group")
                 .stream()
                 .map(TestSuiteParser::parseTestGroup)
+                .filter(t -> !t.isEmpty())
+                .collect(toList()));
+    }
+
+    public static TestSources parseTestSources(Element testsuiteElement) {
+        Element sourcesElement = getMandatoryOnlyChildElement(
+            testsuiteElement, "sources");
+
+        return new TestSources(
+            getChildElements(sourcesElement, "source")
+                .stream()
+                .map(s -> new TestSource(
+                    s.getAttribute("ID"),
+                    s.getAttribute("FileName")))
                 .collect(toList()));
     }
 
@@ -25,11 +39,12 @@ public final class TestSuiteParser {
 
         return new TestGroup(
             testGroupElement.getAttribute("name"),
-            getTextContent(getMandatoryOnlyChildElement(groupInfo, "title")),
-            getTextContent(getMandatoryOnlyChildElement(groupInfo, "description")),
+            getMandatoryOnlyChildElement(groupInfo, "title").getTextContent(),
+            getMandatoryOnlyChildElement(groupInfo, "description").getTextContent(),
             getChildElements(testGroupElement, "test-group")
                 .stream()
                 .map(TestSuiteParser::parseTestGroup)
+                .filter(t -> !t.isEmpty())
                 .collect(toList()),
             getChildElements(testGroupElement, "test-case")
                 .stream()
@@ -41,13 +56,13 @@ public final class TestSuiteParser {
     private static TestCase parseTestCase(Element testCaseElement) {
         return new TestCase(
             testCaseElement.getAttribute("name"),
-            getTextContent(getMandatoryOnlyChildElement(testCaseElement, "description")),
+            getMandatoryOnlyChildElement(testCaseElement, "description").getTextContent(),
             testCaseElement.getAttribute("scenario"),
             testCaseElement.getAttribute("FilePath"),
             getMandatoryOnlyChildElement(testCaseElement, "query")
                 .getAttribute("name"), getChildElements(testCaseElement, "input-file")
                 .stream()
-                .map(TestSuiteParser::getTextContent)
+                .map(Node::getTextContent)
                 .collect(Collectors.toList()),
             getChildElements(testCaseElement, "output-file")
                 .stream()
