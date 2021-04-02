@@ -1,11 +1,9 @@
 package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.XMLUtil.getChildElements;
 import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.XMLUtil.getMandatoryOnlyChildElement;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,17 +14,20 @@ public final class TestSuiteParser {
     private TestSuiteParser() {
     }
 
-    private static final Map<String, ComparisonType> STRING_TO_COMPARISON_TYPE;
-
-    static {
-        Map<String, ComparisonType> stringToComparisonType = new HashMap<>();
-        stringToComparisonType.put("XML", ComparisonType.TEXT);
-        stringToComparisonType.put("Fragment", ComparisonType.FRAGMENT);
-        stringToComparisonType.put("Inspect", ComparisonType.INSPECT);
-        stringToComparisonType.put("Ignore", ComparisonType.IGNORE);
-        stringToComparisonType.put("Text", ComparisonType.TEXT);
-        STRING_TO_COMPARISON_TYPE = unmodifiableMap(stringToComparisonType);
-    }
+    private static final Map<String, ComparisonType> STRING_TO_COMPARISON_TYPE =
+        CollectionUtil.<String, ComparisonType>unmodifiableMapBuilder()
+            .withEntry("XML", ComparisonType.TEXT)
+            .withEntry("Fragment", ComparisonType.FRAGMENT)
+            .withEntry("Inspect", ComparisonType.INSPECT)
+            .withEntry("Ignore", ComparisonType.IGNORE)
+            .withEntry("Text", ComparisonType.TEXT)
+            .build();
+    private static final Map<String, InputType> TAG_TO_INPUT_TYPE =
+        CollectionUtil.<String, InputType>unmodifiableMapBuilder()
+            .withEntry("input-file", InputType.FILE)
+            .withEntry("input-URI", InputType.URI)
+            .withEntry("contextItem", InputType.CONTEXT_ITEM)
+            .build();
 
     public static TestSuite parseTestSuite(Element testSuiteElement) {
         return new TestSuite(
@@ -96,10 +97,11 @@ public final class TestSuiteParser {
                 .collect(toList()));
     }
 
-    private static InputFile parseInputFile(Element inputFileElement) {
-        return new InputFile(
+    private static Input parseInputFile(Element inputFileElement) {
+        return new Input(
             inputFileElement.getTextContent(),
-            inputFileElement.getAttribute("variable"));
+            inputFileElement.getAttribute("variable"),
+            getInputFileType(inputFileElement.getTagName()));
     }
 
     private static OutputFile parseOutputFile(String filePath,
@@ -118,5 +120,14 @@ public final class TestSuiteParser {
         }
 
         return STRING_TO_COMPARISON_TYPE.get(comparisonType);
+    }
+
+    private static InputType getInputFileType(String tag) {
+        if (!TAG_TO_INPUT_TYPE.containsKey(tag)) {
+            throw new IllegalArgumentException(
+                "Unknown input tag: \"" + tag + "\"");
+        }
+
+        return TAG_TO_INPUT_TYPE.get(tag);
     }
 }

@@ -17,9 +17,10 @@ import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.InputFile;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.Input;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.OutputFile;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.PsychopathTestContext;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestCase;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSources;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuite;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuiteParser;
@@ -39,12 +40,16 @@ import org.xml.sax.SAXException;
 class ConformanceSuiteTest {
     static Stream<Arguments> testcases() {
         return TestSuiteUtil.allTestCases(testSuite).stream()
-            .map(tc -> Arguments.of(
-                tc.getName(),
-                tc.getInputFiles(),
-                tc.getXqFile(),
-                tc.getOutputFiles(),
-                tc.getExpectedErrors()));
+            .map(testCaseWithGroup -> {
+                TestCase tc = testCaseWithGroup.getTestCase();
+
+                return Arguments.of(
+                    testCaseWithGroup.getTestCasePath().pathString() + "/" + tc.getName(),
+                    tc.getInputFiles(),
+                    tc.getXqFile(),
+                    tc.getOutputFiles(),
+                    tc.getExpectedErrors());
+            });
     }
 
     private static Element getTestsuiteElement(Bundle xqtsBundle) throws IOException, ParserConfigurationException, SAXException {
@@ -95,8 +100,9 @@ class ConformanceSuiteTest {
 
     @ParameterizedTest
     @MethodSource("testcases")
-    void test(String tcName,
-              List<InputFile> inputFiles,
+    @SuppressWarnings("unused")
+    void test(String testCaseId,
+              List<Input> inputs,
               String xqFile,
               List<OutputFile> expectedOutputFiles,
               List<String> expectedErrors) throws Exception {
@@ -105,8 +111,8 @@ class ConformanceSuiteTest {
             .map(psychopathTestContext::getResultFileText)
             .collect(toList());
 
-        psychopathTestContext.loadInput(inputFiles.stream()
-            .map(InputFile::getFile)
+        psychopathTestContext.loadInput(inputs.stream()
+            .map(Input::getName)
             .map(testSources::getSourceFileName)
             .collect(toList()));
 

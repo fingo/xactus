@@ -10,18 +10,26 @@ public final class TestSuiteUtil {
     private TestSuiteUtil() {
     }
 
-    public static List<TestCase> allTestCases(TestSuite testSuite) {
+    public static List<TestCaseWithPath> allTestCases(TestSuite testSuite) {
         return testSuite.getTestGroups().stream()
-            .map(TestSuiteUtil::allTestCases)
+            .map(testGroup -> allTestCases(
+                TestCasePath.empty(),
+                testGroup))
             .flatMap(Collection::stream)
             .collect(toList());
     }
 
-    private static List<TestCase> allTestCases(TestGroup testGroup) {
+    private static List<TestCaseWithPath> allTestCases(TestCasePath testCasePath,
+                                                       TestGroup testGroup) {
+        TestCasePath currentTestCasePath = testCasePath.add(testGroup);
+
         return Stream.concat(
-            testGroup.getTestCases().stream(),
+            testGroup.getTestCases().stream()
+                .map(tc -> new TestCaseWithPath(currentTestCasePath, tc)),
             testGroup.getTestGroups().stream()
-                .map(TestSuiteUtil::allTestCases)
+                .map(tg -> TestSuiteUtil.allTestCases(
+                    currentTestCasePath,
+                    tg))
                 .flatMap(Collection::stream))
             .collect(toList());
     }
