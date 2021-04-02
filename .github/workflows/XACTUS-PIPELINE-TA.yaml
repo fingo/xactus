@@ -8,12 +8,6 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Generate build number
-              id: buildnumber
-              uses: einaregilsson/build-number@v3
-              with:
-                  token: ${{secrets.github_token}}
-
             - name: Setup Java
               uses: actions/setup-java@v1
               with:
@@ -51,7 +45,7 @@ jobs:
                   external_repository: fingo/results-xactus
                   deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
                   publish_dir: ./build/reports/tests/test
-                  destination_dir: "${{ steps.buildnumber.outputs.build_number }}"
+                  destination_dir: "${{ github.run_number }}"
                   keep_files: true
 
             - name: Slack Notification
@@ -61,7 +55,7 @@ jobs:
                   SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
                   SLACK_COLOR: "${{job.status}}"
                   SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                  SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ steps.buildnumber.outputs.build_number }}/index.html"
+                  SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html"
                   SLACK_USERNAME: "Github"
 
 # @todo: Result XML needs to be a single file
