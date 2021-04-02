@@ -57,14 +57,3 @@ jobs:
                   SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                   SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html"
                   SLACK_USERNAME: "Github"
-
-# @todo: Result XML needs to be a single file
-#            - name: Notify on Slack
-#              uses: ivanklee86/xunit-slack-reporter@master
-#              if: always()
-#              env:
-#                  EXIT_CODE_FROM_REPORT: "True"
-#                  SLACK_CHANNEL: damian_dev_test
-#                  SLACK_TOKEN: ${{ secrets.XPATH_SLACK_URL }}
-#                  XUNIT_PATH: build/test-results/**/*.xml
-
