@@ -83,7 +83,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.Function;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
@@ -106,7 +106,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSFloat;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSInteger;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.xml.sax.InputSource;
 
 public class TestBugs extends AbstractPsychoPathTest {

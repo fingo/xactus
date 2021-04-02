@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.testutil;
+package org.eclipse.wst.xml.xpath2.processor.testutil.bundle;
 
 import java.net.URL;
 import java.text.MessageFormat;
@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 public class Bundle {
     private final String bundleName;
 
-    public Bundle(String bundleName) {
+    Bundle(String bundleName) {
         this.bundleName = bundleName;
     }
 

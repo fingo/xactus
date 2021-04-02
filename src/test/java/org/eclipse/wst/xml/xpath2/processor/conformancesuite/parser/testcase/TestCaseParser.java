@@ -1,17 +1,18 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
 import static java.util.stream.Collectors.toList;
-import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.XMLUtil.getChildElements;
-import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.XMLUtil.getMandatoryOnlyChildElement;
+import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getChildElements;
+import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getMandatoryOnlyChildElement;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.wst.xml.xpath2.processor.testutil.CollectionUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public final class TestSuiteParser {
-    private TestSuiteParser() {
+public final class TestCaseParser {
+    private TestCaseParser() {
     }
 
     private static final Map<String, ComparisonType> STRING_TO_COMPARISON_TYPE =
@@ -29,25 +30,12 @@ public final class TestSuiteParser {
             .withEntry("contextItem", InputType.CONTEXT_ITEM)
             .build();
 
-    public static TestSuite parseTestSuite(Element testSuiteElement) {
-        return new TestSuite(
+    public static TestCaseRoot parseTestCases(Element testSuiteElement) {
+        return new TestCaseRoot(
             getChildElements(testSuiteElement, "test-group")
                 .stream()
-                .map(TestSuiteParser::parseTestGroup)
+                .map(TestCaseParser::parseTestGroup)
                 .filter(t -> !t.isEmpty())
-                .collect(toList()));
-    }
-
-    public static TestSources parseTestSources(Element testsuiteElement) {
-        Element sourcesElement = getMandatoryOnlyChildElement(
-            testsuiteElement, "sources");
-
-        return new TestSources(
-            getChildElements(sourcesElement, "source")
-                .stream()
-                .map(s -> new TestSource(
-                    s.getAttribute("ID"),
-                    s.getAttribute("FileName")))
                 .collect(toList()));
     }
 
@@ -60,13 +48,13 @@ public final class TestSuiteParser {
             getMandatoryOnlyChildElement(groupInfo, "description").getTextContent(),
             getChildElements(testGroupElement, "test-group")
                 .stream()
-                .map(TestSuiteParser::parseTestGroup)
+                .map(TestCaseParser::parseTestGroup)
                 .filter(t -> !t.isEmpty())
                 .collect(toList()),
             getChildElements(testGroupElement, "test-case")
                 .stream()
                 .filter(t -> t.getAttribute("is-XPath2").equals("true"))
-                .map(TestSuiteParser::parseTestCase)
+                .map(TestCaseParser::parseTestCase)
                 .collect(toList()));
     }
 
@@ -85,7 +73,7 @@ public final class TestSuiteParser {
                 getChildElements(testCaseElement, "input-URI").stream(),
                 getChildElements(testCaseElement, "contextItem").stream())
                 .flatMap(s -> s)
-                .map(TestSuiteParser::parseInputFile)
+                .map(TestCaseParser::parseInputFile)
                 .collect(Collectors.toList()),
             getChildElements(testCaseElement, "output-file")
                 .stream()

@@ -1,11 +1,13 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener;
+
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCase;
 
 public class TestCaseWithPath {
     private final TestCasePath testCasePath;
     private final TestCase testCase;
 
-    public TestCaseWithPath(TestCasePath testCasePath,
-                            TestCase testCase) {
+    TestCaseWithPath(TestCasePath testCasePath,
+                     TestCase testCase) {
         this.testCasePath = testCasePath;
         this.testCase = testCase;
     }
