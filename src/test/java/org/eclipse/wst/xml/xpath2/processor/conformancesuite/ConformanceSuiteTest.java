@@ -79,12 +79,11 @@ class ConformanceSuiteTest {
     }
 
     private static TestCaseRoot testCaseRoot;
-    private static Bundle bundle;
     private static TestSources testSources;
 
     @BeforeAll
     static void beforeAll() throws ParserConfigurationException, SAXException, IOException {
-        bundle = getXQTSBundle();
+        Bundle bundle = getXQTSBundle();
         Element testSuiteElement = getTestsuiteElement(bundle);
         testSources = TestSourcesParser.parseTestSources(testSuiteElement);
         testCaseRoot = TestCaseParser.parseTestCases(testSuiteElement);
