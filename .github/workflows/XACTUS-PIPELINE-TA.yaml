@@ -32,12 +32,10 @@ jobs:
             # @todo: Publish to Maven Central
 
             - name: Archive test results as annotations
-              uses: dorny/test-reporter@v1
+              uses: EnricoMi/publish-unit-test-result-action@v1
               if: always()
               with:
-                  name: jUnit tests
-                  path: build/test-results/**/*.xml
-                  reporter: java-junit
+                  files: build/test-results/**/*.xml
 
             - name: Archive Gradle HTML test report as ZIP artifact
               uses: actions/upload-artifact@v2
