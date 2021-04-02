@@ -26,6 +26,7 @@ jobs:
             # @todo: Publish to Maven Central
 
             - name: Output link to HTML report as annotation
+              if: always()
               run: "echo '::debug::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
 
             - name: Archive test results as annotations
