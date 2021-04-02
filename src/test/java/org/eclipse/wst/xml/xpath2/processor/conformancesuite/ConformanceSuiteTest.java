@@ -142,22 +142,4 @@ class ConformanceSuiteTest {
 
         Assertions.assertTrue(expectedOutputs.contains(actual));
     }
-
-    private List<Document> getInputDocuments(Collection<String> inputFileNames) {
-        DOMLoader domloader = new XercesLoader();
-        domloader.set_validating(false);
-
-        return inputFileNames.stream()
-            .map(bundle::getEntry)
-            .map(url -> {
-                try (InputStream is = testResolve(url)) {
-                    Document doc = domloader.load(is);
-                    doc.setDocumentURI(url.toString());
-                    return doc;
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            })
-            .collect(toList());
-    }
 }
