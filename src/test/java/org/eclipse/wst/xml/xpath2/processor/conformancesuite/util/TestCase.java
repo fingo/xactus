@@ -9,25 +9,28 @@ public class TestCase {
     private final String description;
     private final String scenario;
 
-    private final String filePath;
     private final String xqFile;
 
-    private final Collection<String> inputFiles;
-    private final Collection<String> outputFiles;
+    private final Collection<InputFile> inputFiles;
+    /**
+     * After <a href="https://www.w3.org/XML/xquery/test-suite/Guidelines%20for%20Running%20the%20XML%20Query%20Test%20Suite.html">Guidelines for Running the XML Query Test Suite</a>:
+     * It is possible that a test case provides multiple expected results.
+     * In this case, successfully comparing the actual result to one of the
+     * provided expected results is a "pass".
+     */
+    private final Collection<OutputFile> outputFiles;
     private final Collection<String> expectedErrors;
 
     TestCase(String name,
              String description,
              String scenario,
-             String filePath,
              String xqFile,
-             Collection<String> inputFiles,
-             Collection<String> outputFiles,
+             Collection<InputFile> inputFiles,
+             Collection<OutputFile> outputFiles,
              Collection<String> expectedErrors) {
         this.name = name;
         this.description = description;
         this.scenario = scenario;
-        this.filePath = filePath;
         this.xqFile = xqFile;
         this.inputFiles = unmodifiableCopy(inputFiles);
         this.outputFiles = unmodifiableCopy(outputFiles);
@@ -46,19 +49,15 @@ public class TestCase {
         return scenario;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
     public String getXqFile() {
         return xqFile;
     }
 
-    public Collection<String> getInputFiles() {
+    public Collection<InputFile> getInputFiles() {
         return inputFiles;
     }
 
-    public Collection<String> getOutputFiles() {
+    public Collection<OutputFile> getOutputFiles() {
         return outputFiles;
     }
 

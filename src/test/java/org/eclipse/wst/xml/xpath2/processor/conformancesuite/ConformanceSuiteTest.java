@@ -17,6 +17,8 @@ import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.InputFile;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.OutputFile;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSources;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuite;
@@ -27,7 +29,6 @@ import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,28 +37,17 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 class ConformanceSuiteTest {
-    static Stream<Arguments> testcases() throws Exception {
-        Element testsuite = getTestsuiteElement();
-        TestSuite testSuite = TestSuiteParser.parseTestSuite(testsuite);
-        TestSources testSources =
-            TestSuiteParser.parseTestSources(getTestsuiteElement());
-
+    static Stream<Arguments> testcases() {
         return TestSuiteUtil.allTestCases(testSuite).stream()
             .map(tc -> Arguments.of(
                 tc.getName(),
-                tc.getInputFiles().stream()
-                    .map(testSources::getSourceFileName)
-                    .collect(toList()),
-                "/Queries/XQuery/" + tc.getFilePath() + tc.getXqFile() + ".xq",
-                tc.getOutputFiles().stream()
-                    .map(tc.getFilePath()::concat)
-                    .map("/ExpectedTestResults/"::concat)
-                    .collect(toList()),
+                tc.getInputFiles(),
+                tc.getXqFile(),
+                tc.getOutputFiles(),
                 tc.getExpectedErrors()));
     }
 
-    private static Element getTestsuiteElement() throws IOException, ParserConfigurationException, SAXException {
-        Bundle xqtsBundle = getXQTSBundle();
+    private static Element getTestsuiteElement(Bundle xqtsBundle) throws IOException, ParserConfigurationException, SAXException {
         Document doc;
         try (InputStream is = xqtsBundle.getEntry("/XQTSCatalog.xml").openStream()) {
             doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
@@ -82,11 +72,16 @@ class ConformanceSuiteTest {
         }
     }
 
+    private static TestSuite testSuite;
     private static Bundle bundle;
+    private static TestSources testSources;
 
     @BeforeAll
-    static void beforeAll() {
+    static void beforeAll() throws ParserConfigurationException, SAXException, IOException {
         bundle = getXQTSBundle();
+        Element testSuiteElement = getTestsuiteElement(bundle);
+        testSources = TestSuiteParser.parseTestSources(testSuiteElement);
+        testSuite = TestSuiteParser.parseTestSuite(testSuiteElement);
     }
 
     private PsychopathTestContext psychopathTestContext;
@@ -101,14 +96,19 @@ class ConformanceSuiteTest {
     @ParameterizedTest
     @MethodSource("testcases")
     void test(String tcName,
-              List<String> inputFileNames,
+              List<InputFile> inputFiles,
               String xqFile,
-              List<String> expectedOutputFiles,
+              List<OutputFile> expectedOutputFiles,
               List<String> expectedErrors) throws Exception {
-        psychopathTestContext.loadInput(inputFileNames);
         List<String> expectedOutputs = expectedOutputFiles.stream()
+            .map(OutputFile::getFile)
             .map(psychopathTestContext::getResultFileText)
             .collect(toList());
+
+        psychopathTestContext.loadInput(inputFiles.stream()
+            .map(InputFile::getFile)
+            .map(testSources::getSourceFileName)
+            .collect(toList()));
 
         XSModel schema = psychopathTestContext.loadGrammar();
 
