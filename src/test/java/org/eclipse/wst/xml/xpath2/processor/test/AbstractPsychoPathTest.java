@@ -122,7 +122,7 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 	private DefaultDynamicContext dynamicContext = null;
 	protected boolean useNewApi = true;
 	private StaticContextBuilder staticContextBuilder;
-	private DynamicContextBuilder dynamicContextBuilder;
+	protected DynamicContextBuilder dynamicContextBuilder;
 
 	private static final String INPUT_CONTEXT = "input-context";
 	private static final String INPUT_CONTEXT1 = "input-context1";
