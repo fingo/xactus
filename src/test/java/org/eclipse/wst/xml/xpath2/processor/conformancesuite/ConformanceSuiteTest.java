@@ -17,16 +17,17 @@ import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.Input;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.OutputFile;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.PsychopathTestContext;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestCase;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSources;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuite;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuiteParser;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.TestSuiteUtil;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.Input;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCase;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCaseParser;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCaseRoot;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener.TestCaseHierarchyFlattener;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSources;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSourcesParser;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ import org.xml.sax.SAXException;
 
 class ConformanceSuiteTest {
     static Stream<Arguments> testcases() {
-        return TestSuiteUtil.allTestCases(testSuite).stream()
+        return TestCaseHierarchyFlattener.flatten(testCaseRoot).stream()
             .map(testCaseWithGroup -> {
                 TestCase tc = testCaseWithGroup.getTestCase();
 
@@ -77,7 +78,7 @@ class ConformanceSuiteTest {
         }
     }
 
-    private static TestSuite testSuite;
+    private static TestCaseRoot testCaseRoot;
     private static Bundle bundle;
     private static TestSources testSources;
 
@@ -85,8 +86,8 @@ class ConformanceSuiteTest {
     static void beforeAll() throws ParserConfigurationException, SAXException, IOException {
         bundle = getXQTSBundle();
         Element testSuiteElement = getTestsuiteElement(bundle);
-        testSources = TestSuiteParser.parseTestSources(testSuiteElement);
-        testSuite = TestSuiteParser.parseTestSuite(testSuiteElement);
+        testSources = TestSourcesParser.parseTestSources(testSuiteElement);
+        testCaseRoot = TestCaseParser.parseTestCases(testSuiteElement);
     }
 
     private PsychopathTestContext psychopathTestContext;

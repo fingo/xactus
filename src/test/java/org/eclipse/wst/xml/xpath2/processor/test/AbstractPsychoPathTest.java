@@ -61,7 +61,7 @@ import org.apache.xerces.xs.XSNamedMap;
 import org.apache.xerces.xs.XSObject;
 import org.apache.xerces.xs.XSSimpleTypeDefinition;
 import org.custommonkey.xmlunit.XMLTestCase;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Platform;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
@@ -103,7 +103,7 @@ import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesUserDefi
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.eclipse.wst.xml.xpath2.processor.testutil.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;

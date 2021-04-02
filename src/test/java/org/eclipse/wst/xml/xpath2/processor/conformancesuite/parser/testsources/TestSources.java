@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;

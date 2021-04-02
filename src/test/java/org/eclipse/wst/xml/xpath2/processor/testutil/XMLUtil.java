@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.testutil;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-final class XMLUtil {
+public final class XMLUtil {
     private XMLUtil() {
     }
 

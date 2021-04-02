@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
 /**
  * Identifies what kind of comparator to use. The documentation

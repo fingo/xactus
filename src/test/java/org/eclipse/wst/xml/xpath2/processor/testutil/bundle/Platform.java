@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.testutil;
+package org.eclipse.wst.xml.xpath2.processor.testutil.bundle;
 
 /**
  * This class mimics org.eclipse.wst.xml.xpath2.processor.testutil.Platform used

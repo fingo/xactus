@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -6,10 +6,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class TestSuite {
+public class TestCaseRoot {
     private final Collection<TestGroup> testGroups;
 
-    TestSuite(Collection<TestGroup> testGroups) {
+    TestCaseRoot(Collection<TestGroup> testGroups) {
         this.testGroups = testGroups.stream().collect(
             collectingAndThen(toList(), Collections::unmodifiableList));
     }

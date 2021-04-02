@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
@@ -6,11 +6,13 @@ import static java.util.stream.Collectors.joining;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestGroup;
+import org.eclipse.wst.xml.xpath2.processor.testutil.CollectionUtil;
 
 public class TestCasePath {
     private static final TestCasePath EMPTY = new TestCasePath(emptyList());
 
-    static TestCasePath empty() {
+    public static TestCasePath empty() {
         return EMPTY;
     }
 

@@ -1,6 +1,6 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
-import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.CollectionUtil.unmodifiableCopy;
+import static org.eclipse.wst.xml.xpath2.processor.testutil.CollectionUtil.unmodifiableCopy;
 
 import java.util.Collection;
 

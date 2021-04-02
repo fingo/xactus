@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.util;
+package org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter;
 
 import static java.util.stream.Collectors.toList;
 
