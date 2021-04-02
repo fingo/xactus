@@ -250,11 +250,7 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 	}
 
 	protected XSModel getGrammar() {
-		return getGrammar(domDoc);
-	}
-
-	private static XSModel getGrammar(Document doc) {
-		ElementPSVI rootPSVI = (ElementPSVI) doc.getDocumentElement();
+		ElementPSVI rootPSVI = (ElementPSVI) domDoc.getDocumentElement();
 		return rootPSVI.getSchemaInformation();
 	}
 
