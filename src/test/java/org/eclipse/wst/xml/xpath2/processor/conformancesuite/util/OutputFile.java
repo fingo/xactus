@@ -17,4 +17,12 @@ public class OutputFile {
     public ComparisonType getComparisonType() {
         return comparisonType;
     }
+
+    @Override
+    public String toString() {
+        return "OutputFile{" +
+            "file='" + file + '\'' +
+            ", comparisonType=" + comparisonType +
+            '}';
+    }
 }

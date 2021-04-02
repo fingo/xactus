@@ -11,7 +11,7 @@ public class TestCase {
 
     private final String xqFile;
 
-    private final Collection<InputFile> inputFiles;
+    private final Collection<Input> inputs;
     /**
      * After <a href="https://www.w3.org/XML/xquery/test-suite/Guidelines%20for%20Running%20the%20XML%20Query%20Test%20Suite.html">Guidelines for Running the XML Query Test Suite</a>:
      * It is possible that a test case provides multiple expected results.
@@ -25,14 +25,14 @@ public class TestCase {
              String description,
              String scenario,
              String xqFile,
-             Collection<InputFile> inputFiles,
+             Collection<Input> inputs,
              Collection<OutputFile> outputFiles,
              Collection<String> expectedErrors) {
         this.name = name;
         this.description = description;
         this.scenario = scenario;
         this.xqFile = xqFile;
-        this.inputFiles = unmodifiableCopy(inputFiles);
+        this.inputs = unmodifiableCopy(inputs);
         this.outputFiles = unmodifiableCopy(outputFiles);
         this.expectedErrors = unmodifiableCopy(expectedErrors);
     }
@@ -53,8 +53,8 @@ public class TestCase {
         return xqFile;
     }
 
-    public Collection<InputFile> getInputFiles() {
-        return inputFiles;
+    public Collection<Input> getInputFiles() {
+        return inputs;
     }
 
     public Collection<OutputFile> getOutputFiles() {
