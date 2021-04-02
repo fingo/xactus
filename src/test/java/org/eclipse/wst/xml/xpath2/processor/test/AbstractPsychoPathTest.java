@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -150,11 +151,12 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 
 	protected void loadDOMDocument(URL fileURL) throws IOException,
 			DOMLoaderException {
-		InputStream is = testResolve(fileURL);
-		DOMLoader domloader = new XercesLoader();
-		domloader.set_validating(false);
-		domDoc = domloader.load(is);
-		domDoc.setDocumentURI(fileURL.toString());
+		try (InputStream is = testResolve(fileURL)) {
+			DOMLoader domloader = new XercesLoader();
+			domloader.set_validating(false);
+			domDoc = domloader.load(is);
+			domDoc.setDocumentURI(fileURL.toString());
+		}
 	}
 
 	private InputStream testResolve(URL url) throws IOException {
@@ -215,27 +217,25 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 	}
 
 	protected void loadDOMDocument(URL fileURL, Schema schema) throws IOException, DOMLoaderException {
-		InputStream is = testResolve(fileURL);
-		DOMLoader domloader = new XercesLoader(schema);
-		domloader.set_validating(false);
-		domDoc = domloader.load(is);
-		domDoc.setDocumentURI(fileURL.toString());
-
+		try (InputStream is = testResolve(fileURL)) {
+			DOMLoader domloader = new XercesLoader(schema);
+			domloader.set_validating(false);
+			domDoc = domloader.load(is);
+			domDoc.setDocumentURI(fileURL.toString());
+		}
 	}
 
 	protected void load2DOMDocument(URL fileURL, URL fileURL2) throws IOException,
 			DOMLoaderException {
-		InputStream is = testResolve(fileURL);
-		InputStream is2 = testResolve(fileURL2);
-
-		DOMLoader domloader = new XercesLoader();
-		domloader.set_validating(false);
-		domDoc = domloader.load(is);
-		domDoc.setDocumentURI(fileURL.toString());
-		domDoc2 = domloader.load(is2);
-		domDoc2.setDocumentURI(fileURL2.toString());
-		is.close();
-		is2.close();
+		try (InputStream is = testResolve(fileURL);
+			 InputStream is2 = testResolve(fileURL2)) {
+			DOMLoader domloader = new XercesLoader();
+			domloader.set_validating(false);
+			domDoc = domloader.load(is);
+			domDoc.setDocumentURI(fileURL.toString());
+			domDoc2 = domloader.load(is2);
+			domDoc2.setDocumentURI(fileURL2.toString());
+		}
 	}
 
 	protected void tearDown() throws Exception {
@@ -250,22 +250,24 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 	}
 
 	protected XSModel getGrammar() {
-		ElementPSVI rootPSVI = (ElementPSVI) domDoc.getDocumentElement();
-		XSModel schema = rootPSVI.getSchemaInformation();
-		return schema;
+		return getGrammar(domDoc);
+	}
+
+	private static XSModel getGrammar(Document doc) {
+		ElementPSVI rootPSVI = (ElementPSVI) doc.getDocumentElement();
+		return rootPSVI.getSchemaInformation();
 	}
 
 	protected void loadDOMDocument(URL fileURL, URL schemaURL)
 			throws IOException, DOMLoaderException, SAXException {
-		InputStream is = testResolve(fileURL);
-		InputStream schemaIs = testResolve(schemaURL);
-		Schema jaxpSchema = getSchema(schemaIs);
-		DOMLoader domloader = new XercesLoader(jaxpSchema);
-		domloader.set_validating(false);
-		domDoc = domloader.load(is);
+		try (InputStream is = testResolve(fileURL);
+			 InputStream schemaIs = testResolve(schemaURL)) {
+			Schema jaxpSchema = getSchema(schemaIs);
+			DOMLoader domloader = new XercesLoader(jaxpSchema);
+			domloader.set_validating(false);
+			domDoc = domloader.load(is);
+		}
 	}
-
-
 
 	private Schema getSchema(InputStream schemaIs) throws SAXException {
 		SchemaFactory sf = SchemaFactory
@@ -276,19 +278,20 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 
 	protected XSModel getGrammar(URL schemaURL) throws IOException,
 			SAXException {
-		InputStream schemaIs = testResolve(schemaURL);
-		SchemaFactory sf = SchemaFactory
+		try (InputStream schemaIs = testResolve(schemaURL)) {
+			SchemaFactory sf = SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = sf.newSchema(new StreamSource(schemaIs));
-		XSGrammarPoolContainer poolContainer = (XSGrammarPoolContainer) schema;
-		XMLGrammarPool pool = poolContainer.getGrammarPool();
-		Grammar[] grammars = pool
+			Schema schema = sf.newSchema(new StreamSource(schemaIs));
+			XSGrammarPoolContainer poolContainer = (XSGrammarPoolContainer) schema;
+			XMLGrammarPool pool = poolContainer.getGrammarPool();
+			Grammar[] grammars = pool
 				.retrieveInitialGrammarSet(XMLGrammarDescription.XML_SCHEMA);
 
-		XSGrammar[] xsGrammars = new XSGrammar[grammars.length];
-		System.arraycopy(grammars, 0, xsGrammars, 0, grammars.length);
+			XSGrammar[] xsGrammars = new XSGrammar[grammars.length];
+			System.arraycopy(grammars, 0, xsGrammars, 0, grammars.length);
 
-		return xsGrammars[0].toXSModel(xsGrammars);
+			return xsGrammars[0].toXSModel(xsGrammars);
+		}
 	}
 
 
@@ -463,11 +466,9 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 		}
 		String content = "";
 		//
-		InputStream isrf;
-		try {
-			isrf = bundle.getEntry(resultFile).openStream();
-			BufferedReader rfreader = new BufferedReader(new InputStreamReader(
-					isrf, "UTF-8"));
+		try (InputStream isrf = bundle.getEntry(resultFile).openStream();
+			 BufferedReader rfreader = new BufferedReader(new InputStreamReader(
+				 isrf, "UTF-8"))) {
 			// XXX:assume char buffer 2048 is long enough;1024 maybe enough
 			// Exception: Axes085, NodeTest003/04/05,...
 			int bufferLength = 2048;
@@ -521,10 +522,9 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 		char[] cbuf = new char[2048];//
 		String content = null;
 		String xpath2Expr = null;
+		URL entryUrl = bundle.getEntry(xqFile);
 
-		try {
-			URL entryUrl = bundle.getEntry(xqFile);
-			InputStream isxq = testResolve(entryUrl);
+		try (InputStream isxq = testResolve(entryUrl)) {
 			if (useNewApi) {
 				if (staticContextBuilder.getBaseUri() == null)
 					try {
@@ -536,31 +536,30 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 				if (dynamicContext.base_uri().getStringValue() == null)
 					dynamicContext.set_base_uri(entryUrl.toString());
 			}
-			BufferedReader xqreader = new BufferedReader(new InputStreamReader(
-					isxq, Charset.forName("UTF-8")));
-			int nByte = xqreader.read(cbuf);
-			assertTrue(xqFile, nByte < 2048);
-			content = new String(cbuf).trim();
-			//
-			if (content.indexOf(INPUT_CONTEXT) != -1
+			try (BufferedReader xqreader = new BufferedReader(new InputStreamReader(
+					isxq, Charset.forName("UTF-8")))) {
+				int nByte = xqreader.read(cbuf);
+				assertTrue(xqFile, nByte < 2048);
+				content = new String(cbuf).trim();
+				//
+				if (content.indexOf(INPUT_CONTEXT) != -1
 					&& content.indexOf(INPUT_CONTEXT1) == -1
 					&& content.indexOf(INPUT_CONTEXT2) == -1) {
-				inputMap.put(INPUT_CONTEXT, inputFile);
-			} else if (content.indexOf(INPUT_CONTEXT1) == -1) {
-				inputMap.put(INPUT_CONTEXT1, inputFile);
-			} else if (content.indexOf(INPUT_CONTEXT2) != -1) {
-				inputMap.put(INPUT_CONTEXT2, inputFile);
-			}
-			//
-			if (content.indexOf(DECLARE_NAMESPACE) != -1 || content.indexOf(IMPORT_SCHEMA_NAMESPACE) != -1) {
-				setupNamespace(content);
-			}
-			//
-			assertTrue(content.lastIndexOf(S_COMMENT2) != -1);// assert to get
-			xpath2Expr = content.substring(content.lastIndexOf(S_COMMENT2) + 2)
+					inputMap.put(INPUT_CONTEXT, inputFile);
+				} else if (content.indexOf(INPUT_CONTEXT1) == -1) {
+					inputMap.put(INPUT_CONTEXT1, inputFile);
+				} else if (content.indexOf(INPUT_CONTEXT2) != -1) {
+					inputMap.put(INPUT_CONTEXT2, inputFile);
+				}
+				//
+				if (content.indexOf(DECLARE_NAMESPACE) != -1 || content.indexOf(IMPORT_SCHEMA_NAMESPACE) != -1) {
+					setupNamespace(content);
+				}
+				//
+				assertTrue(content.lastIndexOf(S_COMMENT2) != -1);// assert to get
+				xpath2Expr = content.substring(content.lastIndexOf(S_COMMENT2) + 2)
 					.trim();
-			xqreader.close();
-			isxq.close();
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("Can't extract XPath expression from XQuery file : " + xqFile, e);
 		}
@@ -712,15 +711,16 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 				return delegate.getResourceAsStream(name);
 			}
 		}
-
-
 	}
 
 	protected String formatResultString(String resultFile) throws Exception {
 		DOMLoader domloader = new XercesLoader(null);
 		domloader.set_validating(false);
-		InputStream is = bundle.getEntry(resultFile).openStream();
-		Document resultDoc = domloader.load(is);
+		Document resultDoc;
+
+		try (InputStream is = bundle.getEntry(resultFile).openStream()) {
+			resultDoc = domloader.load(is);
+		}
 
         DOMImplementationLS domLS = (DOMImplementationLS) resultDoc.getImplementation().getFeature("LS", "3.0");
         LSSerializer serializer = domLS.createLSSerializer();
@@ -747,9 +747,7 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 
 	protected String resolveCharacterReferences(String xpath) {
 		String docText = "<doc>" + xpath + "</doc>";
-		InputStream is;
-		try {
-			is = new ByteArrayInputStream(docText.getBytes("UTF-8"));
+		try (InputStream is = new ByteArrayInputStream(docText.getBytes("UTF-8"))) {
 			DOMLoader domloader = new XercesLoader();
 			domloader.set_validating(false);
 			Document temp = domloader.load(is);
@@ -758,6 +756,8 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 			throw new RuntimeException(e);
 		} catch (DOMLoaderException e) {
 			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 		}
 	}
 

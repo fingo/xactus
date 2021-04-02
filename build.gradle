@@ -72,8 +72,19 @@ configurations {
 }
 
 tasks.named('test', Test).configure {
-    // exclude test suites
-    it.exclude('**/All*Tests.java')
+    it.filter {
+        // exclude test suites
+        it.excludeTestsMatching('*.All*Tests')
+        it.excludeTestsMatching('org.eclipse.wst.xml.xpath2.processor.conformancesuite.util.PsychopathTestContext')
+    }
+
+    it.useJUnitPlatform()
+}
+
+tasks.register('testSuite', Test).configure {
+    it.filter {
+        it.includeTestsMatching('*.All*Tests')
+    }
 
     it.useJUnitPlatform()
 }

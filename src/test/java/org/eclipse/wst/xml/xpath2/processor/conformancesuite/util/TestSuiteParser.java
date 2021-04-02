@@ -60,7 +60,8 @@ public final class TestSuiteParser {
             testCaseElement.getAttribute("scenario"),
             testCaseElement.getAttribute("FilePath"),
             getMandatoryOnlyChildElement(testCaseElement, "query")
-                .getAttribute("name"), getChildElements(testCaseElement, "input-file")
+                .getAttribute("name"),
+            getChildElements(testCaseElement, "input-file")
                 .stream()
                 .map(Node::getTextContent)
                 .collect(Collectors.toList()),
