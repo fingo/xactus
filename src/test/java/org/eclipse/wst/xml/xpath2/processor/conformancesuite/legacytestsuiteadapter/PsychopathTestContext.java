@@ -13,21 +13,10 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
-import org.w3c.dom.Document;
 
 public class PsychopathTestContext extends AbstractPsychoPathTest {
     public void init() throws Exception {
         setUp();
-    }
-
-    public void setDocument(Document document) {
-        domDoc = document;
-    }
-
-    public void setDocuments(Document document1,
-                             Document document2) {
-        domDoc = document1;
-        domDoc2 = document2;
     }
 
     public void setupContext(XSModel schema) {
