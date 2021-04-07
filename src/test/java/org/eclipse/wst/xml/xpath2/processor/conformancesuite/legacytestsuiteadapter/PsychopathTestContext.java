@@ -35,10 +35,6 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
         return ResultSequenceUtil.newToOld(newXPath.evaluate(dynamicContextBuilder, params));
     }
 
-    public String getResultFileText(String resultFile) {
-        return getExpectedResult(resultFile);
-    }
-
     public String buildResult(ResultSequence rs) {
         return buildResultString(rs);
     }

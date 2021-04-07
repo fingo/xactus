@@ -1,34 +1,36 @@
 package org.eclipse.wst.xml.xpath2.processor.conformancesuite;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ConformanceSuiteMatchers.matchesAnyOfExpected;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.Collection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.wst.xml.xpath2.processor.DOMLoader;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
-import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ContentProvider;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener.TestCaseHierarchyFlattener;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.Input;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCase;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCaseParser;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCaseRoot;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener.TestCaseHierarchyFlattener;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSources;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSourcesParser;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,17 +71,19 @@ class ConformanceSuiteTest {
         return Platform.getBundle("org.w3c.xqts.testsuite");
     }
 
-    private static InputStream testResolve(URL url) throws IOException {
-        if (url.getProtocol().equals("http")) {
-            return ConformanceSuiteTest.class.getResourceAsStream(
-                "/org/eclipse/wst/xml/xpath2/processor/test/" + url.getFile());
-        } else {
-            return url.openStream();
-        }
+    private static ContentProvider contentProvider(Bundle bundle) {
+        Objects.requireNonNull(bundle);
+
+        return entryId -> {
+            Path bundlePath = Paths.get(bundle.getEntry(entryId).toURI());
+            List<String> lines = Files.readAllLines(bundlePath);
+            return String.join("\n", lines);
+        };
     }
 
     private static TestCaseRoot testCaseRoot;
     private static TestSources testSources;
+    private static ContentProvider contentProvider;
 
     @BeforeAll
     static void beforeAll() throws ParserConfigurationException, SAXException, IOException {
@@ -87,6 +91,7 @@ class ConformanceSuiteTest {
         Element testSuiteElement = getTestsuiteElement(bundle);
         testSources = TestSourcesParser.parseTestSources(testSuiteElement);
         testCaseRoot = TestCaseParser.parseTestCases(testSuiteElement);
+        contentProvider = contentProvider(bundle);
     }
 
     private PsychopathTestContext psychopathTestContext;
@@ -106,11 +111,6 @@ class ConformanceSuiteTest {
               String xqFile,
               List<OutputFile> expectedOutputFiles,
               List<String> expectedErrors) throws Exception {
-        List<String> expectedOutputs = expectedOutputFiles.stream()
-            .map(OutputFile::getFile)
-            .map(psychopathTestContext::getResultFileText)
-            .collect(toList());
-
         psychopathTestContext.loadInput(inputs.stream()
             .map(Input::getName)
             .map(testSources::getSourceFileName)
@@ -135,10 +135,11 @@ class ConformanceSuiteTest {
         }
 
         if (error != null) {
-            Assertions.assertTrue(expectedErrors.contains(error));
+            assertThat(error).isIn(expectedErrors);
             return;
         }
 
-        Assertions.assertTrue(expectedOutputs.contains(actual));
+        assertThat(actual)
+            .is(matchesAnyOfExpected(expectedOutputFiles, contentProvider));
     }
 }
