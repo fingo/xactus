@@ -487,9 +487,6 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 			// length
 
 			content = new String(cbuf).trim();
-			rfreader.close();
-			isrf.close();
-
 		} catch (IOException e) {
 			throw new RuntimeException("Can't load expected result from : " + xqFile, e);
 		}
