@@ -77,15 +77,15 @@ tasks.named('test', Test).configure {
         it.excludeTestsMatching('*.All*Tests')
         it.excludeTestsMatching('org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext')
     }
-
-    it.useJUnitPlatform()
 }
 
 tasks.register('testSuite', Test).configure {
     it.filter {
         it.includeTestsMatching('*.All*Tests')
     }
+}
 
+tasks.withType(Test).configureEach {
     it.useJUnitPlatform()
 }
 
@@ -98,4 +98,5 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.1'
     testImplementation 'xmlunit:xmlunit:1.2'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
 }
