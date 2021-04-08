@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import org.apache.xerces.xs.XSModel;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
+import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.ComparisonType;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 
@@ -35,8 +36,22 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
         return ResultSequenceUtil.newToOld(newXPath.evaluate(dynamicContextBuilder, params));
     }
 
-    public String buildResult(ResultSequence rs) {
-        return buildResultString(rs);
+    public String buildResult(ResultSequence rs,
+                              ComparisonType comparisonType) {
+        switch (comparisonType) {
+            case XML:
+            case FRAGMENT:
+                try {
+                    return super.buildXMLResultString(rs);
+                } catch (Exception e) {
+                    throw new RuntimeException("Unexpected error occurred", e);
+                }
+            case TEXT:
+            case INSPECT:
+                return super.buildResultString(rs);
+        }
+        throw new UnsupportedOperationException(
+            "Comparison type \"" + comparisonType + "\" is unsupported.");
     }
 
     public void loadInput(Collection<String> inputFiles) throws IOException {
