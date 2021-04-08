@@ -6,7 +6,6 @@ import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.Co
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,11 +42,12 @@ import org.xml.sax.SAXException;
 class ConformanceSuiteTest {
     static Stream<Arguments> testcases() {
         return TestCaseHierarchyFlattener.flatten(testCaseRoot).stream()
+            .filter(TestCaseFilter::isTestcaseEnabled)
             .map(testCaseWithGroup -> {
                 TestCase tc = testCaseWithGroup.getTestCase();
 
                 return Arguments.of(
-                    testCaseWithGroup.getTestCasePath().pathString() + "/" + tc.getName(),
+                    testCaseWithGroup.getTestCasePath().pathString(),
                     tc.getInputFiles(),
                     tc.getXqFile(),
                     tc.getOutputFiles(),

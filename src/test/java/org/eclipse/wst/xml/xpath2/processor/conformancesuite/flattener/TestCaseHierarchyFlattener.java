@@ -23,14 +23,17 @@ public final class TestCaseHierarchyFlattener {
 
     private static List<TestCaseWithPath> flatten(TestCasePath testCasePath,
                                                   TestGroup testGroup) {
-        TestCasePath currentTestCasePath = testCasePath.add(testGroup);
+        TestCasePath currentTestGroupPath =
+            testCasePath.append(testGroup.getName());
 
         return Stream.concat(
             testGroup.getTestCases().stream()
-                .map(tc -> new TestCaseWithPath(currentTestCasePath, tc)),
+                .map(tc -> new TestCaseWithPath(
+                    currentTestGroupPath.append(tc.getName()),
+                    tc)),
             testGroup.getTestGroups().stream()
                 .map(tg -> TestCaseHierarchyFlattener.flatten(
-                    currentTestCasePath,
+                    currentTestGroupPath,
                     tg))
                 .flatMap(Collection::stream))
             .collect(toList());
