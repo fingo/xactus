@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getChildElements;
 import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getMandatoryOnlyChildElement;
 
+import java.util.Objects;
 import org.w3c.dom.Element;
 
 public final class TestSourcesParser {
@@ -11,6 +12,8 @@ public final class TestSourcesParser {
     }
 
     public static TestSources parseTestSources(Element testsuiteElement) {
+        Objects.requireNonNull(testsuiteElement);
+
         Element sourcesElement = getMandatoryOnlyChildElement(
             testsuiteElement, "sources");
 

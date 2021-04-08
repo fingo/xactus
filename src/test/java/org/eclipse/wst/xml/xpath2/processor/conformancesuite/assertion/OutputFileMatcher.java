@@ -2,6 +2,7 @@ package org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Objects;
 import org.assertj.core.matcher.AssertionMatcher;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
@@ -22,6 +23,10 @@ class OutputFileMatcher extends AssertionMatcher<ResultSequence> {
     public OutputFileMatcher(OutputFile expected,
                              ContentProvider contentProvider,
                              PsychopathTestContext context) {
+        Objects.requireNonNull(expected);
+        Objects.requireNonNull(contentProvider);
+        Objects.requireNonNull(context);
+
         this.expected = expected;
         this.contentProvider = contentProvider;
         this.context = context;
@@ -29,13 +34,19 @@ class OutputFileMatcher extends AssertionMatcher<ResultSequence> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText(String.format("A string equal to the content of file \"%s\" using \"%s\" comparison type.",
+        Objects.requireNonNull(description);
+
+        description.appendText(String.format(
+            "A string equal to the content of file \"%s\" " +
+                "using \"%s\" comparison type.",
             expected.getFile(),
             expected.getComparisonType()));
     }
 
     @Override
     public void assertion(ResultSequence actual) throws AssertionError {
+        Objects.requireNonNull(actual);
+
         try {
             String expectedOutput = contentProvider.getContent(
                 expected.getFile());
