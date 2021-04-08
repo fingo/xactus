@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.anyOf;
 import java.util.Collection;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.HamcrestCondition;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
+import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
 

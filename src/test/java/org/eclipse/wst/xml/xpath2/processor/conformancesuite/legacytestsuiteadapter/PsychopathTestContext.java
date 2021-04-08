@@ -1,6 +1,7 @@
 package org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter;
 
 import static java.util.stream.Collectors.toList;
+import static org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil.newToOld;
 
 import java.io.IOException;
 import java.net.URL;
@@ -9,11 +10,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
+import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.ComparisonType;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 
 public class PsychopathTestContext extends AbstractPsychoPathTest {
     public void init() throws Exception {
@@ -24,8 +23,8 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
         setupDynamicContext(schema);
     }
 
-    public XPath compile(String xPath) {
-        return compileXPath(xPath);
+    public void compile(String xPath) {
+        compileXPath(xPath);
     }
 
     public ResultSequence evaluate() {
@@ -33,7 +32,7 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
             .filter(Objects::nonNull)
             .toArray();
 
-        return ResultSequenceUtil.newToOld(newXPath.evaluate(dynamicContextBuilder, params));
+        return newXPath.evaluate(dynamicContextBuilder, params);
     }
 
     public String buildResult(ResultSequence rs,
@@ -42,13 +41,13 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
             case XML:
             case FRAGMENT:
                 try {
-                    return super.buildXMLResultString(rs);
+                    return super.buildXMLResultString(newToOld(rs));
                 } catch (Exception e) {
                     throw new RuntimeException("Unexpected error occurred", e);
                 }
             case TEXT:
             case INSPECT:
-                return super.buildResultString(rs);
+                return super.buildResultString(newToOld(rs));
         }
         throw new UnsupportedOperationException(
             "Comparison type \"" + comparisonType + "\" is unsupported.");
