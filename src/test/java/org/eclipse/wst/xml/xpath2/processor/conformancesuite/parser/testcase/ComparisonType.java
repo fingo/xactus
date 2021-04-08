@@ -1,9 +1,8 @@
 package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
 /**
- * Identifies what kind of comparator to use. The documentation
- * for each enumerator is copied from
- * <a href="https://www.w3.org/XML/xquery/test-suite/Guidelines%20for%20Running%20the%20XML%20Query%20Test%20Suite.html">Guidelines for Running the XML Query Test Suite</a>
+ * Identifies the comparator to use. The documentation for each enumerator is
+ * copied from <a href="https://www.w3.org/XML/xquery/test-suite/Guidelines%20for%20Running%20the%20XML%20Query%20Test%20Suite.html">Guidelines for Running the XML Query Test Suite</a>.
  */
 public enum ComparisonType {
     /**

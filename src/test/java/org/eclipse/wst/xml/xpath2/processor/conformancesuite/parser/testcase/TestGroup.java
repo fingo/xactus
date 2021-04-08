@@ -3,6 +3,8 @@ package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 import static org.eclipse.wst.xml.xpath2.processor.testutil.CollectionUtil.unmodifiableCopy;
 
 import java.util.Collection;
+import java.util.Objects;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Preconditions;
 
 public class TestGroup {
     private final String name;
@@ -10,7 +12,6 @@ public class TestGroup {
     private final String description;
     private final Collection<TestGroup> testGroups;
     private final Collection<TestCase> testCases;
-
     private final boolean isEmpty;
 
     TestGroup(String name,
@@ -18,6 +19,12 @@ public class TestGroup {
               String description,
               Collection<TestGroup> testGroups,
               Collection<TestCase> testCases) {
+        Preconditions.requireNonEmptyString(name);
+        Preconditions.requireNonEmptyString(title);
+        Objects.requireNonNull(description);
+        Objects.requireNonNull(testGroups);
+        Objects.requireNonNull(testCases);
+
         this.name = name;
         this.title = title;
         this.description = description;

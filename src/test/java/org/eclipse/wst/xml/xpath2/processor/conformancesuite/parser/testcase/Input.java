@@ -1,5 +1,8 @@
 package org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase;
 
+import java.util.Objects;
+import org.eclipse.wst.xml.xpath2.processor.testutil.Preconditions;
+
 public class Input {
     private final String name;
     private final String variable;
@@ -8,6 +11,14 @@ public class Input {
     Input(String name,
           String variable,
           InputType inputType) {
+        Objects.requireNonNull(inputType);
+        Preconditions.requireNonEmptyString(name);
+        if (inputType != InputType.CONTEXT_ITEM) {
+            Preconditions.requireNonEmptyString(variable);
+        } else {
+            Preconditions.requireEmptyString(variable);
+        }
+
         this.name = name;
         this.variable = variable;
         this.inputType = inputType;
@@ -18,6 +29,11 @@ public class Input {
     }
 
     public String getVariable() {
+        if (inputType == InputType.CONTEXT_ITEM) {
+            throw new IllegalStateException(
+                "Variable is not available for contextItems");
+        }
+
         return variable;
     }
 

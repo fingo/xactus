@@ -7,11 +7,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class TestSources {
     private final Map<String, String> testSourcesMapping;
 
     TestSources(Collection<TestSource> testSources) {
+        Objects.requireNonNull(testSources);
+
         this.testSourcesMapping = testSources.stream()
             .collect(collectingAndThen(
                 toMap(TestSource::getId, TestSource::getFileName),
@@ -19,6 +22,8 @@ public class TestSources {
     }
 
     public String getSourceFileName(String sourceFileId) {
+        Objects.requireNonNull(sourceFileId);
+
         if (testSourcesMapping.containsKey(sourceFileId)) {
             return "/" + testSourcesMapping.get(sourceFileId);
         }

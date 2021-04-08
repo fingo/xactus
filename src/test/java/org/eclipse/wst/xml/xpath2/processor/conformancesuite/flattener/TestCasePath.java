@@ -15,10 +15,14 @@ public final class TestCasePath {
     private static final TestCasePath EMPTY = new TestCasePath(emptyList());
 
     public static TestCasePath parse(String testCasePathString) {
+        Objects.requireNonNull(testCasePathString);
+
         return fromArray(testCasePathString.split(Pattern.quote(DELIMITER)));
     }
 
     private static TestCasePath fromArray(String... segments) {
+        Objects.requireNonNull(segments);
+
         return new TestCasePath(Arrays.stream(segments).collect(Collectors.toList()));
     }
 
@@ -30,10 +34,13 @@ public final class TestCasePath {
 
     private TestCasePath(List<String> path) {
         Objects.requireNonNull(path);
-        this.path = CollectionUtil.unmodifiableCopy(path);
+
+        this.path = path.isEmpty() ? emptyList() : CollectionUtil.unmodifiableCopy(path);
     }
 
     public TestCasePath append(String segment) {
+        Objects.requireNonNull(segment);
+
         return new TestCasePath(
             Stream.concat(path.stream(), Stream.of(segment))
                 .collect(Collectors.toList()));

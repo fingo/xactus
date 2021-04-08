@@ -5,6 +5,7 @@ import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getChildElem
 import static org.eclipse.wst.xml.xpath2.processor.testutil.XMLUtil.getMandatoryOnlyChildElement;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.wst.xml.xpath2.processor.testutil.CollectionUtil;
@@ -31,6 +32,8 @@ public final class TestCaseParser {
             .build();
 
     public static TestCaseRoot parseTestCases(Element testSuiteElement) {
+        Objects.requireNonNull(testSuiteElement);
+
         return new TestCaseRoot(
             getChildElements(testSuiteElement, "test-group")
                 .stream()
@@ -40,6 +43,8 @@ public final class TestCaseParser {
     }
 
     private static TestGroup parseTestGroup(Element testGroupElement) {
+        Objects.requireNonNull(testGroupElement);
+
         Element groupInfo = getMandatoryOnlyChildElement(testGroupElement, "GroupInfo");
 
         return new TestGroup(
@@ -59,6 +64,8 @@ public final class TestCaseParser {
     }
 
     private static TestCase parseTestCase(Element testCaseElement) {
+        Objects.requireNonNull(testCaseElement);
+
         String filePath = testCaseElement.getAttribute("FilePath");
         String query = getMandatoryOnlyChildElement(testCaseElement, "query")
             .getAttribute("name");
@@ -86,6 +93,8 @@ public final class TestCaseParser {
     }
 
     private static Input parseInputFile(Element inputFileElement) {
+        Objects.requireNonNull(inputFileElement);
+
         return new Input(
             inputFileElement.getTextContent(),
             inputFileElement.getAttribute("variable"),
@@ -94,6 +103,9 @@ public final class TestCaseParser {
 
     private static OutputFile parseOutputFile(String filePath,
                                               Element outputFileElement) {
+        Objects.requireNonNull(filePath);
+        Objects.requireNonNull(outputFileElement);
+
         String fileName = outputFileElement.getTextContent();
 
         return new OutputFile(
@@ -102,6 +114,8 @@ public final class TestCaseParser {
     }
 
     private static ComparisonType parseComparisonType(String comparisonType) {
+        Objects.requireNonNull(comparisonType);
+
         if (!STRING_TO_COMPARISON_TYPE.containsKey(comparisonType)) {
             throw new IllegalArgumentException(
                 "Unknown comparison type: \"" + comparisonType + "\"");
@@ -110,12 +124,14 @@ public final class TestCaseParser {
         return STRING_TO_COMPARISON_TYPE.get(comparisonType);
     }
 
-    private static InputType getInputFileType(String tag) {
-        if (!TAG_TO_INPUT_TYPE.containsKey(tag)) {
+    private static InputType getInputFileType(String elementName) {
+        Objects.requireNonNull(elementName);
+
+        if (!TAG_TO_INPUT_TYPE.containsKey(elementName)) {
             throw new IllegalArgumentException(
-                "Unknown input tag: \"" + tag + "\"");
+                "Unknown input element name: \"" + elementName + "\"");
         }
 
-        return TAG_TO_INPUT_TYPE.get(tag);
+        return TAG_TO_INPUT_TYPE.get(elementName);
     }
 }

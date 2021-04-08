@@ -24,6 +24,7 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
     }
 
     public void compile(String xPath) {
+        Objects.requireNonNull(xPath);
         compileXPath(xPath);
     }
 
@@ -37,6 +38,9 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
 
     public String buildResult(ResultSequence rs,
                               ComparisonType comparisonType) {
+        Objects.requireNonNull(rs);
+        Objects.requireNonNull(comparisonType);
+
         switch (comparisonType) {
             case XML:
             case FRAGMENT:
@@ -54,6 +58,8 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
     }
 
     public void loadInput(Collection<String> inputFiles) throws IOException {
+        Objects.requireNonNull(inputFiles);
+
         if (inputFiles.isEmpty()) {
             return;
         }

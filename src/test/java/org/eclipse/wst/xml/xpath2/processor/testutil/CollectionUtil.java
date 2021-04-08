@@ -1,5 +1,7 @@
 package org.eclipse.wst.xml.xpath2.processor.testutil;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -15,6 +17,10 @@ public final class CollectionUtil {
     }
 
     public static <T> List<T> unmodifiableCopy(Collection<T> collection) {
+        if (collection.isEmpty()) {
+            return emptyList();
+        }
+
         return collection.stream().collect(
             collectingAndThen(toList(), Collections::unmodifiableList));
     }
@@ -35,6 +41,10 @@ public final class CollectionUtil {
         }
 
         public Map<K, V> build() {
+            if (map.isEmpty()) {
+                return emptyMap();
+            }
+
             return unmodifiableMap(new HashMap<>(map));
         }
     }

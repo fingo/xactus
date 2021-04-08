@@ -2,6 +2,7 @@ package org.eclipse.wst.xml.xpath2.processor.conformancesuite;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ConformanceSuiteMatchers.matchesAnyOfExpected;
 
@@ -76,6 +77,8 @@ class ConformanceSuiteTest {
         Objects.requireNonNull(bundle);
 
         return entryId -> {
+            Objects.requireNonNull(entryId);
+
             Path bundlePath = Paths.get(bundle.getEntry(entryId).toURI());
             List<String> lines = Files.readAllLines(bundlePath);
             return String.join("\n", lines);

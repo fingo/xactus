@@ -2,6 +2,7 @@ package org.eclipse.wst.xml.xpath2.processor.testutil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,8 +14,9 @@ public final class XMLUtil {
     private XMLUtil() {
     }
 
-
     public static Stream<Element> streamElements(NodeList nodeList) {
+        Objects.requireNonNull(nodeList);
+
         return IntStream.range(0, nodeList.getLength())
             .mapToObj(nodeList::item)
             .filter(Element.class::isInstance)
@@ -23,6 +25,9 @@ public final class XMLUtil {
 
     public static Optional<Element> getOnlyChildElement(Element element,
                                                         String elementName) {
+        Objects.requireNonNull(element);
+        Preconditions.requireNonEmptyString(elementName);
+
         List<Element> childElements = getChildElements(element, elementName);
 
         if (childElements.size() > 1) {
@@ -41,6 +46,9 @@ public final class XMLUtil {
 
     public static Element getMandatoryOnlyChildElement(Element element,
                                                        String elementName) {
+        Objects.requireNonNull(element);
+        Preconditions.requireNonEmptyString(elementName);
+
         return getOnlyChildElement(element, elementName)
             .orElseThrow(() -> new RuntimeException(
                 "Expected exactly one " +
@@ -50,6 +58,9 @@ public final class XMLUtil {
 
     public static List<Element> getChildElements(Element element,
                                                  String elementName) {
+        Objects.requireNonNull(element);
+        Preconditions.requireNonEmptyString(elementName);
+
         return streamElements(element.getChildNodes())
             .filter(el -> el.getTagName().equals(elementName))
             .collect(Collectors.collectingAndThen(
@@ -58,6 +69,8 @@ public final class XMLUtil {
     }
 
     public static List<Element> getChildElements(Element element) {
+        Objects.requireNonNull(element);
+
         return streamElements(element.getChildNodes())
             .collect(Collectors.collectingAndThen(
                 Collectors.toList(),
