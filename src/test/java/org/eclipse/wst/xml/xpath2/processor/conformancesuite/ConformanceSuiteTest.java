@@ -2,6 +2,7 @@ package org.eclipse.wst.xml.xpath2.processor.conformancesuite;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ConformanceSuiteMatchers.matchesAnyOfExpected;
 
 import java.io.IOException;
@@ -120,14 +121,12 @@ class ConformanceSuiteTest {
 
         psychopathTestContext.setupContext(schema);
         String xPathExpression = psychopathTestContext.extractXPathExpression(xqFile, "whateva-unused");
-        String actual = null;
+        ResultSequence actual = null;
         String error = null;
 
         try {
             psychopathTestContext.compile(xPathExpression);
-            ResultSequence rs = psychopathTestContext.evaluate();
-
-            actual = psychopathTestContext.buildResult(rs);
+            actual = psychopathTestContext.evaluate();
         } catch (StaticError ex) {
             error = ex.code();
         } catch (DynamicError ex) {
@@ -135,11 +134,18 @@ class ConformanceSuiteTest {
         }
 
         if (error != null) {
+            if (expectedErrors.isEmpty()) {
+                fail("An error occurred " +
+                    "although no error was expected: " +
+                    "\"" + error + "\".");
+                return;
+            }
+
             assertThat(error).isIn(expectedErrors);
             return;
         }
 
         assertThat(actual)
-            .is(matchesAnyOfExpected(expectedOutputFiles, contentProvider));
+            .is(matchesAnyOfExpected(expectedOutputFiles, contentProvider, psychopathTestContext));
     }
 }
