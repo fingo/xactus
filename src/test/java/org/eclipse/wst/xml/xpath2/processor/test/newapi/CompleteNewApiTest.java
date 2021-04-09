@@ -18,10 +18,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import junit.framework.TestCase;
 import org.apache.xerces.jaxp.validation.XSGrammarPoolContainer;
 import org.apache.xerces.xni.grammars.Grammar;
 import org.apache.xerces.xni.grammars.XMLGrammarDescription;
@@ -29,8 +31,6 @@ import org.apache.xerces.xni.grammars.XMLGrammarPool;
 import org.apache.xerces.xni.grammars.XSGrammar;
 import org.apache.xerces.xs.ElementPSVI;
 import org.apache.xerces.xs.XSModel;
-import org.custommonkey.xmlunit.XMLConstants;
-import org.custommonkey.xmlunit.XMLTestCase;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
@@ -47,7 +47,7 @@ import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class CompleteNewApiTest extends XMLTestCase {
+public class CompleteNewApiTest extends TestCase {
 
 	protected Document domDoc = null;
 	protected Bundle bundle = null;
