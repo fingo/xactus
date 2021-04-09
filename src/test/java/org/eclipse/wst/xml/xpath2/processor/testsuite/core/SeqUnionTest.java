@@ -7,9 +7,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *     Jesper Steen Moller - Tweaked expected results to allow for XQuery/XPath differences.
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor.testsuite.core;
@@ -22,8 +22,8 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
-      
+
+
 public class SeqUnionTest extends AbstractPsychoPathTest {
 
    //Arg: node.
@@ -34,7 +34,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -46,9 +46,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -57,8 +57,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -70,7 +70,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -82,9 +82,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = "<result>" + buildXMLResultString(rs) + "</result>";
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -93,8 +93,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -106,7 +106,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -118,9 +118,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = "<result>" + buildXMLResultString(rs) + "</result>";
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -129,8 +129,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -142,7 +142,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -154,9 +154,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -165,8 +165,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -178,7 +178,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -190,9 +190,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -201,8 +201,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -214,7 +214,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -226,9 +226,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -237,8 +237,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -250,7 +250,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -262,9 +262,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -273,8 +273,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -286,7 +286,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -298,9 +298,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -309,8 +309,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -322,7 +322,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -334,9 +334,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -345,8 +345,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -358,7 +358,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -370,9 +370,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -381,8 +381,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -394,7 +394,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -406,9 +406,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -417,8 +417,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -430,7 +430,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -442,9 +442,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -453,8 +453,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -466,7 +466,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -478,9 +478,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -489,8 +489,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -502,7 +502,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -514,9 +514,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -526,7 +526,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -538,7 +538,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -551,9 +551,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -561,11 +561,11 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       } catch (DynamicError ex) {
          actual = ex.code();
       }
-      
+
       expectedResult = removeIrrelevantNamespaces(expectedResult);
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -577,22 +577,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -600,11 +600,11 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       } catch (DynamicError ex) {
          actual = ex.code();
       }
-      
+
       expectedResult = removeIrrelevantNamespaces(expectedResult);
-      
+
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -616,22 +616,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -641,9 +641,9 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       expectedResult = removeIrrelevantNamespaces(expectedResult);
-      
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -655,22 +655,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -680,7 +680,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -692,22 +692,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -717,7 +717,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -729,22 +729,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -754,7 +754,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -766,22 +766,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -791,7 +791,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -803,22 +803,22 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
       addNamespace("atomic", "http://www.w3.org/XQueryTest");
-      
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -828,9 +828,8 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
 }
-      

@@ -6,9 +6,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -319,7 +319,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 			actual = ex.code();
 		}
 
-		assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult,
+		assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult,
 				actual);
 
 	}
@@ -356,7 +356,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 			actual = ex.code();
 		}
 
-		assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult,
+		assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult,
 				actual);
 
 	}
