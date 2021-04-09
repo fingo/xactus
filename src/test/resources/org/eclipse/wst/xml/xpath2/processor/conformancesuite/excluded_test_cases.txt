@@ -551,6 +551,8 @@ MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/fn-boolean-mi
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/fn-boolean-mixed-args-048
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/context-item-1
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-001
+MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-002
+MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-003
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-004
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-005
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-006
@@ -566,6 +568,7 @@ MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordere
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-016
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-017
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-018
+MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-019
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-020
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-021
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-022
