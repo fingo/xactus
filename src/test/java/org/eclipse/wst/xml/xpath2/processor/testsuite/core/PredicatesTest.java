@@ -813,8 +813,6 @@ public class PredicatesTest extends AbstractPsychoPathTest {
       } catch (DynamicError ex) {
          actual = ex.code();
       }
-      expectedResult = "<xml>" + expectedResult + "</xml>";
-      actual = "<xml>" + actual + "</xml>";
 
       assertXMLFragmentEquals("should be equal sequences (surrounded by <xml> for testability)", expectedResult, actual);
    }

@@ -102,7 +102,7 @@ public class SeqExceptTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/bib2.xml";
       String xqFile = "/Queries/XQuery/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-003.xq";
       String resultFile = "/ExpectedTestResults/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-003.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -118,7 +118,7 @@ public class SeqExceptTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();

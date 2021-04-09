@@ -30,7 +30,7 @@ public class UseCaseSTRINGTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/string.xml";
       String xqFile = "/Queries/XQuery/UseCase/UseCaseSTRING/string-queries-results-q1.xq";
       String resultFile = "/ExpectedTestResults/UseCase/UseCaseSTRING/string-queries-results-q1.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -46,7 +46,7 @@ public class UseCaseSTRINGTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();

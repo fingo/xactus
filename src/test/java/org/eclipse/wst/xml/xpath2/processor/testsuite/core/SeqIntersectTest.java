@@ -390,7 +390,7 @@ public class SeqIntersectTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/bib2.xml";
       String xqFile = "/Queries/XQuery/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-011.xq";
       String resultFile = "/ExpectedTestResults/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-011.txt";
-      String expectedResult = "<result>" +  getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -406,7 +406,7 @@ public class SeqIntersectTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();

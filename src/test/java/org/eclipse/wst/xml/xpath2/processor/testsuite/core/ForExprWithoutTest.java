@@ -209,7 +209,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/fsx.xml";
       String xqFile = "/Queries/XQuery/Expressions/FLWORExpr/ForExpr/ForExpr013.xq";
       String resultFile = "/ExpectedTestResults/Expressions/FLWORExpr/ForExpr/ForExpr013.xml";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -225,7 +225,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
@@ -316,7 +316,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/fsx.xml";
       String xqFile = "/Queries/XQuery/Expressions/FLWORExpr/ForExpr/ForExpr016.xq";
       String resultFile = "/ExpectedTestResults/Expressions/FLWORExpr/ForExpr/ForExpr016.xml";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -332,7 +332,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
@@ -528,7 +528,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/fsx.xml";
       String xqFile = "/Queries/XQuery/Expressions/FLWORExpr/ForExpr/ForExpr025.xq";
       String resultFile = "/ExpectedTestResults/Expressions/FLWORExpr/ForExpr/ForExpr025.xml";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -544,7 +544,7 @@ public class ForExprWithoutTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
