@@ -138,7 +138,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/works-mod.xml";
       String xqFile = "/Queries/XQuery/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-4.xq";
       String resultFile = "/ExpectedTestResults/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-4.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -154,7 +154,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
@@ -174,7 +174,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/works-mod.xml";
       String xqFile = "/Queries/XQuery/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-5.xq";
       String resultFile = "/ExpectedTestResults/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-5.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -190,7 +190,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
@@ -821,7 +821,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/works-mod.xml";
       String xqFile = "/Queries/XQuery/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-30.xq";
       String resultFile = "/ExpectedTestResults/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-30.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -837,7 +837,7 @@ public class UnabbrAxesTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();

@@ -292,7 +292,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 		String inputFile = "/TestSources/emptydoc.xml";
 		String xqFile = "/Queries/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-7.xq";
 		String resultFile = "/ExpectedTestResults/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-7.txt";
-		String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+		String expectedResult = getExpectedResult(resultFile);
 		URL fileURL = bundle.getEntry(inputFile);
 		loadDOMDocument(fileURL);
 
@@ -309,7 +309,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-			actual = "<result>" + buildXMLResultString(rs) + "</result>";
+			actual = buildXMLResultString(rs);
 
 		} catch (XPathParserException ex) {
 			actual = ex.code();
@@ -329,7 +329,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 		String inputFile = "/TestSources/emptydoc.xml";
 		String xqFile = "/Queries/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-8.xq";
 		String resultFile = "/ExpectedTestResults/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-8.txt";
-		String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+		String expectedResult = getExpectedResult(resultFile);
 		URL fileURL = bundle.getEntry(inputFile);
 		loadDOMDocument(fileURL);
 
@@ -346,7 +346,7 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-			actual = "<result>" + buildXMLResultString(rs) + "</result>";
+			actual = buildXMLResultString(rs);
 
 		} catch (XPathParserException ex) {
 			actual = ex.code();

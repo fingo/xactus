@@ -67,7 +67,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/bib2.xml";
       String xqFile = "/Queries/XQuery/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-002.xq";
       String resultFile = "/ExpectedTestResults/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-002.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -83,7 +83,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
@@ -103,7 +103,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
       String inputFile = "/TestSources/bib2.xml";
       String xqFile = "/Queries/XQuery/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-003.xq";
       String resultFile = "/ExpectedTestResults/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-003.txt";
-      String expectedResult = "<result>" + getExpectedResult(resultFile) + "</result>";
+      String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
 
@@ -119,7 +119,7 @@ public class SeqUnionTest extends AbstractPsychoPathTest {
           ResultSequence rs = evaluate(domDoc);
 
 
-          actual = "<result>" + buildXMLResultString(rs) + "</result>";
+          actual = buildXMLResultString(rs);
 
       } catch (XPathParserException ex) {
     	 actual = ex.code();
