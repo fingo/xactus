@@ -100,4 +100,6 @@ dependencies {
     testImplementation 'org.xmlunit:xmlunit-core:2.8.2'
     testImplementation 'org.xmlunit:xmlunit-matchers:2.8.2'
     testImplementation 'org.assertj:assertj-core:3.19.0'
+    // LSSerializerImpl used to serialize ResultSequence to XML - see AbstractPsychoPathTest#buildXMLResultString
+    testImplementation 'xalan:serializer:2.7.2'
 }
