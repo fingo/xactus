@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -133,7 +136,18 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 	private static final String IMPORT_SCHEMA_NAMESPACE = "import schema namespace";
 	private static final String REGEX_DN = " namespace\\s+(\\w[-_\\w]*)\\s*=\\s*['\"]([^;]*)['\"];";
 
+	private static DOMImplementationLS DOM_IMPLEMENTATION_LS = getDOMImplementationLS();
+
 	private static HashMap inputMap = new HashMap(3);
+
+	private static DOMImplementationLS getDOMImplementationLS() {
+		try {
+			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			return (DOMImplementationLS) documentBuilder.getDOMImplementation().getFeature("LS", "3.0");
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException("Unexpected exception occurred.", e);
+		}
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -637,43 +651,31 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 	}
 
 	protected String buildXMLResultString(ResultSequence rs) throws Exception {
-        DOMImplementationLS domLS = (DOMImplementationLS) domDoc.getImplementation().getFeature("LS", "3.0");
-        LSOutput outputText = domLS.createLSOutput();
-        LSSerializer serializer = null;
-		ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
-		DelegatingLoader newContext = new DelegatingLoader(originalLoader);
-		Thread.currentThread().setContextClassLoader(newContext);
-		try {
-			serializer = domLS.createLSSerializer();
-		} finally {
-			Thread.currentThread().setContextClassLoader(originalLoader);
-		}
+        LSOutput outputText = DOM_IMPLEMENTATION_LS.createLSOutput();
+        LSSerializer serializer =  DOM_IMPLEMENTATION_LS.createLSSerializer();
+		serializer.getDomConfig().setParameter("xml-declaration", false);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputText.setByteStream(outputStream);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			outputText.setByteStream(outputStream);
 
-		String actual = new String();
-		Iterator iterator = rs.iterator();
-		boolean queueSpace = false;
-		while (iterator.hasNext()) {
-			AnyType aat = (AnyType)iterator.next();
-			if (aat instanceof NodeType) {
-				NodeType nodeType = (NodeType) aat;
-				Node node = nodeType.node_value();
-				serializer.write(node, outputText);
-				queueSpace = false;
-			} else {
-				if (queueSpace) outputText.getByteStream().write(32);
-				outputText.getByteStream().write(aat.getStringValue().getBytes("UTF-8"));
-				queueSpace = true;
+			Iterator iterator = rs.iterator();
+			boolean queueSpace = false;
+			while (iterator.hasNext()) {
+				AnyType aat = (AnyType) iterator.next();
+				if (aat instanceof NodeType) {
+					NodeType nodeType = (NodeType) aat;
+					Node node = nodeType.node_value();
+					serializer.write(node, outputText);
+					queueSpace = false;
+				} else {
+					if (queueSpace) outputText.getByteStream().write(32);
+					outputText.getByteStream().write(aat.getStringValue().getBytes("UTF-8"));
+					queueSpace = true;
+				}
 			}
-		}
 
-		actual = outputStream.toString("UTF-8");
-		actual = actual.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-		actual = actual.replace("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>", "");
-		outputStream.close();
-		return actual.trim();
+			return outputStream.toString("UTF-8").trim();
+		}
 	}
 
 	// org/apache/xml/serializer/Encodings.properties
