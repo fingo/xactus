@@ -97,6 +97,8 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.1'
-    testImplementation 'xmlunit:xmlunit:1.2'
+    testImplementation 'org.xmlunit:xmlunit-core:2.8.2'
+    testImplementation 'org.xmlunit:xmlunit-legacy:2.8.2'
+    testImplementation 'org.xmlunit:xmlunit-matchers:2.8.2'
     testImplementation 'org.assertj:assertj-core:3.19.0'
 }

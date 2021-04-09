@@ -4,18 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 import org.assertj.core.matcher.AssertionMatcher;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.ComparisonType;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
+import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;
 import org.hamcrest.Description;
 
 class OutputFileMatcher extends AssertionMatcher<ResultSequence> {
-    private static String prepareXMLFragment(String xmlFragment) {
-        return "<root>" + xmlFragment + "</root>";
-    }
-
     private final OutputFile expected;
     private final ContentProvider contentProvider;
     private final PsychopathTestContext context;
@@ -55,12 +51,17 @@ class OutputFileMatcher extends AssertionMatcher<ResultSequence> {
 
             switch (comparisonType) {
                 case XML:
-                    XMLAssert.assertXMLEqual(processedActual, expectedOutput);
+                    XMLComparisonBuilder.xmlComparisonBuilder()
+                        .withActual(processedActual)
+                        .withExpected(expectedOutput)
+                        .assertEqual();
                     return;
                 case FRAGMENT:
-                    XMLAssert.assertXMLEqual(
-                        prepareXMLFragment(processedActual),
-                        prepareXMLFragment(expectedOutput));
+                    XMLComparisonBuilder.xmlComparisonBuilder()
+                        .withActual(processedActual)
+                        .withExpected(expectedOutput)
+                        .xmlFragmentComparison()
+                        .assertEqual();
                     return;
                 case INSPECT:
                 case TEXT:
