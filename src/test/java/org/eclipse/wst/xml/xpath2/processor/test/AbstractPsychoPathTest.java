@@ -23,6 +23,8 @@
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,6 +63,7 @@ import org.apache.xerces.xs.XSNamedMap;
 import org.apache.xerces.xs.XSObject;
 import org.apache.xerces.xs.XSSimpleTypeDefinition;
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
@@ -797,6 +800,15 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 	protected void assertXPathTrue(String xpath, Document domDoc) {
 		XSBoolean result = evaluateBoolXPath(xpath, domDoc);
 		assertEquals(true, result.value());
+	}
+
+	protected void assertXMLFragmentEquals(String message, String expected, String actual) {
+		XMLComparisonBuilder.xmlComparisonBuilder()
+			.withMessage(message)
+			.withActual(actual)
+			.withExpected(expected)
+			.xmlFragmentComparison()
+			.assertEqual();
 	}
 
 	protected XSBoolean evaluateBoolXPath(String xpath, Document doc) {
