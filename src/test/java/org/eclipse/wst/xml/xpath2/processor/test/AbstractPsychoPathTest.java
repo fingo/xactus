@@ -23,8 +23,6 @@
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,14 +41,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
+import junit.framework.TestCase;
 import org.apache.xerces.jaxp.validation.XSGrammarPoolContainer;
 import org.apache.xerces.xni.grammars.Grammar;
 import org.apache.xerces.xni.grammars.XMLGrammarDescription;
@@ -62,9 +59,6 @@ import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSNamedMap;
 import org.apache.xerces.xs.XSObject;
 import org.apache.xerces.xs.XSSimpleTypeDefinition;
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;
-import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.api.CollationProvider;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
@@ -103,10 +97,12 @@ import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesFloatUse
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesIntegerUserDefined;
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesQNameUserDefined;
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesUserDefined;
+import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
+import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
@@ -117,7 +113,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.EntityResolver2;
 
-public abstract class AbstractPsychoPathTest extends XMLTestCase {
+public abstract class AbstractPsychoPathTest extends TestCase {
 
 	protected Document domDoc = null;
 	protected Document domDoc2 = null;
@@ -808,6 +804,14 @@ public abstract class AbstractPsychoPathTest extends XMLTestCase {
 			.withActual(actual)
 			.withExpected(expected)
 			.xmlFragmentComparison()
+			.assertEqual();
+	}
+
+	protected void assertXMLEqual(String message, String expected, String actual) {
+		XMLComparisonBuilder.xmlComparisonBuilder()
+			.withMessage(message)
+			.withActual(actual)
+			.withExpected(expected)
 			.assertEqual();
 	}
 
