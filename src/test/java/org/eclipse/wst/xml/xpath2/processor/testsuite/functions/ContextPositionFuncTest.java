@@ -6,9 +6,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.testsuite.functions;
@@ -21,8 +21,8 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
-      
+
+
 public class ContextPositionFuncTest extends AbstractPsychoPathTest {
 
    //Simple position test, where the context node is an element node and position is first.
@@ -33,7 +33,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -45,9 +45,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -57,7 +57,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -69,7 +69,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = "XPDY0002";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -78,11 +78,11 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String xpath = "position()";
       String actual = null;
       try {
-	   	  compileXPath(xpath);	
+	   	  compileXPath(xpath);
 	      ResultSequence rs = evaluate(null);  // no context document!
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -93,7 +93,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -105,7 +105,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -117,9 +117,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -129,7 +129,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -141,7 +141,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -153,9 +153,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -165,7 +165,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -177,7 +177,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -189,9 +189,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -201,7 +201,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -213,7 +213,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -225,9 +225,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -237,7 +237,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -249,7 +249,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -261,9 +261,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -273,7 +273,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -285,7 +285,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -297,9 +297,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -309,7 +309,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -321,7 +321,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -333,9 +333,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -345,7 +345,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -357,7 +357,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -369,9 +369,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -381,7 +381,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -393,7 +393,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -405,9 +405,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -417,7 +417,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -429,7 +429,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -441,9 +441,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -452,8 +452,8 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
 
-      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+      assertXMLFragmentEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
+
 
    }
 
@@ -465,7 +465,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -477,9 +477,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -489,7 +489,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -501,7 +501,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -513,9 +513,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -525,7 +525,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -537,7 +537,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -549,9 +549,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -561,7 +561,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -573,7 +573,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -585,9 +585,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -597,7 +597,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -609,7 +609,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -621,9 +621,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -633,7 +633,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -645,7 +645,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -657,9 +657,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -669,7 +669,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -681,7 +681,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -693,9 +693,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -705,7 +705,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -717,7 +717,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -729,9 +729,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -741,7 +741,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -753,7 +753,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -765,9 +765,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -777,7 +777,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -789,7 +789,7 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -801,9 +801,9 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildXMLResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -813,9 +813,8 @@ public class ContextPositionFuncTest extends AbstractPsychoPathTest {
       }
 
       assertXMLEqual("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
 }
-      
