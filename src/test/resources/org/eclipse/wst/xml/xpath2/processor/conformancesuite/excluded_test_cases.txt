@@ -17,8 +17,6 @@ MinimalConformance/Expressions/PathExpr/Steps/Axes/Axes085
 MinimalConformance/Expressions/PathExpr/Steps/Axes/Axes086
 MinimalConformance/Expressions/PathExpr/Steps/Axes/Axes087
 MinimalConformance/Expressions/PathExpr/Steps/Axes/axis-err-1
-MinimalConformance/Expressions/PathExpr/Steps/NodeTestSection/NodeTest/NodeTest001
-MinimalConformance/Expressions/PathExpr/Steps/NodeTestSection/NodeTest/NodeTest002
 MinimalConformance/Expressions/PathExpr/Steps/NodeTestSection/NodeTest/NodeTest006
 MinimalConformance/Expressions/PathExpr/Steps/NodeTestSection/NodeTest/NodeTest007-1
 MinimalConformance/Expressions/PathExpr/Steps/NodeTestSection/NodeTest/NodeTest007-2
@@ -66,7 +64,6 @@ MinimalConformance/Expressions/PathExpr/Predicates/predicates-10
 MinimalConformance/Expressions/PathExpr/Predicates/predicates-29
 MinimalConformance/Expressions/PathExpr/Predicates/predicatesns-10
 MinimalConformance/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-3
-MinimalConformance/Expressions/PathExpr/UnabbrAxes/unabbreviatedSyntax-5
 MinimalConformance/Expressions/PathExpr/AbbrAxes/abbreviatedSyntax-2
 MinimalConformance/Expressions/SeqExpr/ConstructSeq/commaOp/op-concatenate-mix-args-016
 MinimalConformance/Expressions/SeqExpr/ConstructSeq/commaOp/op-concatenate-mix-args-018
@@ -74,11 +71,9 @@ MinimalConformance/Expressions/SeqExpr/FilterExpr/filterexpressionhc5
 MinimalConformance/Expressions/Operators/ArithExpr/DurationDateTimeArith/dateTimesSubtract/op-subtract-dateTimes-yielding-DTD-8
 MinimalConformance/Expressions/Operators/ArithExpr/DurationDateTimeArith/DatesSubtract/op-subtract-dates-yielding-DTD-8
 MinimalConformance/Expressions/Operators/CompExpr/ValComp/BooleanOp/BooleanEqual/op-boolean-equal-17
-MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-004
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-005
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-006
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-007
-MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-008
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-009
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-010
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-011
@@ -86,15 +81,9 @@ MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-015
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-016
 MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-001
 MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-002
-MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-005
-MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-006
-MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-007
 MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-015
 MinimalConformance/Expressions/Operators/SeqOp/SeqIntersect/fn-intersect-node-args-016
 MinimalConformance/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-003
-MinimalConformance/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-006
-MinimalConformance/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-009
-MinimalConformance/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-010
 MinimalConformance/Expressions/Operators/SeqOp/SeqExcept/fn-except-node-args-017
 MinimalConformance/Expressions/LogicExpr/op-logical-and-001
 MinimalConformance/Expressions/LogicExpr/op-logical-and-002
@@ -562,8 +551,6 @@ MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/fn-boolean-mi
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/fn-boolean-mixed-args-048
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqBooleanFunc/context-item-1
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-001
-MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-002
-MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-003
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-004
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-005
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-006
@@ -579,7 +566,6 @@ MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordere
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-016
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-017
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-018
-MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-019
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-020
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-021
 MinimalConformance/Functions/SeqFunc/GeneralSeqFunc/SeqUnorderedFunc/fn-unordered-mix-args-022
