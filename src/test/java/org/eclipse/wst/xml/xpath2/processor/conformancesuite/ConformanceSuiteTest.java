@@ -2,7 +2,6 @@ package org.eclipse.wst.xml.xpath2.processor.conformancesuite;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ConformanceSuiteMatchers.matchesAnyOfExpected;
 
@@ -33,7 +32,8 @@ import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -98,15 +98,7 @@ class ConformanceSuiteTest {
         contentProvider = contentProvider(bundle);
     }
 
-    private PsychopathTestContext psychopathTestContext;
-
-    @BeforeEach
-    void beforeEach() throws Exception {
-        PsychopathTestContext psychopathTestContext = new PsychopathTestContext();
-        psychopathTestContext.init();
-        this.psychopathTestContext = psychopathTestContext;
-    }
-
+    @Execution(ExecutionMode.CONCURRENT)
     @ParameterizedTest
     @MethodSource("testcases")
     @SuppressWarnings("unused")
@@ -115,6 +107,9 @@ class ConformanceSuiteTest {
               String xqFile,
               List<OutputFile> expectedOutputFiles,
               List<String> expectedErrors) throws Exception {
+        PsychopathTestContext psychopathTestContext = new PsychopathTestContext();
+        psychopathTestContext.init();
+
         psychopathTestContext.loadInput(inputs.stream()
             .map(Input::getName)
             .map(testSources::getSourceFileName)

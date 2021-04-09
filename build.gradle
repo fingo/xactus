@@ -87,6 +87,10 @@ tasks.register('testSuite', Test).configure {
 
 tasks.withType(Test).configureEach {
     it.useJUnitPlatform()
+    it.systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
+    it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'
+    it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'parallel'
+    it.systemProperty 'junit.jupiter.execution.parallel.config.strategy', 'dynamic'
 }
 
 dependencies {
