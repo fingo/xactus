@@ -7,9 +7,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *     Jesper Moller - bug 281159 - fix expectations and parameters
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor.testsuite.functions;
@@ -23,8 +23,8 @@ import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSAnyURI;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
-      
+
+
 public class DocumentURIFuncTest extends AbstractPsychoPathTest {
 
    //Evaluates the "document-uri" function with argument set to empty sequence.
@@ -35,7 +35,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -47,9 +47,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -59,7 +59,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -71,22 +71,22 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1",new XSAnyURI(inputFile));
-      
+	  setVariable("input-context1",new XSAnyURI(fileURL.toString()));
+
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -96,7 +96,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -108,7 +108,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -120,9 +120,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -132,7 +132,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -144,7 +144,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -156,9 +156,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -168,7 +168,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -180,12 +180,12 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1",new XSAnyURI(inputFile));
+	  setVariable("input-context1",new XSAnyURI(fileURL.toString()));
 
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
@@ -193,9 +193,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -205,7 +205,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -217,12 +217,12 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1", new XSAnyURI(inputFile));
+	  setVariable("input-context1", new XSAnyURI(fileURL.toString()));
 
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
@@ -230,9 +230,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -242,7 +242,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -254,12 +254,12 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1",new XSAnyURI(inputFile));
+	  setVariable("input-context1",new XSAnyURI(fileURL.toString()));
 
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
@@ -267,9 +267,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -279,7 +279,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -291,12 +291,12 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1",new XSAnyURI(inputFile));
+	  setVariable("input-context1",new XSAnyURI(fileURL.toString()));
 
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
@@ -304,9 +304,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -316,7 +316,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -328,12 +328,12 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-	  setVariable("input-context1",new XSAnyURI(inputFile));
+	  setVariable("input-context1",new XSAnyURI(fileURL.toString()));
 
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
@@ -341,9 +341,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -353,7 +353,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -365,7 +365,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -377,9 +377,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -389,7 +389,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -401,7 +401,7 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -413,9 +413,9 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -425,9 +425,8 @@ public class DocumentURIFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
 }
-      
