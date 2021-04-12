@@ -665,7 +665,10 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 				if (aat instanceof NodeType) {
 					NodeType nodeType = (NodeType) aat;
 					Node node = nodeType.node_value();
-					serializer.write(node, outputText);
+					if (!serializer.write(node, outputText)) {
+						throw new RuntimeException(
+							"Failed to serialize an element of ResultSequence to XML: \"" + node + "\"");
+					}
 					queueSpace = false;
 				} else {
 					if (queueSpace) outputText.getByteStream().write(32);
