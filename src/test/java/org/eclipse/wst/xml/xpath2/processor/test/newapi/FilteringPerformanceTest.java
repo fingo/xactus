@@ -6,7 +6,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Jesper Steen Moller  - initial API and implementation
  *******************************************************************************/
@@ -15,8 +15,7 @@ package org.eclipse.wst.xml.xpath2.processor.test.newapi;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.math.BigDecimal;
-
+import java.math.BigInteger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -26,18 +25,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import junit.framework.TestCase;
-
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
 import org.eclipse.wst.xml.xpath2.processor.Engine;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,7 +44,7 @@ public class FilteringPerformanceTest extends TestCase {
 		document = buildBigDocument(6, -1, 5);
 		super.setUp();
 	}
-	
+
 	private Document buildBigDocument(int width, int deltaWidth, int depth)
 			throws ParserConfigurationException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -97,26 +91,26 @@ public class FilteringPerformanceTest extends TestCase {
 		Document bigDoc = buildBigDocument(2, 1, 6);
 		System.out.println(bigDoc.getDocumentElement().getAttribute("nodeCount"));
 		String control = evalXPath1("count(//node())", bigDoc);
-		String evaluated = evalXPath2("count(//node())", bigDoc, BigDecimal.class).toString();
+		String evaluated = evalXPath2("count(//node())", bigDoc, BigInteger.class).toString();
 		assertEquals(control, evaluated);
 	}
-	
+
 	public void testCountAllOperationWithFilter() throws ParserConfigurationException, XPathExpressionException {
 		Document bigDoc = buildBigDocument(2, 1, 5);
 		System.out.println(bigDoc.getDocumentElement().getAttribute("nodeCount"));
 		String control = evalXPath1("count(//node()[count(ancestor-or-self::*)>4])", bigDoc);
-		String evaluated = evalXPath2("count(//node()[count(ancestor-or-self::*)>4])", bigDoc, BigDecimal.class).toString();
+		String evaluated = evalXPath2("count(//node()[count(ancestor-or-self::*)>4])", bigDoc, BigInteger.class).toString();
 		assertEquals(control, evaluated);
 	}
-	
+
 	public void testCountAllOperationBig() throws ParserConfigurationException, XPathExpressionException {
 		Document bigDoc = buildBigDocument(2, 1, 7);
 		System.out.println(bigDoc.getDocumentElement().getAttribute("nodeCount"));
 		String control = evalXPath1("count(//node())", bigDoc);
-		String evaluated = evalXPath2("count(//node())", bigDoc, BigDecimal.class).toString();
+		String evaluated = evalXPath2("count(//node())", bigDoc, BigInteger.class).toString();
 		assertEquals(control, evaluated);
 	}
-	
+
 	protected Object evalXPath2(String xpath, Node doc, Class resultClass) {
 		StaticContext sc = new StaticContextBuilder();
 		XPath2Expression path = new Engine().parseExpression(xpath, sc);
