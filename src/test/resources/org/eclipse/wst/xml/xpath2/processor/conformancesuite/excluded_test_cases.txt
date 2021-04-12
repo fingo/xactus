@@ -68,8 +68,6 @@ MinimalConformance/Expressions/PathExpr/AbbrAxes/abbreviatedSyntax-2
 MinimalConformance/Expressions/SeqExpr/ConstructSeq/commaOp/op-concatenate-mix-args-016
 MinimalConformance/Expressions/SeqExpr/ConstructSeq/commaOp/op-concatenate-mix-args-018
 MinimalConformance/Expressions/SeqExpr/FilterExpr/filterexpressionhc5
-MinimalConformance/Expressions/Operators/ArithExpr/DurationDateTimeArith/dateTimesSubtract/op-subtract-dateTimes-yielding-DTD-8
-MinimalConformance/Expressions/Operators/ArithExpr/DurationDateTimeArith/DatesSubtract/op-subtract-dates-yielding-DTD-8
 MinimalConformance/Expressions/Operators/CompExpr/ValComp/BooleanOp/BooleanEqual/op-boolean-equal-17
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-005
 MinimalConformance/Expressions/Operators/SeqOp/SeqUnion/fn-union-node-args-006

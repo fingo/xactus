@@ -13,19 +13,18 @@
  *     Mukul Gandhi - improved string_value() implementation (motivated by bug, 281822)
  *     David Carver - bug 282223 - implementation of xs:duration.
  *                  - bug 262765 - additional tweak to convert 24:00:00 to 00:00:00
- *     David Carver - bug 280547 - fix dates for comparison 
+ *     David Carver - bug 280547 - fix dates for comparison
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.internal.types;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.Item;
 import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
@@ -55,7 +54,7 @@ Cloneable {
 
 	/**
 	 * Initiates a new representation of a supplied date and time
-	 * 
+	 *
 	 * @param cal
 	 *            The Calendar representation of the date and time to be stored
 	 * @param tz
@@ -74,7 +73,7 @@ Cloneable {
 
 	/**
 	 * Creates a copy of this date and time representation
-	 * 
+	 *
 	 * @return A copy of this date and time representation
 	 */
 	public Object clone() throws CloneNotSupportedException {
@@ -96,7 +95,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the datatype name
-	 * 
+	 *
 	 * @return "dateTime" which is the dataype name
 	 */
 	public String type_name() {
@@ -105,7 +104,7 @@ Cloneable {
 
 	/**
 	 * Check to see if a character is numeric
-	 * 
+	 *
 	 * @param x
 	 *            Character to be tested
 	 * @return True if the character is numeric. False otherwise.
@@ -119,7 +118,7 @@ Cloneable {
 	/**
 	 * Parses a String representation of a date and time and retrieves the year,
 	 * month and day from it
-	 * 
+	 *
 	 * @param str
 	 *            The String representation of the date (and optional timezone)
 	 * @return Integer array of size 3. Element 1 is the year, element 2 is the
@@ -227,7 +226,7 @@ Cloneable {
 	/**
 	 * Parses a String representation of a date and time and retrieves the hour,
 	 * minute and seconds from it
-	 * 
+	 *
 	 * @param str
 	 *            The String representation of the date (and optional timezone)
 	 * @return Integer array of size 3. Element 1 is the hour, element 2 is the
@@ -311,7 +310,7 @@ Cloneable {
 	/**
 	 * Parses a String representation of a date and time and retrieves the
 	 * timezone from it
-	 * 
+	 *
 	 * @param str
 	 *            The String representation of the date (and optional timezone)
 	 * @return Integer array of size 3. Element 1 represents whether the
@@ -361,7 +360,7 @@ Cloneable {
 
 	/**
 	 * Attempts to set a particular field in the Calendar
-	 * 
+	 *
 	 * @param cal
 	 *            The Calendar object to set the field in
 	 * @param item
@@ -389,7 +388,7 @@ Cloneable {
 	/**
 	 * Parses a String representation of a date and time and constructs a new
 	 * XSDateTime object using that information
-	 * 
+	 *
 	 * @param str
 	 *            The String representation of the date (and optional timezone)
 	 * @return The XSDateTime representation of the date and time (and optional
@@ -422,57 +421,35 @@ Cloneable {
 		}
 
 		// get date
-		int d[] = parse_date(date);
+		int[] d = parse_date(date);
 		if (d == null)
 			return null;
 
-		// SANITY CHEX
-		TimeZone UTC = TimeZone.getTimeZone("UTC");
-		GregorianCalendar cal = new GregorianCalendar(UTC);
-
-		// year
-		int year = d[0];
-		if (year < 0) {
-			year *= -1;
-			cal.set(Calendar.ERA, GregorianCalendar.BC);
-		} else {
-			cal.set(Calendar.ERA, GregorianCalendar.AD);
+		if (d[0] == 0) {
+			throw new IllegalArgumentException("Year cannot be 0 according to the ISO 8601 standard.");
 		}
 
-		// this is a nice bug....
-		// if say the current day is 29...
-		// then if we set the month to feb for example, and 29 doesn't
-		// exist in that year, then the date screws up.
-		cal.set(Calendar.DAY_OF_MONTH, 2);
-		cal.set(Calendar.MONTH, 2);
-
-		if (!set_item(cal, Calendar.YEAR, year))
-			return null;
-
-		if (!set_item(cal, Calendar.MONTH, d[1] - 1))
-			return null;
-
-		if (!set_item(cal, Calendar.DAY_OF_MONTH, d[2]))
-			return null;
-
 		// get time
-		double t[] = parse_time(time);
+		double[] t = parse_time(time);
 		if (t == null)
 			return null;
 
-		if (!set_item(cal, Calendar.HOUR_OF_DAY, (int) t[0]))
-			return null;
+		int ms = (int) (t[2] * 1000D - ((int) t[2] * 1000));
 
-		if (!set_item(cal, Calendar.MINUTE, (int) t[1]))
-			return null;
+		String instantString = String.format("%s%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+			d[0] < 0 ? "-" : "",
+			d[0] < 0 ? -1 * d[0] - 1 : d[0],
+			d[1],
+			d[2],
+			(int) t[0],
+			(int) t[1],
+			(int) t[2],
+			ms);
 
-		if (!set_item(cal, Calendar.SECOND, (int) t[2]))
-			return null;
-
-		double ms = t[2] - ((int) t[2]);
-		ms *= 1000;
-		if (!set_item(cal, Calendar.MILLISECOND, (int) ms))
-			return null;
+		Calendar cal = GregorianCalendar.from(
+			Instant.parse(instantString)
+				.atOffset(ZoneOffset.UTC)
+				.toZonedDateTime());
 
 		// get timezone
 		int tz[] = null;
@@ -493,7 +470,7 @@ Cloneable {
 	/**
 	 * Creates a new result sequence consisting of the retrievable date and time
 	 * value in the supplied result sequence
-	 * 
+	 *
 	 * @param arg
 	 *            The result sequence from which to extract the date and time
 	 *            value.
@@ -557,7 +534,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the year from the date stored
-	 * 
+	 *
 	 * @return the year value of the date stored
 	 */
 	public int year() {
@@ -570,7 +547,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the month from the date stored
-	 * 
+	 *
 	 * @return the month value of the date stored
 	 */
 	public int month() {
@@ -579,7 +556,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the day from the date stored
-	 * 
+	 *
 	 * @return the day value of the date stored
 	 */
 	public int day() {
@@ -588,7 +565,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the hour from the date stored
-	 * 
+	 *
 	 * @return the hour value of the date stored
 	 */
 	public int hour() {
@@ -597,7 +574,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the minute from the date stored
-	 * 
+	 *
 	 * @return the minute value of the date stored
 	 */
 	public int minute() {
@@ -606,7 +583,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the seconds from the date stored
-	 * 
+	 *
 	 * @return the seconds value of the date stored
 	 */
 	public double second() {
@@ -627,7 +604,7 @@ Cloneable {
 	/**
 	 * Pads the supplied number to the supplied number of digits by adding 0's
 	 * in front of it
-	 * 
+	 *
 	 * @param num
 	 *            Number that si to be padded (if neccessay)
 	 * @param len
@@ -658,7 +635,7 @@ Cloneable {
 
 	/**
 	 * Retrieves a String representation of the date and time stored
-	 * 
+	 *
 	 * @return String representation of the date and time stored
 	 */
 	public String getStringValue() {
@@ -725,7 +702,7 @@ Cloneable {
 
 	/**
 	 * Retrive the datatype full pathname
-	 * 
+	 *
 	 * @return "xs:dateTime" which is the datatype full pathname
 	 */
 	public String string_type() {
@@ -734,7 +711,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the Calendar representation of the date stored
-	 * 
+	 *
 	 * @return Calendar representation of the date stored
 	 */
 	public Calendar calendar() {
@@ -745,7 +722,7 @@ Cloneable {
 	/**
 	 * Equality comparison on this and the supplied dates and times (taking
 	 * timezones into account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDateTime representation of the date to compare to
 	 * @throws DynamicError
@@ -764,7 +741,7 @@ Cloneable {
 	/**
 	 * Comparison on this and the supplied dates and times (taking timezones
 	 * into account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDateTime representation of the date to compare to
 	 * @throws DynamicError
@@ -783,7 +760,7 @@ Cloneable {
 	/**
 	 * Comparison on this and the supplied dates and times (taking timezones
 	 * into account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDateTime representation of the date to compare to
 	 * @throws DynamicError
@@ -801,7 +778,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the timezone associated with the date stored
-	 * 
+	 *
 	 * @return the timezone associated with the date stored
 	 */
 	public XSDuration tz() {
@@ -812,7 +789,7 @@ Cloneable {
 	/**
 	 * Currently unsupported method. Retrieves the date in milliseconds since
 	 * the begining of epoch
-	 * 
+	 *
 	 * @return Number of milliseconds since the begining of the epoch
 	 */
 	public double value() {
@@ -824,7 +801,7 @@ Cloneable {
 	 * Mathematical minus operator between this XSDateTime and a supplied result
 	 * sequence (XSDateTime, XDTYearMonthDuration and XDTDayTimeDuration are
 	 * only valid ones).
-	 * 
+	 *
 	 * @param arg
 	 *            The supplied ResultSequence that is on the right of the minus
 	 *            operator. If this is an XSDateTime, the result will be a
@@ -912,7 +889,7 @@ Cloneable {
 	 * Mathematical addition operator between this XSDateTime and a supplied
 	 * result sequence (XDTYearMonthDuration and XDTDayTimeDuration are only
 	 * valid ones).
-	 * 
+	 *
 	 * @param arg
 	 *            The supplied ResultSequence that is on the right of the minus
 	 *            operator. If arg is an XDTYearMonthDuration or an
