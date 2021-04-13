@@ -6,9 +6,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.testsuite.schema;
@@ -25,9 +25,10 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
+import org.eclipse.wst.xml.xpath2.processor.testutil.annotation.DisabledTest;
 import org.xml.sax.SAXException;
-      
-      
+
+
 public class NotationEQSITest extends AbstractPsychoPathTest {
 
    //Notation comparison.
@@ -38,7 +39,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -50,9 +51,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -62,7 +63,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -75,7 +76,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -88,9 +89,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -100,7 +101,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -113,7 +114,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -126,9 +127,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -138,7 +139,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -151,7 +152,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -164,9 +165,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -176,7 +177,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -188,7 +189,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -201,9 +202,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -213,7 +214,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -226,7 +227,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -239,9 +240,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -251,7 +252,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -264,7 +265,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -277,9 +278,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -289,7 +290,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -301,7 +302,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -314,9 +315,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -326,7 +327,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -339,7 +340,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -352,9 +353,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -364,7 +365,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -376,7 +377,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -389,9 +390,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -401,19 +402,20 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of notation comparison using "eq" and used with fn:boolean function.
-   public void test_Comp_notation_11() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_11() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-11.xq";
       String expectedResult = "true";
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -426,9 +428,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -438,7 +440,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -450,7 +452,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -463,9 +465,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -475,7 +477,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -487,7 +489,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -500,9 +502,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -512,19 +514,20 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of notation comparison using "ne" used in boolean expression with "fn:true" and "and".
-   public void test_Comp_notation_14() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_14() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-14.xq";
-      String expectedResult = "false"; 
+      String expectedResult = "false";
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -537,9 +540,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -549,7 +552,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -562,7 +565,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -575,9 +578,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -587,7 +590,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -600,7 +603,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -613,9 +616,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -625,7 +628,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -638,7 +641,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -651,9 +654,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -663,7 +666,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -676,7 +679,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -689,9 +692,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -701,12 +704,13 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of notation comparison using "eq" used in boolean expression with "fn:false" and "or".
-   public void test_Comp_notation_19() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_19() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-19.xq";
       String resultFile = "/ExpectedTestResults/SchemaImport/NotationEQSI/Comp-notation-19.txt";
@@ -714,7 +718,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -727,9 +731,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -739,12 +743,13 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of notation comparison using "ne" used in boolean expression with "fn:false" and "or".
-   public void test_Comp_notation_20() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_20() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-20.xq";
       String resultFile = "/ExpectedTestResults/SchemaImport/NotationEQSI/Comp-notation-20.txt";
@@ -752,7 +757,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -765,9 +770,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -777,12 +782,13 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of expression for notation comparison using "eq" ar argument to "fn:false" function.
-   public void test_Comp_notation_21() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_21() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-21.xq";
       String resultFile = "/ExpectedTestResults/SchemaImport/NotationEQSI/Comp-notation-21.txt";
@@ -790,7 +796,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -803,9 +809,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -815,12 +821,13 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
    //Evaluation of expression for notation comparison using "ne" ar argument to "fn:false" function.
-   public void test_Comp_notation_22() throws Exception {
+   @DisabledTest(reason = "XPTH-16")
+   public void disabled_test_Comp_notation_22() throws Exception {
       String inputFile = "/TestSources/notation.xml";
       String xqFile = "/Queries/XQuery/SchemaImport/NotationEQSI/Comp-notation-22.xq";
       String resultFile = "/ExpectedTestResults/SchemaImport/NotationEQSI/Comp-notation-22.txt";
@@ -828,7 +835,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       URL fileURL = bundle.getEntry(inputFile);
       Schema jaxpSchema = loadSchema();
       loadDOMDocument(fileURL, jaxpSchema);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -841,9 +848,9 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -853,7 +860,7 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -864,6 +871,5 @@ public class NotationEQSITest extends AbstractPsychoPathTest {
 	      Schema jaxpschema = schemaFactory.newSchema(schemaURL);
 		return jaxpschema;
 	}
-   
+
 }
-      

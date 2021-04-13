@@ -21,9 +21,10 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
+import org.eclipse.wst.xml.xpath2.processor.testutil.annotation.DisabledTest;
 
-
-public class ValidateExpressionTest extends AbstractPsychoPathTest {
+@DisabledTest(reason = "XPTH-18")
+public class ValidateExpressionTestDisabled extends AbstractPsychoPathTest {
 
    //Evaluation of a validate expression with improper operand for operation.
    public void test_validateexpr_1() throws Exception {
