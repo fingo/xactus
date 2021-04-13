@@ -86,6 +86,11 @@ tasks.register('testSuite', Test).configure {
 }
 
 tasks.withType(Test).configureEach {
+    it.filter {
+        // exclude disabled junit 3 tests
+        it.excludeTestsMatching('*.disabled_*')
+    }
+
     it.useJUnitPlatform()
     it.systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'

@@ -24,7 +24,7 @@ import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
 import org.eclipse.wst.xml.xpath2.processor.testutil.annotation.DisabledTest;
 
 @DisabledTest(reason = "XPTH-18")
-public class ValidateExpressionTestDisabled extends AbstractPsychoPathTest {
+public class disabled_ValidateExpressionTest extends AbstractPsychoPathTest {
 
    //Evaluation of a validate expression with improper operand for operation.
    public void test_validateexpr_1() throws Exception {
