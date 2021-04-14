@@ -245,9 +245,10 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 			DOMLoader domloader = new XercesLoader();
 			domloader.set_validating(false);
 			domDoc = domloader.load(is);
-			domDoc.setDocumentURI(fileURL.toString());
 			domDoc2 = domloader.load(is2);
-			domDoc2.setDocumentURI(fileURL2.toString());
+
+			domDoc.setDocumentURI("http://example.com/doc1");
+			domDoc2.setDocumentURI("http://example.com/doc2");
 		}
 	}
 

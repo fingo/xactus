@@ -365,8 +365,10 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 		DOMLoader domload = new XercesLoader();
 		URL fileURL = bundle.getEntry("/TestSources/bib.xml");
 		Document dom1 = domload.load(fileURL.openStream());
+		dom1.setDocumentURI("http://example.com/doc1");
 		fileURL = bundle.getEntry("/TestSources/reviews.xml");
 		Document dom2 = domload.load(fileURL.openStream());
+		dom2.setDocumentURI("http://example.com/doc2");
 		ArrayList arraylist = new ArrayList();
 		arraylist.add(dom1);
 		arraylist.add(dom2);
@@ -380,10 +382,13 @@ public class SeqCollectionFuncTest extends AbstractPsychoPathTest {
 		DOMLoader domload = new XercesLoader();
 		URL fileURL = bundle.getEntry("/TestSources/bib.xml");
 		Document dom1 = domload.load(fileURL.openStream());
+		dom1.setDocumentURI("http://example.com/doc1");
 		fileURL = bundle.getEntry("/TestSources/reviews.xml");
 		Document dom2 = domload.load(fileURL.openStream());
+		dom2.setDocumentURI("http://example.com/doc2");
 		fileURL = bundle.getEntry("/TestSources/books.xml");
 		Document dom3 = domload.load(fileURL.openStream());
+		dom3.setDocumentURI("http://example.com/doc3");
 		ArrayList arraylist = new ArrayList();
 		arraylist.add(dom1);
 		arraylist.add(dom2);
