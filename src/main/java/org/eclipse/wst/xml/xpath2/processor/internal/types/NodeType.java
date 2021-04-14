@@ -19,7 +19,7 @@
  *                                 when validated by XML Schema primitive types
  *     Mukul Gandhi - bug 323900 - improving computing the typed value of element &
  *                                 attribute nodes, where the schema type of nodes
- *                                 are simple, with varieties 'list' and 'union'.                                 
+ *                                 are simple, with varieties 'list' and 'union'.
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
  *     Lukasz Wycisk - bug 361803 - NodeType:dom_to_xpath and null value
  *******************************************************************************/
@@ -55,7 +55,7 @@ import org.w3c.dom.TypeInfo;
  * A representation of a Node datatype
  */
 public abstract class NodeType extends AnyType {
-	
+
 	protected static final String SCHEMA_TYPE_IDREF = "IDREF";
 	protected static final String SCHEMA_TYPE_ID = "ID";
 	private Node _node;
@@ -66,10 +66,10 @@ public abstract class NodeType extends AnyType {
 			return compare_node((NodeType)o1, (NodeType)o2);
 		}
 	};
-	
+
 	/**
 	 * Initialises according to the supplied parameters
-	 * 
+	 *
 	 * @param node
 	 *            The Node being represented
 	 * @param document_order
@@ -82,7 +82,7 @@ public abstract class NodeType extends AnyType {
 
 	/**
 	 * Retrieves the actual node being represented
-	 * 
+	 *
 	 * @return Actual node being represented
 	 */
 	public Node node_value() {
@@ -93,14 +93,14 @@ public abstract class NodeType extends AnyType {
 	// http://www.w3.org/TR/xpath-datamodel/
 	/**
 	 * Retrieves the actual node being represented
-	 * 
+	 *
 	 * @return Actual node being represented
 	 */
 	public abstract ResultSequence typed_value();
 
 	/**
 	 * Retrieves the name of the node
-	 * 
+	 *
 	 * @return QName representation of the name of the node
 	 */
 	public abstract QName node_name(); // may return null ["empty sequence"]
@@ -113,7 +113,7 @@ public abstract class NodeType extends AnyType {
 	// a little factory for converting from DOM to our representation
 	public static NodeType dom_to_xpath(Node node, TypeModel tm) {
 		assert node != null;
-		
+
 		switch (node.getNodeType()) {
 		case Node.ELEMENT_NODE:
 			return new ElementType((Element) node, tm);
@@ -205,56 +205,57 @@ public abstract class NodeType extends AnyType {
 	public static boolean after(NodeType a, NodeType b) {
 		return compare_node(a, b) > 0;
 	}
-	
+
 	private static int compare_node(NodeType a, NodeType b) {
 		Node nodeA = a.node_value();
 		Node nodeB = b.node_value();
-		
+
 		if (nodeA == nodeB || nodeA.isSameNode(nodeB)) return 0;
 
 		Document docA = getDocument(nodeA);
 		Document docB = getDocument(nodeB);
-		
+
 		if (docA != docB && ! docA.isSameNode(docB)) {
 			return compareDocuments(docA, docB);
 		}
 		short relation = nodeA.compareDocumentPosition(nodeB);
-		if ((relation & Node.DOCUMENT_POSITION_PRECEDING) != 0) 
+		if ((relation & Node.DOCUMENT_POSITION_PRECEDING) != 0)
 			  return 1;
-		if ((relation & Node.DOCUMENT_POSITION_FOLLOWING) != 0) 
+		if ((relation & Node.DOCUMENT_POSITION_FOLLOWING) != 0)
 			  return -1;
 		throw new RuntimeException("Unexpected result from node comparison: " + relation);
 	}
 
 	private static int compareDocuments(Document docA, Document docB) {
-		// Arbitrary but fulfills the spec (provided documenURI is always set)
+		// Arbitrary but fulfills the spec (provided documentURI is always set)
 		if (docB.getDocumentURI() == null && docA.getDocumentURI() == null) {
 			return System.identityHashCode(docA) - System.identityHashCode(docB); 
 		}
-		return docB.getDocumentURI().compareTo(docA.getDocumentURI());
+
+		return docA.getDocumentURI().compareTo(docB.getDocumentURI());
 	}
 
 	private static Document getDocument(Node nodeA) {
 		return nodeA instanceof Document ? (Document)nodeA : nodeA.getOwnerDocument();
 	}
 
-	protected Object getTypedValueForPrimitiveType(TypeDefinition typeDef) {		
+	protected Object getTypedValueForPrimitiveType(TypeDefinition typeDef) {
 		String strValue = getStringValue();
-		
+
 		if (typeDef == null) {
 		   return new XSUntypedAtomic(strValue);
 		}
-		
-		return SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(typeDef), strValue);
-	} // getTypedValueForPrimitiveType 
 
-	
+		return SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(typeDef), strValue);
+	} // getTypedValueForPrimitiveType
+
+
 	/*
 	 * Construct the "typed value" from a "string value", given the simpleType of the node.
      */
 	protected ResultSequence getXDMTypedValue(TypeDefinition typeDef, List/*<Short>*/ itemValTypes) {
-		
-		if ("anySimpleType".equals(typeDef.getName()) || 
+
+		if ("anySimpleType".equals(typeDef.getName()) ||
 		    "anyAtomicType".equals(typeDef.getName())) {
 			return new XSUntypedAtomic(getStringValue());
 		}
@@ -278,16 +279,16 @@ public abstract class NodeType extends AnyType {
 				return getTypedValueForSimpleContent(simpType, itemValTypes);
 			}
 		}
-		
+
 	} // getXDMTypedValue
-	
+
 	/*
-     * Get the XDM typed value for schema "simple content model". 
+     * Get the XDM typed value for schema "simple content model".
      */
 	private ResultSequence getTypedValueForSimpleContent(SimpleTypeDefinition simpType, List/*<Short>*/ itemValueTypes) {
-		
+
 		ResultBuffer rs = new ResultBuffer();
-		
+
 		if (simpType.getVariety() == SimpleTypeDefinition.VARIETY_ATOMIC) {
 		   AnyType schemaTypeValue = SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(simpType), getStringValue());
 		   if (schemaTypeValue != null) {
@@ -302,26 +303,26 @@ public abstract class NodeType extends AnyType {
 		else if (simpType.getVariety() == SimpleTypeDefinition.VARIETY_UNION) {
 			getTypedValueForVarietyUnion(simpType, rs);
 		}
-		
+
 		return rs.getSequence();
-		
+
 	} // getTypedValueForSimpleContent
-	
-	
+
+
 	/*
-	 * If the variety of simpleType was 'list', add the typed "list item" values to the parent result set. 
+	 * If the variety of simpleType was 'list', add the typed "list item" values to the parent result set.
 	 */
 	private void addAtomicListItemsToResultSet(SimpleTypeDefinition simpType, List/*<Short>*/ itemValueTypes, ResultBuffer rs) {
-		
+
 		// tokenize the string value by a 'longest sequence' of white-spaces. this gives us the list items as string values.
 		String[] listItemsStrValues = getStringValue().split("\\s+");
-		
-		SimpleTypeDefinition itemType = (SimpleTypeDefinition) simpType.getItemType();		
+
+		SimpleTypeDefinition itemType = (SimpleTypeDefinition) simpType.getItemType();
 		if (itemType.getVariety() == SimpleTypeDefinition.VARIETY_ATOMIC) {
 			for (int listItemIdx = 0; listItemIdx < listItemsStrValues.length; listItemIdx++) {
-			   // add an atomic typed value (whose type is the "item  type" of the list, and "string value" is the "string 
+			   // add an atomic typed value (whose type is the "item  type" of the list, and "string value" is the "string
 			   // value of the list item") to the "result sequence".
-		       rs.add(SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(itemType), 
+		       rs.add(SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(itemType),
 		                                                        listItemsStrValues[listItemIdx]));
 			}
 		}
@@ -332,45 +333,44 @@ public abstract class NodeType extends AnyType {
 				rs.add(SchemaTypeValueFactory.newSchemaTypeValue(((Short)itemValueTypes.get(listItemIdx)).shortValue(), listItem));
 			}
 		}
-		
+
 	} // addAtomicListItemsToResultSet
-	
-	
+
+
 	/*
-	 * If the variety of simpleType was 'union', find the typed value (and added to the parent 'result set') 
+	 * If the variety of simpleType was 'union', find the typed value (and added to the parent 'result set')
 	 * to be returned as the typed value of the parent node, by considering the member types of the union (i.e
 	 * whichever member type first in order, can successfully validate the string value of the parent node).
 	 */
 	private void getTypedValueForVarietyUnion(SimpleTypeDefinition simpType, ResultBuffer rs) {
-		
+
 		List/*<SimpleTypeDefinition>*/ memberTypes = simpType.getMemberTypes();
 		// check member types in order, to find that which one can successfully validate the string value.
 		for (int memTypeIdx = 0; memTypeIdx < memberTypes.size(); memTypeIdx++) {
 			PrimitiveType memSimpleType = (PrimitiveType) memberTypes.get(memTypeIdx);
 		   if (isValueValidForSimpleType(getStringValue(), memSimpleType)) {
-			  
+
 			   rs.add(SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(memSimpleType), getStringValue()));
 			   // no more memberTypes need to be checked
-			   break; 
+			   break;
 		   }
 		}
-		
+
 	} // getTypedValueForVarietyUnion
-	
-	
+
+
 	/*
 	 * Determine if a "string value" is valid for a given simpleType definition. This is a helped method for other methods.
 	 */
 	private boolean isValueValidForSimpleType (String value, PrimitiveType simplType) {
-		
+
 		// attempt to validate the value with the simpleType
 		return simplType.validate(value);
-		
+
 	} // isValueValidForASimpleType
-	
-	
+
 	public abstract boolean isID();
-	
+
 	public abstract boolean isIDREF();
 
 	/**
@@ -386,14 +386,14 @@ public abstract class NodeType extends AnyType {
 				if (typeInfo.getTypeName().equalsIgnoreCase(typeName)) {
 					return true;
 				}
-			} 
+			}
 		}
 		return false;
 	}
 
 	/**
 	 * Looks up the available type for the node, if available
-	 * 
+	 *
 	 * @return TypeDefinition, or null
 	 */
 	protected TypeDefinition getType() {
