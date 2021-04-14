@@ -25,7 +25,6 @@ package org.eclipse.wst.xml.xpath2.processor.test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,16 +36,12 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -89,7 +84,6 @@ import org.eclipse.wst.xml.xpath2.processor.function.XSCtrLibrary;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.FunctionLibrary;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.DocType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.SimpleAtomicItemTypeImpl;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
@@ -100,6 +94,7 @@ import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesFloatUse
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesIntegerUserDefined;
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesQNameUserDefined;
 import org.eclipse.wst.xml.xpath2.processor.testsuite.userdefined.XercesUserDefined;
+import org.eclipse.wst.xml.xpath2.processor.testutil.ResultSequenceFormatter;
 import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
@@ -107,9 +102,7 @@ import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -136,18 +129,7 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 	private static final String IMPORT_SCHEMA_NAMESPACE = "import schema namespace";
 	private static final String REGEX_DN = " namespace\\s+(\\w[-_\\w]*)\\s*=\\s*['\"]([^;]*)['\"];";
 
-	private static DOMImplementationLS DOM_IMPLEMENTATION_LS = getDOMImplementationLS();
-
 	private static HashMap inputMap = new HashMap(3);
-
-	private static DOMImplementationLS getDOMImplementationLS() {
-		try {
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			return (DOMImplementationLS) documentBuilder.getDOMImplementation().getFeature("LS", "3.0");
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Unexpected exception occurred.", e);
-		}
-	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -640,46 +622,11 @@ public abstract class AbstractPsychoPathTest extends TestCase {
 	}
 
 	protected String buildResultString(ResultSequence rs) {
-		String actual = new String();
-		Iterator iterator = rs.iterator();
-		while (iterator.hasNext()) {
-			AnyType anyType = (AnyType)iterator.next();
-
-			actual = actual + anyType.getStringValue() + " ";
-		}
-
-		return actual.trim();
+		return ResultSequenceFormatter.buildResultString(rs);
 	}
 
 	protected String buildXMLResultString(ResultSequence rs) throws Exception {
-        LSOutput outputText = DOM_IMPLEMENTATION_LS.createLSOutput();
-        LSSerializer serializer =  DOM_IMPLEMENTATION_LS.createLSSerializer();
-		serializer.getDomConfig().setParameter("xml-declaration", false);
-
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			outputText.setByteStream(outputStream);
-
-			Iterator iterator = rs.iterator();
-			boolean queueSpace = false;
-			while (iterator.hasNext()) {
-				AnyType aat = (AnyType) iterator.next();
-				if (aat instanceof NodeType) {
-					NodeType nodeType = (NodeType) aat;
-					Node node = nodeType.node_value();
-					if (!serializer.write(node, outputText)) {
-						throw new RuntimeException(
-							"Failed to serialize an element of ResultSequence to XML: \"" + node + "\"");
-					}
-					queueSpace = false;
-				} else {
-					if (queueSpace) outputText.getByteStream().write(32);
-					outputText.getByteStream().write(aat.getStringValue().getBytes("UTF-8"));
-					queueSpace = true;
-				}
-			}
-
-			return outputStream.toString("UTF-8").trim();
-		}
+		return ResultSequenceFormatter.buildXMLResultString(rs);
 	}
 
 	// org/apache/xml/serializer/Encodings.properties

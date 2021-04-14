@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xerces.xs.XSModel;
+import org.assertj.core.presentation.Representation;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
@@ -29,6 +31,7 @@ import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.Tes
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCaseRoot;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSources;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testsources.TestSourcesParser;
+import org.eclipse.wst.xml.xpath2.processor.testutil.ResultSequenceFormatter;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Bundle;
 import org.eclipse.wst.xml.xpath2.processor.testutil.bundle.Platform;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,6 +45,18 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 class ConformanceSuiteTest {
+    private static final Representation REPRESENTATION = new StandardRepresentation() {
+        @Override
+        public String toStringOf(Object object) {
+            if (object instanceof ResultSequence) {
+                return ResultSequenceFormatter.fullDebugString((ResultSequence) object);
+            }
+
+            return super.toStringOf(object);
+        }
+    };
+
+    @SuppressWarnings("unused")
     static Stream<Arguments> testcases() {
         return TestCaseHierarchyFlattener.flatten(testCaseRoot).stream()
             .filter(TestCaseFilter::isTestcaseEnabled)
@@ -144,6 +159,7 @@ class ConformanceSuiteTest {
         }
 
         assertThat(actual)
+            .withRepresentation(REPRESENTATION)
             .is(matchesAnyOfExpected(expectedOutputFiles, contentProvider, psychopathTestContext));
     }
 }
