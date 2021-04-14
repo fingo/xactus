@@ -61,7 +61,7 @@ public abstract class NodeType extends AnyType {
 	private Node _node;
 	protected TypeModel _typeModel;
 
-	public static final Comparator NODE_COMPARATOR = new Comparator() {
+	private static final Comparator NODE_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			return compare_node((NodeType)o1, (NodeType)o2);
 		}
@@ -228,8 +228,9 @@ public abstract class NodeType extends AnyType {
 
 	private static int compareDocuments(Document docA, Document docB) {
 		// Arbitrary but fulfills the spec (provided documentURI is always set)
-		if (docB.getDocumentURI() == null && docA.getDocumentURI() == null) {
-			return System.identityHashCode(docA) - System.identityHashCode(docB); 
+		if (docB.getDocumentURI() == null || docA.getDocumentURI() == null) {
+			throw new UnsupportedOperationException(
+				"Unable to deterministically order documents with no URI set.");
 		}
 
 		return docA.getDocumentURI().compareTo(docB.getDocumentURI());
