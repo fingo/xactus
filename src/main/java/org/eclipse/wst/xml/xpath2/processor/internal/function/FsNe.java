@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Moller - bug 280555 - Add pluggable collation support
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -36,7 +36,7 @@ public class FsNe extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -51,10 +51,10 @@ public class FsNe extends Function {
 
 	/**
 	 * Operation on the values of the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param context 
+	 * @param context
 	 *             The dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.
@@ -62,15 +62,19 @@ public class FsNe extends Function {
 	 */
 	public static ResultSequence fs_ne_value(Collection args, DynamicContext context)
 			throws DynamicError {
-		return FnNot.fn_not(FsEq.fs_eq_value(args, context));
+		ResultSequence rs = FsEq.fs_eq_value(args, context);
+		if(rs.empty()){
+			return rs;
+		}
+		return FnNot.fn_not(rs);
 	}
 
 	/**
 	 * General operation on the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param dc 
+	 * @param dc
 	 *             The dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.

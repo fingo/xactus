@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Steen Mooller - bug 280555 - Add pluggable collation support
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -39,7 +39,7 @@ public class FsGe extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -54,10 +54,10 @@ public class FsGe extends Function {
 
 	/**
 	 * Greater than or equal to operation on the values of the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param dc 
+	 * @param dc
 	 * @throws DynamicError
 	 *             Dynamic error.
 	 * @return Result of the operation.
@@ -66,23 +66,21 @@ public class FsGe extends Function {
 			throws DynamicError {
 		ResultSequence greater = FsGt.fs_gt_value(args, dc);
 
+		if(greater.empty())
+			return greater;
+
 		if (((XSBoolean) greater.first()).value())
 			return greater;
 
-		ResultSequence equal = FsEq.fs_eq_value(args, dc);
-
-		if (((XSBoolean) equal.first()).value())
-			return equal;
-
-		return ResultSequenceFactory.create_new(new XSBoolean(false));
+		return FsEq.fs_eq_value(args, dc);
 	}
 
 	/**
 	 * General greater than or equal to operation.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param dc 
+	 * @param dc
 	 *             The dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.
