@@ -8,8 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
- *     Jesper Moller- bug 281159 - debugging convenience toString method 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
+ *     Jesper Moller- bug 281159 - debugging convenience toString method
  *     David Carver (STAR) - bug 288886 - add unit tests and fix fn:resolve-qname function
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
@@ -30,7 +30,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLi
  * A representation of a QName datatype (name of a node)
  */
 public class QName extends CtrType implements CmpEq {
-	private static final String XS_Q_NAME = "xs:QName";
+	public static final String XS_Q_NAME = "xs:QName";
 	private String _namespace;
 	private String _prefix;
 	private String _local_part;
@@ -38,7 +38,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Initialises using the supplied parameters
-	 * 
+	 *
 	 * @param prefix
 	 *            Prefix of the node name
 	 * @param local_part
@@ -55,7 +55,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Initialises using the supplied parameters
-	 * 
+	 *
 	 * @param prefix
 	 *            Prefix of the node name
 	 * @param local_part
@@ -69,7 +69,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Initialises using only the node name (no prefix)
-	 * 
+	 *
 	 * @param local_part
 	 *            The node name
 	 */
@@ -88,35 +88,35 @@ public class QName extends CtrType implements CmpEq {
 	public QName(javax.xml.namespace.QName name) {
 		this(XMLConstants.DEFAULT_NS_PREFIX.equals(name.getPrefix()) ? null : name.getPrefix(), name.getLocalPart());
 		if (! XMLConstants.NULL_NS_URI.equals(name.getNamespaceURI())) set_namespace(name.getNamespaceURI());
-		_expanded = true; 
+		_expanded = true;
 	}
 
 	/**
 	 * Creates a new QName by parsing a String representation of the node name
-	 * 
+	 *
 	 * @param str
 	 *            String representation of the name
 	 * @return null
 	 */
 	public static QName parse_QName(String str) {
 		int occurs = 0;
-		
-		char[] strChrArr = str.toCharArray();		
+
+		char[] strChrArr = str.toCharArray();
 		for (int chrIndx = 0; chrIndx < strChrArr.length; chrIndx++) {
 		  if (strChrArr[chrIndx] == ':') {
-			 occurs += 1;  
+			 occurs += 1;
 		  }
 		}
-		
+
 		if (occurs > 1) {
 			return null;
 		}
-		
+
 		String[] tokens = str.split(":");
 
 		if (tokens.length == 1)
 			return new QName(tokens[0]);
-		
+
 		if (tokens.length == 2) {
 				return new QName(tokens[0], tokens[1]);
 		}
@@ -127,7 +127,7 @@ public class QName extends CtrType implements CmpEq {
 	/**
 	 * Creates a new ResultSequence consisting of the extractable QName in the
 	 * supplied ResultSequence
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to extract from
 	 * @return New ResultSequence consisting of the QName supplied
@@ -141,7 +141,7 @@ public class QName extends CtrType implements CmpEq {
 
 		if (!(aat instanceof XSString) && !(aat instanceof QName))
 			DynamicError.throw_type_error();
-		
+
 		String sarg = aat.getStringValue();
 
 		QName qname = parse_QName(sarg);
@@ -153,7 +153,7 @@ public class QName extends CtrType implements CmpEq {
 	/**
 	 * Retrieves a String representation of the node name. This method is
 	 * functionally identical to string()
-	 * 
+	 *
 	 * @return String representation of the node name
 	 */
 	public String getStringValue() {
@@ -162,7 +162,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:QName" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -171,7 +171,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "QName" which is the datatype's name
 	 */
 	public String type_name() {
@@ -181,7 +181,7 @@ public class QName extends CtrType implements CmpEq {
 	/**
 	 * Retrieves a String representation of the node name. This method is
 	 * functionally identical to string_value()
-	 * 
+	 *
 	 * @return String representation of the node name
 	 */
 	public String string() {
@@ -198,7 +198,7 @@ public class QName extends CtrType implements CmpEq {
 	/**
 	 * Retrieves the full pathname including the namespace. This method must not
 	 * be called if a namespace does exist for this node
-	 * 
+	 *
 	 * @return Full pathname including namespace
 	 */
 	public String expanded_name() {
@@ -215,7 +215,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the prefix of the node's pathname
-	 * 
+	 *
 	 * @return Prefix of the node's pathname
 	 */
 	public String prefix() {
@@ -224,7 +224,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Sets the namespace for this node
-	 * 
+	 *
 	 * @param n
 	 *            Namespace this node belongs in
 	 */
@@ -236,7 +236,7 @@ public class QName extends CtrType implements CmpEq {
 	/**
 	 * Retrieves the namespace that this node belongs in. This method must not
 	 * be called if the node does not belong in a namespace
-	 * 
+	 *
 	 * @return Namespace that this node belongs in
 	 */
 	public String namespace() {
@@ -246,7 +246,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the node's name
-	 * 
+	 *
 	 * @return Node's name
 	 */
 	public String local() {
@@ -255,7 +255,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Check for whether a namespace has been defined for this node
-	 * 
+	 *
 	 * @return True if a namespace has been defined for node. False otherwise
 	 */
 	public boolean expanded() {
@@ -264,7 +264,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Equality comparison between this QName and a supplied QName
-	 * 
+	 *
 	 * @param obj
 	 *            The object to compare with. Should be of type QName
 	 * @return True if the two represent the same node. False otherwise
@@ -308,7 +308,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Calculates the hashcode for the full pathname
-	 * 
+	 *
 	 * @return The hashcode for the full pathname
 	 */
 	public int hashCode() {
@@ -334,7 +334,7 @@ public class QName extends CtrType implements CmpEq {
 
 	/**
 	 * Equality comparison between this QName and the supplied QName
-	 * 
+	 *
 	 * @param arg
 	 *            The QName to compare with
 	 * @return True if the two represent the same node. False otherwise
@@ -344,11 +344,11 @@ public class QName extends CtrType implements CmpEq {
 		QName val = (QName) NumericType.get_single_type(arg, QName.class);
 		return equals(val);
 	}
-	
+
 	public String toString() {
 		return string();
 	}
-	
+
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_QNAME;
 	}
@@ -356,7 +356,7 @@ public class QName extends CtrType implements CmpEq {
 	public javax.xml.namespace.QName asQName() {
 		return new javax.xml.namespace.QName(namespace(), local(), prefix() != null ? prefix() : XMLConstants.DEFAULT_NS_PREFIX);
 	}
-	
+
 	@Override
 	public Object getNativeValue() {
 		return asQName();
