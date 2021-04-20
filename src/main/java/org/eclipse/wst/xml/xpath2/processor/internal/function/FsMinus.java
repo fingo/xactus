@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
@@ -37,7 +37,7 @@ public class FsMinus extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -52,7 +52,7 @@ public class FsMinus extends Function {
 
 	/**
 	 * General operation on the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @throws DynamicError
@@ -65,7 +65,7 @@ public class FsMinus extends Function {
 
 	/**
 	 * Unary operation on the values of the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @throws DynamicError
@@ -83,7 +83,9 @@ public class FsMinus extends Function {
 		if (arg.size() != 1)
 			DynamicError.throw_type_error();
 		Item at = arg.first();
-		if (!(at instanceof NumericType))
+		at = FnData.atomize( at );
+
+		if(!(at instanceof NumericType))
 			DynamicError.throw_type_error();
 
 		NumericType nt = (NumericType) at;
