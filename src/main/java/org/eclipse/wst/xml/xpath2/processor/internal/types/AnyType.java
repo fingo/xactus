@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor.internal.types;
@@ -29,7 +29,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.SingleItemSeq
  */
 public abstract class AnyType implements SingleItemSequence {
 
-	protected static DatatypeFactory _datatypeFactory;
+	protected static final DatatypeFactory _datatypeFactory;
 	static {
 		try {
 			_datatypeFactory = DatatypeFactory.newInstance();
@@ -41,25 +41,25 @@ public abstract class AnyType implements SingleItemSequence {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return Datatype's full pathname
 	 */
 	public abstract String string_type();
 
 	/**
 	 * Retrieves the datatype's text representation
-	 * 
+	 *
 	 * @return Value as a string
 	 */
 	public abstract String getStringValue();
-	
+
 	public String string_value() {
 		return getStringValue();
 	}
-	
+
 	/**
 	 * Returns the "new style" of TypeDefinition for this item.
-	 * 
+	 *
 	 * @return Type definition (possibly backed by a schema type)
 	 */
 	public abstract TypeDefinition getTypeDefinition();
@@ -67,17 +67,17 @@ public abstract class AnyType implements SingleItemSequence {
 	public boolean empty() {
 		return false;
 	}
-	
+
 	public Iterator<Item> iterator() {
 		return Collections.singletonList((Item)this).iterator();
 	}
-	
+
 	public ItemType getItemType() {
 		return new SimpleAtomicItemTypeImpl(getTypeDefinition());
 	}
-	
+
 	abstract public Object getNativeValue();
-	
+
 	public int size() {
 		return 1;
 	}
@@ -99,7 +99,7 @@ public abstract class AnyType implements SingleItemSequence {
 		checkIOOB(index);
 		return getItemType();
 	}
-	
+
 	public AnyType first() {
 		return this;
 	}

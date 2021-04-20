@@ -11,7 +11,7 @@
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 273719 - String Length does not work with Element arg.
  *     Mukul Gandhi - bug 273795 - improvements to function, substring (implemented
- *                                 numeric type promotion). 
+ *                                 numeric type promotion).
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Steen Moeller - bug 281159 - implement xs:anyUri -> xs:string promotion
  *     Jesper Steen Moller  - bug 281938 - undefined context should raise error
@@ -50,7 +50,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLi
  */
 public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Function {
 
-	protected static DatatypeFactory _datatypeFactory;
+	protected static final DatatypeFactory _datatypeFactory;
 	static {
 		try {
 			_datatypeFactory = DatatypeFactory.newInstance();
@@ -64,8 +64,8 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	/**
 	 * if negative, need to have "at least"
 	 */
-	protected int _min_arity; 
-	
+	protected int _min_arity;
+
 	/**
 	 * If "at least", this speci, unlimited if -1
 	 */
@@ -73,7 +73,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Constructor for Function.
-	 * 
+	 *
 	 * @param name
 	 *            QName.
 	 * @param arity
@@ -90,7 +90,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Constructor for Function.
-	 * 
+	 *
 	 * @param name
 	 *            QName.
 	 * @param arity
@@ -107,7 +107,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Support for QName interface.
-	 * 
+	 *
 	 * @return Result of QName operation.
 	 */
 	public QName name() {
@@ -116,7 +116,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Minimal number of allowed arguments.
-	 * 
+	 *
 	 * @return The smallest number of erguments possible
 	 */
 	public int min_arity() {
@@ -125,7 +125,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Maximum number of allowed arguments.
-	 * 
+	 *
 	 * @return The highest number of erguments possible
 	 */
 	public int max_arity() {
@@ -134,7 +134,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Checks if this function has an to the
-	 * 
+	 *
 	 * @param actual_arity
 	 * @return
 	 */
@@ -143,10 +143,10 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 		if (actual_arity > max_arity()) return false;
 		return true;
 	}
-	
+
 	/**
 	 * Default constructor for signature.
-	 * 
+	 *
 	 * @return Signature.
 	 */
 	public String signature() {
@@ -155,7 +155,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Obtain the function name and arity from signature.
-	 * 
+	 *
 	 * @param f
 	 *            current function.
 	 * @return Signature.
@@ -166,7 +166,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Apply the name and arity to signature.
-	 * 
+	 *
 	 * @param name
 	 *            QName.
 	 * @param arity
@@ -190,7 +190,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -205,7 +205,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	// convert argument according to section 3.1.5 of xpath 2.0 spec
 	/**
 	 * Convert the input argument according to section 3.1.5 of specification.
-	 * 
+	 *
 	 * @param arg
 	 *            input argument.
 	 * @param expected
@@ -224,14 +224,14 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 		// expected is atomic
 		if (expected_type instanceof AnyAtomicType) {
 			AnyAtomicType expected_aat = (AnyAtomicType) expected_type;
-			
+
 			// atomize
 			org.eclipse.wst.xml.xpath2.api.ResultSequence rs = FnData.atomize(arg);
 
 			// cast untyped to expected type
 			for (Iterator i = rs.iterator(); i.hasNext();) {
 				AnyType item = (AnyType) i.next();
-				
+
 				if (item instanceof XSUntypedAtomic) {
 					// create a new item of the expected
 					// type initialized with from the string
@@ -244,7 +244,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 					else {
 					   converted = ResultSequenceFactory.create_new(item);
 					}
-					
+
 					result.concat(converted);
 				}
 				// xs:anyURI promotion to xs:string
@@ -276,7 +276,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	// returns collection of arguments
 	/**
 	 * Convert arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @param expected
@@ -306,7 +306,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	protected static ResultSequence getResultSetForArityZero(EvaluationContext ec)
 			throws DynamicError {
 		ResultSequence rs = ResultSequenceFactory.create_new();
-		
+
 		Item contextItem = ec.getContextItem();
 		if (contextItem != null) {
 		  // if context item is defined, then that is the default argument
@@ -361,7 +361,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 
 	public org.eclipse.wst.xml.xpath2.api.ResultSequence evaluate(Collection/*<ResultSequence>*/ args,
 			EvaluationContext evaluationContext) {
-		
+
 		org.eclipse.wst.xml.xpath2.processor.ResultSequence result = evaluate(args);
 		return result;
 	}
