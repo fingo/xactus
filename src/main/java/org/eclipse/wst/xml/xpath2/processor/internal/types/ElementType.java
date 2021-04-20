@@ -19,7 +19,7 @@
  *     Mukul Gandhi - bug 323900 - improving computing the typed value of element &
  *                                 attribute nodes, where the schema type of nodes
  *                                 are simple, with varieties 'list' and 'union'.
- *     Lukasz Wycisk - bug 361659 - ElemntType typed value in case of nil=�true�                              
+ *     Lukasz Wycisk - bug 361659 - ElemntType typed value in case of nil=�true�
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.internal.types;
@@ -59,7 +59,7 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Initialises according to the supplied parameters
-	 * 
+	 *
 	 * @param v
 	 *            The element being represented
 	 */
@@ -72,7 +72,7 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Retrieves the actual element value being represented
-	 * 
+	 *
 	 * @return Actual element value being represented
 	 */
 	public Element value() {
@@ -81,7 +81,7 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "element" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -90,14 +90,10 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Retrieves a String representation of the element being stored
-	 * 
+	 *
 	 * @return String representation of the element being stored
 	 */
 	public String getStringValue() {
-		// XXX can we cache ?
-		if (_string_value != null)
-			return _string_value;
-
 		_string_value = textnode_strings(_value);
 
 		return _string_value;
@@ -105,11 +101,11 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Creates a new ResultSequence consisting of the element stored
-	 * 
+	 *
 	 * @return New ResultSequence consisting of the element stored
 	 */
 	public ResultSequence typed_value() {
-		
+
 		TypeDefinition typeDef = getType();
 
 		if (!isNilled(_value)) {
@@ -130,7 +126,7 @@ public class ElementType extends NodeType {
 	// recursively concatenate TextNode strings
 	/**
 	 * Recursively concatenate TextNode strings
-	 * 
+	 *
 	 * @param node
 	 *            Node to recurse
 	 * @return String representation of the node supplied
@@ -159,7 +155,7 @@ public class ElementType extends NodeType {
 
 	/**
 	 * Retrieves the name of the node
-	 * 
+	 *
 	 * @return QName representation of the name of the node
 	 */
 	public QName node_name() {
@@ -197,7 +193,7 @@ public class ElementType extends NodeType {
 		TypeInfo typeInfo = _value.getSchemaTypeInfo();
 		return isType(typeInfo, typeName);
 	}
-	
+
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_UNTYPED;
 	}
