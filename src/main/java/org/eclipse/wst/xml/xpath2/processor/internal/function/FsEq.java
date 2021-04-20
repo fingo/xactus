@@ -10,7 +10,7 @@
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 276134 - improvements to schema aware primitive type support
- *                                 for attribute/element nodes 
+ *                                 for attribute/element nodes
  *     David Carver - bug 262765 - fixed comparison on sequence range values.
  *     Jesper S Moller - bug 283214 - fix eq for untyped atomic values
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
@@ -55,7 +55,7 @@ public class FsEq extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -70,7 +70,7 @@ public class FsEq extends Function {
 
 	/**
 	 * Converts arguments to values.
-	 * 
+	 *
 	 * @param args
 	 *            Result from expressions evaluation.
 	 * @throws DynamicError
@@ -107,7 +107,7 @@ public class FsEq extends Function {
 
 	/**
 	 * Conversion operation for the values of the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            Result from convert value operation.
 	 * @throws DynamicError
@@ -121,7 +121,7 @@ public class FsEq extends Function {
 
 	/**
 	 * A fast Equality operation, no conversion for the inputs performed.
-	 * 
+	 *
 	 * @param one
 	 *            input1 of any type.
 	 * @param two
@@ -152,7 +152,7 @@ public class FsEq extends Function {
 
 	/**
 	 * Making sure that the types are the same before comparing the inputs.
-	 * 
+	 *
 	 * @param a
 	 *            input1 of any type.
 	 * @param b
@@ -241,11 +241,11 @@ public class FsEq extends Function {
 
 	/**
 	 * A general equality function.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @param dc
-	 *         Dynamic context 
+	 *         Dynamic context
 	 * @return Result of general equality operation.
 	 */
 	public static ResultSequence fs_eq_general(Collection args, DynamicContext dc)
@@ -256,7 +256,7 @@ public class FsEq extends Function {
 	// voodoo 3
 	/**
 	 * Actual equality operation for fs_eq_general.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @param type
@@ -279,7 +279,7 @@ public class FsEq extends Function {
 			comparator = type.getMethod(mname, margsdef);
 
 		} catch (NoSuchMethodException err) {
-			throw new RuntimeException("Can�'t find method : " + mname, err);
+			throw new RuntimeException("Can't find method : " + mname, err);
 		}
 
 		// sanity check args and get them
@@ -317,14 +317,14 @@ public class FsEq extends Function {
 	// voodoo 2
 	/**
 	 * Actual equality operation for fs_eq_value.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @param type
 	 *            type of the arguments.
 	 * @param mname
 	 *            Method name for template simulation.
-	 * @param dynamicContext 
+	 * @param dynamicContext
 	 *             Dynamic error.
 	 * @throws DynamicError
 	 *             Dynamic error.
