@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -19,7 +19,7 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 
 /**
  * Factory implementation which creates sequences of type DefaultResultSequence.
- * 
+ *
  */
 public class DefaultRSFactory extends ResultSequenceFactory {
 	private static final ResultSequence _rs_creator = new DefaultResultSequence();
@@ -28,10 +28,11 @@ public class DefaultRSFactory extends ResultSequenceFactory {
 
 	private ResultSequence[] _rs_pool = new ResultSequence[POOL_SIZE];
 	private int _head_pos;
+	private final Object lock = new Object();
 
 	/**
 	 * Constructor of factory.
-	 * 
+	 *
 	 */
 	public DefaultRSFactory() {
 		for (int i = 0; i < POOL_SIZE; i++)
@@ -41,21 +42,25 @@ public class DefaultRSFactory extends ResultSequenceFactory {
 	}
 
 	protected ResultSequence fact_create_new() {
-		if (_head_pos > 0) {
-			return _rs_pool[_head_pos--];
-		}
+		synchronized(lock) {
+			if (_head_pos > 0) {
+				return _rs_pool[_head_pos--];
+			}
 
-		return _rs_creator.create_new();
+			return _rs_creator.create_new();
+		}
 	}
 
 	protected void fact_release(ResultSequence rs) {
-		int new_pos = _head_pos + 1;
+		synchronized(lock) {
+			int new_pos = _head_pos + 1;
 
-		if (new_pos < POOL_SIZE) {
-			rs.clear();
+			if (new_pos < POOL_SIZE) {
+				rs.clear();
 
-			_head_pos = new_pos;
-			_rs_pool[new_pos] = rs;
+				_head_pos = new_pos;
+				_rs_pool[new_pos] = rs;
+			}
 		}
 	}
 
