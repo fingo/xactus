@@ -8,11 +8,11 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
  *     Jesper Steen Moller - bug 343804 - Updated API information
  *     Lukasz Wycisk - bug 361802 - Default variable namespace � no namespace
- *     
+ *
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor;
@@ -21,11 +21,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import javax.xml.XMLConstants;
-
 import org.eclipse.wst.xml.xpath2.api.Function;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
+import org.eclipse.wst.xml.xpath2.processor.function.XSCtrLibrary;
 import org.eclipse.wst.xml.xpath2.processor.internal.ReverseAxis;
 import org.eclipse.wst.xml.xpath2.processor.internal.StaticAttrNameError;
 import org.eclipse.wst.xml.xpath2.processor.internal.StaticContextAdapter;
@@ -34,7 +33,6 @@ import org.eclipse.wst.xml.xpath2.processor.internal.StaticFunctNameError;
 import org.eclipse.wst.xml.xpath2.processor.internal.StaticNameError;
 import org.eclipse.wst.xml.xpath2.processor.internal.StaticNsNameError;
 import org.eclipse.wst.xml.xpath2.processor.internal.StaticTypeNameError;
-import org.eclipse.wst.xml.xpath2.processor.internal.StaticVarNameError;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.AddExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.AndExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.AnyKindTest;
@@ -73,6 +71,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.ast.PITest;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.ParExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.PipeExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.PlusExpr;
+import org.eclipse.wst.xml.xpath2.processor.internal.ast.PrimaryExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.QuantifiedExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.RangeExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.ReverseStep;
@@ -92,6 +91,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.ast.VarRef;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.XPathExpr;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.XPathNode;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.XPathVisitor;
+import org.eclipse.wst.xml.xpath2.processor.internal.function.XSQNameConstructor;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.SimpleAtomicItemTypeImpl;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeDefinition;
@@ -104,20 +104,20 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	static class DummyError extends Error {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 3898564402981741950L;
 	}
 
 	private org.eclipse.wst.xml.xpath2.api.StaticContext _sc;
 	private StaticNameError _err;
-	
+
 	private Set<javax.xml.namespace.QName> _resolvedFunctions = new HashSet<javax.xml.namespace.QName>();
 	private Set<String> _axes = new HashSet<String>();
 	private Set<javax.xml.namespace.QName> _freeVariables = new HashSet<javax.xml.namespace.QName>();
 	/**
 	 * Constructor for static name resolver
-	 * 
+	 *
 	 * @param sc
 	 *            is the static context.
 	 * @since 2.0
@@ -143,30 +143,30 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 		}
 		final public QName name;
 		final public org.eclipse.wst.xml.xpath2.api.typesystem.ItemType typeDef;
-		final public VariableScope nextScope; 
-	}	
-	
+		final public VariableScope nextScope;
+	}
+
 	/**
 	 * @since 2.0
 	 */
 	public Set<String> getAxes() {
 		return _axes;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 */
 	public Set<javax.xml.namespace.QName> getFreeVariables() {
 		return _freeVariables;
 	}
-	
+
 	/**
 	 * @since 2.0
 	 */
 	public Set<javax.xml.namespace.QName> getResolvedFunctions() {
 		return _resolvedFunctions;
 	}
-	
+
 	private VariableScope _innerScope = null;
 	private boolean _rootUsed;
 
@@ -191,16 +191,16 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	private boolean isVariableInScope(QName name) {
 		return isVariableCaptured(name) || _sc.getInScopeVariables().isVariablePresent(name.asQName());
 	}
-	
+
 	private void popScope() {
 		if (_innerScope == null) throw new IllegalStateException("Unmatched scope pop");
 		_innerScope = _innerScope.nextScope;
 	}
 
 	private void pushScope(QName var, BuiltinTypeDefinition xsAnytype) {
-		_innerScope = new VariableScope(var, new SimpleAtomicItemTypeImpl(xsAnytype), _innerScope);		
+		_innerScope = new VariableScope(var, new SimpleAtomicItemTypeImpl(xsAnytype), _innerScope);
 	}
- 
+
 	private boolean expandQName(QName name, String def, boolean allowWildcards) {
 		String prefix = name.prefix();
 
@@ -235,7 +235,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Expands a qname and uses the default function namespace if unprefixed.
-	 * 
+	 *
 	 * @param name
 	 *            qname to expand.
 	 * @return true on success.
@@ -247,7 +247,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	/**
 	 * Expands a qname and uses the default type/element namespace if
 	 * unprefixed.
-	 * 
+	 *
 	 * @param name
 	 *            qname to expand.
 	 * @return true on success.
@@ -255,7 +255,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	private boolean expandItemTypeQName(QName name) {
 		return expandQName(name, _sc.getDefaultNamespace(), false);
 	}
-	
+
 	// the problem is that visistor interface does not throw exceptions...
 	// so we get around it ;D
 	private void reportError(StaticNameError err) {
@@ -269,7 +269,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Check the XPath node.
-	 * 
+	 *
 	 * @param node
 	 *            is the XPath node to check.
 	 * @throws StaticError
@@ -285,7 +285,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an XPath by visiting all the nodes.
-	 * 
+	 *
 	 * @param xp
 	 *            is the XPath.
 	 * @return null.
@@ -330,7 +330,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a for expression.
-	 * 
+	 *
 	 * @param fex
 	 *            is the for expression.
 	 * @return null.
@@ -344,7 +344,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a quantified expression.
-	 * 
+	 *
 	 * @param qex
 	 *            is the quantified expression.
 	 * @return null.
@@ -366,7 +366,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an if expression.
-	 * 
+	 *
 	 * @param ifex
 	 *            is the if expression.
 	 * @return null.
@@ -384,7 +384,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a binary expression by checking its left and right children.
-	 * 
+	 *
 	 * @param name
 	 *            is the name of the binary expression.
 	 * @param e
@@ -397,7 +397,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an OR expression.
-	 * 
+	 *
 	 * @param orex
 	 *            is the expression.
 	 * @return null.
@@ -409,7 +409,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an AND expression.
-	 * 
+	 *
 	 * @param andex
 	 *            is the expression.
 	 * @return null.
@@ -421,7 +421,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a comparison expression.
-	 * 
+	 *
 	 * @param cmpex
 	 *            is the expression.
 	 * @return null.
@@ -433,7 +433,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a range expression.
-	 * 
+	 *
 	 * @param rex
 	 *            is the expression.
 	 * @return null.
@@ -445,7 +445,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an additon expression.
-	 * 
+	 *
 	 * @param addex
 	 *            is the expression.
 	 * @return null.
@@ -457,7 +457,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a subtraction expression.
-	 * 
+	 *
 	 * @param subex
 	 *            is the expression.
 	 * @return null.
@@ -469,7 +469,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a multiplication expression.
-	 * 
+	 *
 	 * @param mulex
 	 *            is the expression.
 	 * @return null.
@@ -481,7 +481,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a division expression.
-	 * 
+	 *
 	 * @param mulex
 	 *            is the expression.
 	 * @return null.
@@ -493,7 +493,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an integer divison expression.
-	 * 
+	 *
 	 * @param mulex
 	 *            is the expression.
 	 * @return null.
@@ -505,7 +505,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a mod expression.
-	 * 
+	 *
 	 * @param mulex
 	 *            is the expression.
 	 * @return null.
@@ -517,7 +517,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a union expression.
-	 * 
+	 *
 	 * @param unex
 	 *            is the expression.
 	 * @return null.
@@ -529,7 +529,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a piped expression.
-	 * 
+	 *
 	 * @param pipex
 	 *            is the expression.
 	 * @return null.
@@ -541,7 +541,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an intersection expression.
-	 * 
+	 *
 	 * @param iexpr
 	 *            is the expression.
 	 * @return null.
@@ -553,7 +553,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an except expression.
-	 * 
+	 *
 	 * @param eexpr
 	 *            is the expression.
 	 * @return null.
@@ -565,7 +565,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an 'instance of' expression.
-	 * 
+	 *
 	 * @param ioexp
 	 *            is the expression.
 	 * @return null.
@@ -577,7 +577,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a 'treat as' expression.
-	 * 
+	 *
 	 * @param taexp
 	 *            is the expression.
 	 * @return null.
@@ -589,7 +589,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a castable expression.
-	 * 
+	 *
 	 * @param cexp
 	 *            is the expression.
 	 * @return null.
@@ -601,22 +601,22 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a cast expression.
-	 * 
+	 *
 	 * @param cexp
 	 *            is the expression.
 	 * @return null.
 	 */
 	public Object visit(CastExpr cexp) {
 		printBinExpr("CAST", cexp);
-		
+
 		SingleType st = (SingleType) cexp.right();
 		QName type = st.type();
-		
+
 		javax.xml.namespace.QName qName = type.asQName();
 		Function f = _sc.resolveFunction(qName, 1);
 		if (f == null)
 			reportError(new StaticFunctNameError("Type does not exist: "
-					+ type.toString()));
+				+ type.toString()));
 		cexp.set_function(f);
 		_resolvedFunctions.add(qName);
 
@@ -625,7 +625,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a unary expression by checking its one child.
-	 * 
+	 *
 	 * @param name
 	 *            is the name of the expression.
 	 * @param e
@@ -638,7 +638,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a minus expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -650,7 +650,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a plus expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -662,7 +662,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an xpath expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -670,11 +670,11 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	public Object visit(XPathExpr e) {
 		XPathExpr xp = e;
 		boolean firstStep = true;
-		
+
 		while (xp != null) {
 			if (firstStep && xp.slashes() != 0)
 				_rootUsed = true;
-			
+
 			firstStep = false;
 			StepExpr se = xp.expr();
 
@@ -688,7 +688,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a forward step.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -697,13 +697,13 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 		e.node_test().accept(this);
 
 		_axes.add(e.iterator().name());
-		
+
 		return null;
 	}
 
 	/**
 	 * Validate a reverse step.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -713,7 +713,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 		NodeTest nt = e.node_test();
 		if (nt != null)
 			nt.accept(this);
-		
+
 		ReverseAxis iterator = e.iterator();
 		if (iterator != null)
 			_axes.add(iterator.name());
@@ -723,7 +723,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a name test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -739,32 +739,32 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a variable reference.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
 	 */
 	public Object visit(VarRef e) {
 		QName var = e.name();
-		
+
 		if (!expandVarQName(var))
 			reportBadPrefix(var.prefix());
 
 		if (! isVariableInScope(var))
-			reportError(new StaticNameError(StaticNameError.NAME_NOT_FOUND));
-		
+			reportError( new StaticNameError( "Variable not declared: " + var.string() ) );
+
 		if (getVariableType(var) == null)
-			reportError(new StaticNameError(StaticNameError.NAME_NOT_FOUND));
+			reportError( new StaticNameError( "Variable not declared: " + var.string() ) );
 
 		// The variable is good. If it was not captured, it must be referring to an external var
 		if (! isVariableCaptured(var)) _freeVariables.add(var.asQName());
-		
+
 		return null;
 	}
 
 	/**
 	 * Validate a string literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -775,7 +775,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an integer literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -786,7 +786,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a double literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -797,7 +797,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a decimal literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -808,7 +808,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a parenthesized expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -820,7 +820,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a context item expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -831,7 +831,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a function call.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -846,17 +846,63 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 		Function f = _sc.resolveFunction(qName, e.arity());
 		if (f == null)
 			reportError(new StaticFunctNameError("Function does not exist: "
-					+ name.string() + " arity: " + e.arity()));
+				+ name.string() + " arity: " + e.arity()));
+
+		if( qName.getNamespaceURI().equals( XSCtrLibrary.XML_SCHEMA_NS )
+			&& qName.getLocalPart().equalsIgnoreCase( XSQNameConstructor.XS_Q_NAME ) )
+		{
+			StringLiteral stringArgument = getStringArgument( e );
+			if( stringArgument == null )
+			{
+				reportError( new StaticNameError( "!", "not string in function" ) );
+			}
+
+			QName qnameArg = QName.parse_QName( stringArgument.string() );
+			if( qnameArg.prefix() == null )
+			{
+				qnameArg.set_namespace( this._sc.getDefaultNamespace() );
+			}
+			else
+			{
+				String namespaceURI = this._sc.getNamespaceContext().getNamespaceURI( qnameArg.prefix() );
+				if( namespaceURI == null )
+				{
+					reportError( new StaticNameError( "!", "unknown uri for prefix: " + qnameArg.prefix() ) );
+				}
+				qnameArg.set_namespace( namespaceURI );
+			}
+
+			f = new XSQNameConstructor( qnameArg );
+		}
+
 		e.set_function(f);
 		_resolvedFunctions.add(qName);
-		
+
 		visitExprs(e.iterator());
+		return null;
+	}
+
+	private StringLiteral getStringArgument( FunctionCall e )
+	{
+		Object arg1 = e.iterator().next();
+		if( arg1 instanceof XPathExpr && (((XPathExpr)arg1).expr() instanceof FilterExpr) )
+		{
+			StepExpr exp = ((XPathExpr)arg1).expr();
+			if( exp instanceof FilterExpr )
+			{
+				PrimaryExpr primary = ((FilterExpr)exp).primary();
+				if( primary instanceof StringLiteral )
+				{
+					return (StringLiteral)primary;
+				}
+			}
+		}
 		return null;
 	}
 
 	/**
 	 * Validate a single type.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -871,7 +917,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a sequence type.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -887,7 +933,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an item type.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -895,23 +941,23 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	public Object visit(ItemType e) {
 
 		switch (e.type()) {
-		case ItemType.ITEM:
-			break;
-		case ItemType.QNAME:
-			QName type = e.qname();
-			if (!expandItemTypeQName(type))
-				reportBadPrefix(type.prefix());
+			case ItemType.ITEM:
+				break;
+			case ItemType.QNAME:
+				QName type = e.qname();
+				if (!expandItemTypeQName(type))
+					reportBadPrefix(type.prefix());
 
-			if (BuiltinTypeLibrary.BUILTIN_TYPES.lookupType(e.qname().namespace(), e.qname().local()) == null) {
-				if (_sc.getTypeModel() == null || _sc.getTypeModel().lookupType(e.qname().namespace(), e.qname().local()) == null)
-					reportError(new StaticTypeNameError("Type not defined: "
+				if (BuiltinTypeLibrary.BUILTIN_TYPES.lookupType(e.qname().namespace(), e.qname().local()) == null) {
+					if (_sc.getTypeModel() == null || _sc.getTypeModel().lookupType(e.qname().namespace(), e.qname().local()) == null)
+						reportError(new StaticTypeNameError("Type not defined: "
 							+ e.qname().string()));
-			}
-			break;
+				}
+				break;
 
-		case ItemType.KINDTEST:
-			e.kind_test().accept(this);
-			break;
+			case ItemType.KINDTEST:
+				e.kind_test().accept(this);
+				break;
 		}
 
 		return null;
@@ -919,7 +965,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an any kind test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -930,7 +976,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a document test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -938,20 +984,20 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 	public Object visit(DocumentTest e) {
 
 		switch (e.type()) {
-		case DocumentTest.ELEMENT:
-			e.elem_test().accept(this);
-			break;
+			case DocumentTest.ELEMENT:
+				e.elem_test().accept(this);
+				break;
 
-		case DocumentTest.SCHEMA_ELEMENT:
-			e.schema_elem_test().accept(this);
-			break;
+			case DocumentTest.SCHEMA_ELEMENT:
+				e.schema_elem_test().accept(this);
+				break;
 		}
 		return null;
 	}
 
 	/**
 	 * Validate a text test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -962,7 +1008,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a comment test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -973,7 +1019,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a processing instructing test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -988,7 +1034,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an attribute test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -1000,7 +1046,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 			if (!expandItemQName(name))
 				reportBadPrefix(name.prefix());
 		}
-		
+
 		name = e.type();
 		if (name != null) {
 			if (!expandItemTypeQName(name))
@@ -1011,7 +1057,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a schema attribute test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -1024,14 +1070,14 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 		if (_sc.getTypeModel().lookupAttributeDeclaration(name.namespace(), name.local()) == null)
 			reportError(new StaticAttrNameError("Attribute not decleared: "
-					+ name.string()));
+				+ name.string()));
 
 		return null;
 	}
 
 	/**
 	 * Validate an element test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -1042,7 +1088,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 			if (!expandItemTypeQName(e.name()))
 				reportBadPrefix(e.name().prefix());
 		}
-		
+
 		if (e.type() != null) {
 			if (!expandItemTypeQName(e.type()))
 				reportBadPrefix(e.type().prefix());
@@ -1052,7 +1098,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a schema element test.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -1065,7 +1111,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 		if (_sc.getTypeModel().lookupElementDeclaration(elem.namespace(), elem.local()) == null)
 			reportError(new StaticElemNameError("Element not declared: "
-					+ elem.string()));
+				+ elem.string()));
 		return null;
 	}
 
@@ -1079,7 +1125,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate an axis step.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
@@ -1094,7 +1140,7 @@ public class StaticNameResolver implements XPathVisitor, StaticChecker {
 
 	/**
 	 * Validate a filter expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the expression.
 	 * @return null.
