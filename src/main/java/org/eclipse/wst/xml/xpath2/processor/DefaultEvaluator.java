@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
- *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type 
+ *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type
  *     Jesper Steen Moeller - bug 285145 - check arguments to op:to
  *     Jesper Steen Moeller - bug 262765 - fixed node state iteration
  *     Jesper Steen Moller  - bug 275610 - Avoid big time and memory overhead for externals
@@ -174,7 +174,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	private Focus _focus = new Focus(ResultBuffer.EMPTY);
 
 	Focus focus() { return _focus ; }
-	
+
 	void set_focus(Focus f) { _focus = f; }
 
 	static class Pair {
@@ -193,7 +193,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	}
 
 	private void pushScope(QName var, org.eclipse.wst.xml.xpath2.api.ResultSequence value) {
-		_innerScope = new VariableScope(var, value, _innerScope);		
+		_innerScope = new VariableScope(var, value, _innerScope);
 	}
 
 	private boolean derivesFrom(NodeType at, QName et) {
@@ -211,12 +211,12 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	public DefaultEvaluator(org.eclipse.wst.xml.xpath2.processor.DynamicContext dynamicContext, Document doc) {
 		this(new StaticContextAdapter(dynamicContext), new DynamicContextAdapter(dynamicContext));
-		
-		ResultSequence focusSequence = (doc != null) ? new DocType(doc, _sc.getTypeModel()) : ResultBuffer.EMPTY;   
+
+		ResultSequence focusSequence = (doc != null) ? new DocType(doc, _sc.getTypeModel()) : ResultBuffer.EMPTY;
 		set_focus(new Focus(focusSequence));
 		dynamicContext.set_focus(focus());
 	}
-	
+
 	/**
 	 * @since 2.0
 	 */
@@ -226,7 +226,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		// initialize context item with root of document
 		ResultBuffer rs = new ResultBuffer();
 		for (Object obj : contextItems) {
-			if (obj instanceof Node) rs.add(NodeType.dom_to_xpath((Node)obj, _sc.getTypeModel()));
+			if (obj instanceof Node) {
+				rs.add(NodeType.dom_to_xpath((Node)obj, _sc.getTypeModel()));
+			}
+
+			if (obj instanceof Item) {
+				rs.add((Item)obj);
+			}
 		}
 
 		set_focus(new Focus(rs.getSequence()));
@@ -237,23 +243,23 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		_sc = staticContext;
 		_dc = dynamicContext;
 		_ec = new EvaluationContext() {
-			
+
 			public org.eclipse.wst.xml.xpath2.api.DynamicContext getDynamicContext() {
 				return _dc;
 			}
-			
+
 			public AnyType getContextItem() {
 				return _focus.context_item();
 			}
-			
+
 			public int getContextPosition() {
 				return _focus.position();
 			}
-		
+
 			public int getLastPosition() {
 				return _focus.last();
 			}
-			
+
 			public StaticContext getStaticContext() {
 				return _sc;
 			}
@@ -268,9 +274,9 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		}
 		final public QName name;
 		final public org.eclipse.wst.xml.xpath2.api.ResultSequence value;
-		final public VariableScope nextScope; 
-	}	
-	
+		final public VariableScope nextScope;
+	}
+
 	private VariableScope _innerScope = null;
 
 	private org.eclipse.wst.xml.xpath2.api.ResultSequence getVariable(QName name) {
@@ -309,7 +315,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * evaluate the xpath node
-	 * 
+	 *
 	 * @param node
 	 *            is the xpath node.
 	 * @throws dynamic
@@ -326,7 +332,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public ResultSequence evaluate2(XPathNode node) {
 		return (org.eclipse.wst.xml.xpath2.api.ResultSequence) node.accept(this);
 	}
-	
+
 	// basically the comma operator...
 	private ResultSequence do_expr(Iterator i) {
 
@@ -359,7 +365,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * iterate through xpath expression
-	 * 
+	 *
 	 * @param xp
 	 *            is the xpath.
 	 * @return result sequence.
@@ -430,11 +436,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			try {
 				for (Iterator i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
-	
+
 					pushScope(varname, item);
 					XSBoolean effbool = do_for_all(iter, finalexpr);
 					popScope();
-					
+
 					// ok here we got a "real" result, now figure
 					// out what to do with it
 					if (!effbool.value())
@@ -470,11 +476,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			try {
 				for (Iterator i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
-	
+
 					pushScope(varname, item);
 					XSBoolean effbool = do_exists(iter, finalexpr);
 					popScope();
-	
+
 					// ok here we got a "real" result, now figure
 					// out what to do with it
 					if (effbool.value())
@@ -483,7 +489,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			} finally {
 				iter.previous();
 			}
-			
+
 			// since none in this sequence evaluated to true, return false
 			return XSBoolean.FALSE;
 		}
@@ -496,7 +502,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit for expression
-	 * 
+	 *
 	 * @param fex
 	 *            is the for expression.
 	 * @return a new function.
@@ -504,14 +510,14 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public Object visit(ForExpr fex) {
 		// XXX
 		List pairs = new ArrayList(fex.ve_pairs());
-		ResultBuffer rb = new ResultBuffer(); 
+		ResultBuffer rb = new ResultBuffer();
 		do_for_each(pairs.listIterator(), fex.expr(), rb);
 		return rb.getSequence();
 	}
 
 	/**
 	 * visit quantified expression
-	 * 
+	 *
 	 * @param qex
 	 *            is the quantified expression.
 	 * @return a new function or null.
@@ -533,7 +539,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit if expression
-	 * 
+	 *
 	 * @param ifex
 	 *            is the if expression.
 	 * @return a ifex.then_clause().accept(this).
@@ -566,7 +572,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit or expression
-	 * 
+	 *
 	 * @param orex
 	 *            is the or expression.
 	 * @return a new function
@@ -580,7 +586,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit and expression
-	 * 
+	 *
 	 * @param andex
 	 *            is the and expression.
 	 * @return a new function
@@ -644,7 +650,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit compare expression
-	 * 
+	 *
 	 * @param cmpex
 	 *            is the compare expression.
 	 * @return a new function or null
@@ -706,7 +712,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit range expression
-	 * 
+	 *
 	 * @param rex
 	 *            is the range expression.
 	 * @return a new function
@@ -714,7 +720,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public Object visit(RangeExpr rex) {
 		ResultSequence one = (ResultSequence) rex.left().accept(this);
 		ResultSequence two = (ResultSequence) rex.right().accept(this);
-		if (one.empty() || two.empty()) return ResultSequenceFactory.create_new(); 
+		if (one.empty() || two.empty()) return ResultSequenceFactory.create_new();
 		Collection args = new ArrayList();
 		args.add(one);
 		args.add(two);
@@ -736,10 +742,10 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		}
 	}
 
-	
+
 	/**
 	 * visit and expression
-	 * 
+	 *
 	 * @param addex
 	 *            is the and expression.
 	 * @return a new function
@@ -756,7 +762,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit sub expression
-	 * 
+	 *
 	 * @param subex
 	 *            is the sub expression.
 	 * @return a new function
@@ -773,7 +779,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit multiply expression
-	 * 
+	 *
 	 * @param mulex
 	 *            is the mul expression.
 	 * @return a new function
@@ -790,7 +796,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit division expression
-	 * 
+	 *
 	 * @param mulex
 	 *            is the division expression.
 	 * @return a new function
@@ -807,7 +813,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit integer division expression
-	 * 
+	 *
 	 * @param mulex
 	 *            is the integer division expression.
 	 * @return a new function
@@ -824,7 +830,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit modular expression
-	 * 
+	 *
 	 * @param mulex
 	 *            is the modular expression.
 	 * @return a new function
@@ -852,7 +858,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit union expression
-	 * 
+	 *
 	 * @param unex
 	 *            is the union expression.
 	 * @return a new function
@@ -869,7 +875,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit pipe expression
-	 * 
+	 *
 	 * @param pipex
 	 *            is the pipe expression.
 	 * @return a new function
@@ -887,7 +893,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit intersect expression
-	 * 
+	 *
 	 * @param iexpr
 	 *            is the intersect expression.
 	 * @return a new function
@@ -904,7 +910,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit except expression
-	 * 
+	 *
 	 * @param eexpr
 	 *            is the except expression.
 	 * @return a new function
@@ -921,7 +927,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit instance of expression
-	 * 
+	 *
 	 * @param ioexp
 	 *            is the instance of expression.
 	 * @return a new function
@@ -934,7 +940,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		SequenceType seqt = (SequenceType) ioexp.right();
 		return ResultSequenceFactory.create_new(new XSBoolean(isInstanceOf(rs, seqt)));
 	}
-		
+
 	private boolean isInstanceOf(ResultSequence rs, SequenceType seqt) {
 		Object oldParam = this._param;
 		try {
@@ -944,10 +950,10 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			seqt.accept(this);
 			rs = (ResultSequence) ((Pair)_param)._two;
 			int lengthAfter = rs.size();
-		
+
 			if (sequenceLength != lengthAfter)
 				return false; // Something didn't match, so it's not an instance of it
-			
+
 			return seqt.isLengthValid(sequenceLength);
 		} finally {
 			this._param = oldParam;
@@ -956,7 +962,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit treat-as expression
-	 * 
+	 *
 	 * @param taexp
 	 *            is the treat-as expression.
 	 * @return a new function
@@ -979,7 +985,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit castable expression
-	 * 
+	 *
 	 * @param cexp
 	 *            is the castable expression.
 	 * @return a new function
@@ -1001,7 +1007,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit cast expression
-	 * 
+	 *
 	 * @param cexp
 	 *            is the cast expression.
 	 * @return a new function
@@ -1052,7 +1058,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit minus expression
-	 * 
+	 *
 	 * @param e
 	 *            is the minus expression.
 	 * @return a new function
@@ -1073,7 +1079,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit plus expression
-	 * 
+	 *
 	 * @param e
 	 *            is the plus expression.
 	 * @return a new function
@@ -1116,7 +1122,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			if (!focus.advance_cp())
 				break;
 		}
-		
+
 		// make sure we didn't change focus
 		focus.set_position(original_pos);
 
@@ -1200,7 +1206,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit XPath expression
-	 * 
+	 *
 	 * @param e
 	 *            is the XPath expression.
 	 * @return a new function
@@ -1293,7 +1299,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit a forward step expression
-	 * 
+	 *
 	 * @param e
 	 *            is the forward step.
 	 * @return a new function
@@ -1302,8 +1308,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// get context node
 		AnyType ci = focus().context_item();
-		
-		if (ci == null) 
+
+		if (ci == null)
 			report_error(DynamicError.contextUndefined());
 
 		if (!(ci instanceof NodeType))
@@ -1327,7 +1333,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit a reverse step expression
-	 * 
+	 *
 	 * @param e
 	 *            is the reverse step.
 	 * @return a new function
@@ -1344,7 +1350,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// get the nodes on the axis
 		ReverseAxis axis = e.iterator();
-		
+
 		ResultBuffer result = new ResultBuffer();
 		// short for "gimme da parent"
 		if (e.axis() == ReverseStep.DOTDOT) {
@@ -1440,7 +1446,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit a name test expression
-	 * 
+	 *
 	 * @param e
 	 *            is thename test.
 	 * @return a result sequence
@@ -1454,7 +1460,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		ResultSequence rs = (ResultSequence) arg._two;
 
 		ResultBuffer rb = new ResultBuffer();
-		
+
 		for (Iterator i = rs.iterator(); i.hasNext();) {
 			NodeType nt = (NodeType) i.next();
 
@@ -1464,13 +1470,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		}
 		rs = rb.getSequence();
 		arg._two = rs;
-		
+
 		return rs;
 	}
 
 	/**
 	 * visit variable reference
-	 * 
+	 *
 	 * @param e
 	 *            is the variable reference.
 	 * @return a result sequence
@@ -1486,7 +1492,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		   rs.add((AnyType) var);
 		}
 		else if (var instanceof ResultSequence) {
-		   rs.concat((ResultSequence) var);	
+		   rs.concat((ResultSequence) var);
 		}
 
 		return rs.getSequence();
@@ -1494,7 +1500,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit string literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the string literal.
 	 * @return a result sequence
@@ -1505,7 +1511,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit integer literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the integer literal.
 	 * @return a result sequence
@@ -1516,7 +1522,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit double literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the double literal.
 	 * @return a result sequence
@@ -1527,7 +1533,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit decimal literal.
-	 * 
+	 *
 	 * @param e
 	 *            is the decimal literal.
 	 * @return a result sequence
@@ -1541,7 +1547,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit parent expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the parent expression.
 	 * @return a new function
@@ -1552,7 +1558,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit context item expression.
-	 * 
+	 *
 	 * @param e
 	 *            is the context item expression.
 	 * @return a result sequence
@@ -1570,7 +1576,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit function call.
-	 * 
+	 *
 	 * @param e
 	 *            is the function call.
 	 * @return a new function or null
@@ -1599,7 +1605,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit single type.
-	 * 
+	 *
 	 * @param e
 	 *            is the single type.
 	 * @return null
@@ -1610,7 +1616,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit sequence type.
-	 * 
+	 *
 	 * @param e
 	 *            is the sequence type.
 	 * @return null
@@ -1626,7 +1632,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit item type.
-	 * 
+	 *
 	 * @param e
 	 *            is the item type.
 	 * @return null
@@ -1648,7 +1654,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			}
 			if (! ok) report_error(new StaticTypeNameError("Type not defined: "
 					+ e.qname().string()));
-			
+
 			ResultSequence arg = (ResultSequence) ((Pair) _param)._two;
 			((Pair) _param)._two = item_test(arg, e.qname());
 			break;
@@ -1665,7 +1671,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		ResultBuffer rb = new ResultBuffer();
 		for (Iterator i = rs.iterator(); i.hasNext();) {
 			AnyType item = (AnyType) i.next();
-			
+
 			if (item instanceof NodeType) {
 				NodeType node = ((NodeType)item);
 				if (derivesFrom(node, qname)) rb.add(node);
@@ -1675,10 +1681,10 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 					rb.add(item);
 					continue; // match !
 				}
-				
+
 				final AnyAtomicType aat = makeAtomic(qname);
 				if (aat.getClass().isInstance(item)) rb.add(item);
-				
+
 				// fall through => non-match
 			}
 		}
@@ -1697,7 +1703,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit any kind test.
-	 * 
+	 *
 	 * @param e
 	 *            is the any kind test.
 	 * @return a new function
@@ -1710,7 +1716,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit document test.
-	 * 
+	 *
 	 * @param e
 	 *            is the document test.
 	 * @return result sequence
@@ -1779,7 +1785,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit text test.
-	 * 
+	 *
 	 * @param e
 	 *            is the text test.
 	 * @return a new function
@@ -1793,7 +1799,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit comment test.
-	 * 
+	 *
 	 * @param e
 	 *            is the text test.
 	 * @return a new function
@@ -1806,7 +1812,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit PI test.
-	 * 
+	 *
 	 * @param e
 	 *            is the PI test.
 	 * @return a argument
@@ -1840,7 +1846,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit attribute test.
-	 * 
+	 *
 	 * @param e
 	 *            is the attribute test.
 	 * @return a result sequence
@@ -1851,7 +1857,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 				AttrType.class);
 
 		ResultBuffer rb = new ResultBuffer();
-		
+
 		QName name = e.name();
 		QName type = e.type();
 
@@ -1876,7 +1882,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit schema attribute test.
-	 * 
+	 *
 	 * @param e
 	 *            is the schema attribute test.
 	 * @return a result sequence
@@ -1909,7 +1915,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit element test.
-	 * 
+	 *
 	 * @param e
 	 *            is the element test.
 	 * @return a result sequence
@@ -1933,7 +1939,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			if (typeTest != null) {
 				// check if element derives from
 				if (! derivesFrom(node, typeTest)) continue;
-				
+
 				// nilled may be true or false
 				if (! e.qmark()) {
 					XSBoolean nilled = (XSBoolean) node.nilled().first();
@@ -1948,7 +1954,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit schema element test.
-	 * 
+	 *
 	 * @param e
 	 *            is the schema element test.
 	 * @return a result sequence
@@ -2068,7 +2074,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit axis step.
-	 * 
+	 *
 	 * @param e
 	 *            is the axis step.
 	 * @return a result sequence
@@ -2100,7 +2106,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	/**
 	 * visit filter expression
-	 * 
+	 *
 	 * @param e
 	 *            is the filter expression.
 	 * @return a result sequence
