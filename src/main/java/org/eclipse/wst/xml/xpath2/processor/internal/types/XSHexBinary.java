@@ -9,12 +9,13 @@
  *
  * Contributors:
  *     Mukul Gandhi - bug 281054 - initial API and implementation
- *     David Carver (STAR) - bug 228223 - fixed casting issue.  Needed to encode the value. 
+ *     David Carver (STAR) - bug 228223 - fixed casting issue.  Needed to encode the value.
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.internal.types;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.apache.xerces.impl.dv.util.HexBin;
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
@@ -35,7 +36,7 @@ public class XSHexBinary extends CtrType implements CmpEq {
 
 	/**
 	 * Initialises using the supplied String
-	 * 
+	 *
 	 * @param x
 	 *            The String to initialise to
 	 */
@@ -52,7 +53,7 @@ public class XSHexBinary extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:hexBinary" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -61,7 +62,7 @@ public class XSHexBinary extends CtrType implements CmpEq {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "hexBinary" which is the datatype's name
 	 */
 	public String type_name() {
@@ -71,7 +72,7 @@ public class XSHexBinary extends CtrType implements CmpEq {
 	/**
 	 * Retrieves a String representation of the base64Binary stored. This method is
 	 * functionally identical to value()
-	 * 
+	 *
 	 * @return The hexBinary stored
 	 */
 	public String getStringValue() {
@@ -81,7 +82,7 @@ public class XSHexBinary extends CtrType implements CmpEq {
 	/**
 	 * Retrieves a String representation of the hexBinary stored. This method is
 	 * functionally identical to string_value()
-	 * 
+	 *
 	 * @return The hexBinary stored
 	 */
 	public String value() {
@@ -90,10 +91,10 @@ public class XSHexBinary extends CtrType implements CmpEq {
 
 	/**
 	 * Creates a new ResultSequence consisting of the hexBinary value
-	 * 
+	 *
 	 * @param arg
-	 *            The ResultSequence from which to construct hexBinary value 
-	 * @return New ResultSequence representing hexBinary value 
+	 *            The ResultSequence from which to construct hexBinary value
+	 * @return New ResultSequence representing hexBinary value
 	 * @throws DynamicError
 	 */
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
@@ -108,14 +109,14 @@ public class XSHexBinary extends CtrType implements CmpEq {
 		}
 
 		String str_value = aat.getStringValue();
-		
+
 		if (!(aat instanceof XSHexBinary ||
 				  aat instanceof XSString ||
 				  aat instanceof XSUntypedAtomic ||
 				  aat instanceof XSBase64Binary)) {
 				throw DynamicError.cant_cast(null);
 			}
-		
+
 		if (aat instanceof XSUntypedAtomic || aat instanceof XSString) {
 			String[] nonHexValues = null;
 			try {
@@ -123,74 +124,74 @@ public class XSHexBinary extends CtrType implements CmpEq {
 			} catch (Exception ex) {
 				throw DynamicError.throw_type_error();
 			}
-			
+
 			String[] binValues = null;
 			try {
 				binValues = str_value.split("[0-1]");
 			} catch (Exception ex) {
 				throw DynamicError.throw_type_error();
 			}
-			
+
 			if (nonHexValues.length > 0 || binValues.length == 0) {
 				throw DynamicError.invalidForCastConstructor();
-			}			
+			}
 		}
 
-		
+
 		byte[] decodedValue = null;
-		
+
 		if (aat instanceof XSBase64Binary) {
 			decodedValue = Base64.decode(str_value);
 			decodedValue = HexBin.encode(decodedValue).getBytes();
 		} else {
 			decodedValue = str_value.getBytes();
  		}
-		
+
 		if (decodedValue != null) {
-		  return new XSHexBinary(new String(decodedValue));
+		  return new XSHexBinary(new String(decodedValue, StandardCharsets.UTF_8));
 		}
 		else {
 		  // invalid hexBinary string
-		  throw DynamicError.throw_type_error();	
+		  throw DynamicError.throw_type_error();
 		}
 	}
 
 	/**
 	 * Equality comparison between this and the supplied representation which
 	 * must be of type hexBinary
-	 * 
+	 *
 	 * @param arg
 	 *            The representation to compare with
 	 * @return True if the two representation are same. False otherwise.
-	 *         
+	 *
 	 * @throws DynamicError
 	 */
 	public boolean eq(AnyType arg, DynamicContext dynamicContext) throws DynamicError {
       String valToCompare = arg.getStringValue();
-      
+
       byte[] value1 = HexBin.decode(_value);
       byte[] value2 = HexBin.decode(valToCompare);
       if (value2 == null) {
-    	return false;  
+    	return false;
       }
-      
+
       int len = value1.length;
       if (len != value2.length) {
         return false;
       }
-      
+
       for (int i = 0; i < len; i++) {
         if (value1[i] != value2[i]) {
           return false;
         }
       }
-      
+
       return true;
 	}
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_HEXBINARY;
 	}
-	
+
 	public Object getNativeValue() {
 		return HexBin.decode(_value);
 	}
