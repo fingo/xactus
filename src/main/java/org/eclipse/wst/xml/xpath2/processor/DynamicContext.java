@@ -10,8 +10,8 @@
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types
- *     David Carver - bug 282223 - implementation of xs:duration data types. 
- *     Jesper Moller- bug 281159 - fix document loading and resolving URIs 
+ *     David Carver - bug 282223 - implementation of xs:duration data types.
+ *     Jesper Moller- bug 281159 - fix document loading and resolving URIs
  *     Jesper Moller- bug 286452 - always return the stable date/time from dynamic context
  *     Jesper Moller- bug 275610 - Avoid big time and memory overhead for externals
  *     Jesper Moller- bug 280555 - Add pluggable collation support
@@ -35,8 +35,8 @@ import org.w3c.dom.Node;
 
 /**
  * Interface for dynamic context.
- * 
- * @deprecated Use 
+ *
+ * @deprecated Use
  */
 public interface DynamicContext extends StaticContext {
 
@@ -48,46 +48,46 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Get context item.
-	 * 
+	 *
 	 * @return the context item.
 	 */
 	public AnyType context_item();
 
 	/**
 	 * Get context node position.
-	 * 
+	 *
 	 * @return position of context node.
 	 */
 	public int context_position();
 
 	/**
 	 * Get position of last item.
-	 * 
+	 *
 	 * @return last item position.
 	 */
 	public int last();
 
 	/**
 	 * Get variable.
-	 * 
+	 *
 	 * @param name
 	 *            is the name of the variable.
 	 * @return variable.
 	 * @since 2.0
 	 */
 	public Object get_variable(QName name);
-	
+
 	/**
 	 * Set variable.
-	 * 
+	 *
 	 * @param var
 	 *            is name of the variable.
 	 * @param val
 	 *            is the value to be set for the variable.
 	 */
 	public void set_variable(QName var, AnyType val);
-	
-	
+
+
 	/**
 	 * Sets a XPath2 sequence into a variable.
 	 *
@@ -97,7 +97,7 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Evaluate the function of the arguments.
-	 * 
+	 *
 	 * @param name
 	 *            is the name.
 	 * @param args
@@ -111,7 +111,7 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Reads the day from a TimeDuration type
-	 * 
+	 *
 	 * @return current date time and implicit timezone.
 	 * @since 1.1
 	 */
@@ -119,18 +119,18 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Get document.
-	 * 
+	 *
 	 * @param uri
 	 *            is the URI of the document.
 	 * @return document.
 	 * @since 1.1
 	 */
 	// available doc
-	public ResultSequence get_doc(URI uri);
+	public org.eclipse.wst.xml.xpath2.api.ResultSequence get_doc( URI uri );
 
 	/**
 	 * Resolve an URI
-	 * 
+	 *
 	 * @param uri
 	 *            is the possibly relative URI to resolve
 	 * @return the absolutized, resolved URI.
@@ -144,15 +144,15 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Returns the current date time using the GregorianCalendar.
-	 * 
+	 *
 	 * @return The current date and time, which will always be same for the dynamic context.
 	 * @since 1.1
 	 */
 	public GregorianCalendar current_date_time();
-	
+
 	/**
 	 * Set focus.
-	 * 
+	 *
 	 * @param focus
 	 *            is focus to be set.
 	 */
@@ -161,28 +161,28 @@ public interface DynamicContext extends StaticContext {
 
 	/**
 	 * Return focus.
-	 * 
+	 *
 	 * @return Focus
 	 */
 	public Focus focus();
-	
+
 	/**
 	 * Return a useful collator for the specified URI
-	 * 
+	 *
 	 * @param uri
-	 * @return A Jaa collator, or null, if no such Collator exists 
+	 * @return A Jaa collator, or null, if no such Collator exists
 	 * @since 1.1
 	 */
-	public Comparator get_collation(String uri); 
-	
+	public Comparator get_collation(String uri);
+
 	/**
 	 * Returns the current default collator
-	 * 
+	 *
 	 * @return The default name to use as the collator
 	 * @since 1.1
 	 */
 	public String default_collation_name();
-	
+
 	// deprecated
 	/**
 	 * @deprecated

@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSInteger;
 
@@ -38,7 +37,7 @@ public class FnCount extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -51,7 +50,7 @@ public class FnCount extends Function {
 
 	/**
 	 * Count operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -66,6 +65,6 @@ public class FnCount extends Function {
 		Iterator citer = args.iterator();
 		ResultSequence arg = (ResultSequence) citer.next();
 
-		return ResultSequenceFactory.create_new(new XSInteger(BigInteger.valueOf(arg.size())));
+		return new XSInteger( BigInteger.valueOf( arg.size() ) );
 	}
 }

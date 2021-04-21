@@ -31,7 +31,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpEq;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpGt;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpLt;
@@ -849,8 +848,7 @@ Cloneable {
 		long duration = thisCal.getTimeInMillis()
 				- thatCal.getTimeInMillis();
 		Duration dtduration = _datatypeFactory.newDuration(duration);
-		return ResultSequenceFactory.create_new(XSDayTimeDuration
-				.parseDTDuration(dtduration.toString()));
+		return XSDayTimeDuration.parseDTDuration( dtduration.toString() );
 	}
 
 	private ResultSequence minusXSDayTimeDuration(Item at) {
@@ -864,7 +862,7 @@ Cloneable {
 			xmlCal.add(dtduration.negate());
 			res = new XSDateTime(xmlCal.toGregorianCalendar(), res.tz());
 
-			return ResultSequenceFactory.create_new(res);
+			return res;
 		} catch (CloneNotSupportedException ex) {
 
 		}
@@ -878,7 +876,7 @@ Cloneable {
 			XSDateTime res = (XSDateTime) clone();
 
 			res.calendar().add(Calendar.MONTH, val.monthValue() * -1);
-			return ResultSequenceFactory.create_new(res);
+			return res;
 		} catch (CloneNotSupportedException ex) {
 
 		}
@@ -912,7 +910,7 @@ Cloneable {
 				XSDateTime res = (XSDateTime) clone();
 
 				res.calendar().add(Calendar.MONTH, val.monthValue());
-				return ResultSequenceFactory.create_new(res);
+				return res;
 			} else if (at instanceof XSDayTimeDuration) {
 				XSDuration val = (XSDuration) at;
 
@@ -925,7 +923,7 @@ Cloneable {
 						.newDuration(val.getStringValue());
 				xmlCal.add(dtduration);
 				res = new XSDateTime(xmlCal.toGregorianCalendar(), res.tz());
-				return ResultSequenceFactory.create_new(res);
+				return res;
 			} else {
 				DynamicError.throw_type_error();
 				return null; // unreach

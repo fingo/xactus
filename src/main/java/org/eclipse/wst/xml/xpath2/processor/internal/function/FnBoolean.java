@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Steen Moller  - bug 262765 - use correct 'effective boolean value'
  *     David Carver (STAR) - bug 262765 - fix checking of data types.
@@ -55,7 +55,7 @@ public class FnBoolean extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @return Result of evaluation.
@@ -66,30 +66,30 @@ public class FnBoolean extends Function {
 
 		ResultSequence argument = (ResultSequence) args.iterator().next();
 
-		return ResultSequenceFactory.create_new(fn_boolean(argument));
+		return fn_boolean( argument );
 	}
 
 	/**
 	 * Boolean operation.
-	 * 
+	 *
 	 * @param arg
 	 *            Result from the expressions evaluation.
 	 * @return Result of fn:boolean operation.
-	 * @throws DynamicError 
+	 * @throws DynamicError
 	 */
 	public static XSBoolean fn_boolean(ResultSequence arg) throws DynamicError {
 		if (arg.empty())
 			return XSBoolean.FALSE;
 
 		Item at = arg.item(0);
-		
+
 		if (at instanceof CalendarType) {
 			throw DynamicError.throw_type_error();
 		}
-		
+
 		if (at instanceof NodeType)
 			return XSBoolean.TRUE;
-		
+
 		if (arg.size() > 1)
 			throw DynamicError.throw_type_error();
 
@@ -119,7 +119,7 @@ public class FnBoolean extends Function {
 
 		if ((at instanceof XSDouble) && (((XSDouble) at).nan()))
 			return XSBoolean.FALSE;
-		
+
 
 		return XSBoolean.TRUE;
 	}

@@ -10,7 +10,7 @@
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types
- *     David Carver - bug 282223 - implementation of xs:duration 
+ *     David Carver - bug 282223 - implementation of xs:duration
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -22,7 +22,6 @@ import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDayTimeDuration;
@@ -42,7 +41,7 @@ public class FnImplicitTimezone extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -55,7 +54,7 @@ public class FnImplicitTimezone extends Function {
 
 	/**
 	 * Implicit-Timezone operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @param dc
@@ -70,6 +69,6 @@ public class FnImplicitTimezone extends Function {
 
 		AnyType res = new XSDayTimeDuration(dc.getTimezoneOffset());
 
-		return ResultSequenceFactory.create_new(res);
+		return res;
 	}
 }

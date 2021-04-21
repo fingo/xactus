@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper S Moller - bug 286452 - always return the stable date/time from dynamic context
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
@@ -21,7 +21,6 @@ import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDate;
@@ -44,7 +43,7 @@ public class FnCurrentDate extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -57,7 +56,7 @@ public class FnCurrentDate extends Function {
 
 	/**
 	 * Current-Date operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @param dc
@@ -73,6 +72,6 @@ public class FnCurrentDate extends Function {
 		XSDayTimeDuration tz = new XSDayTimeDuration(dc.getTimezoneOffset());
 		AnyType res = new XSDate(dc.getCurrentDateTime(), tz);
 
-		return ResultSequenceFactory.create_new(res);
+		return res;
 	}
 }

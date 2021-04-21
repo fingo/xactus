@@ -30,10 +30,9 @@ import javax.xml.datatype.DatatypeFactory;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
 import org.eclipse.wst.xml.xpath2.api.Item;
 import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
+import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.SeqType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
@@ -197,7 +196,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	 *             Dynamic error.
 	 * @return Result of evaluation.
 	 */
-	public org.eclipse.wst.xml.xpath2.processor.ResultSequence evaluate(Collection args)
+	public ResultSequence evaluate( Collection args )
 			throws DynamicError {
 		throw new UnsupportedOperationException();
 	}
@@ -236,13 +235,13 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 					// create a new item of the expected
 					// type initialized with from the string
 					// value of the item
-					ResultSequence converted = null;
+					org.eclipse.wst.xml.xpath2.api.ResultSequence converted = null;
 					if (expected_aat instanceof XSString) {
 					   XSString strType = new XSString(item.getStringValue());
-					   converted = ResultSequenceFactory.create_new(strType);
+						converted = strType;
 					}
 					else {
-					   converted = ResultSequenceFactory.create_new(item);
+						converted = item;
 					}
 
 					result.concat(converted);
@@ -303,19 +302,16 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 		return result;
 	}
 
-	protected static ResultSequence getResultSetForArityZero(EvaluationContext ec)
+	protected static org.eclipse.wst.xml.xpath2.api.ResultSequence getResultSetForArityZero( EvaluationContext ec )
 			throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new();
-
 		Item contextItem = ec.getContextItem();
 		if (contextItem != null) {
 		  // if context item is defined, then that is the default argument
 		  // to fn:string function
-		  rs.add(new XSString(contextItem.getStringValue()));
+			return new XSString( contextItem.getStringValue() );
 		} else {
 			throw DynamicError.contextUndefined();
 		}
-		return rs;
 	}
 
 	public boolean is_vararg() {
@@ -362,7 +358,7 @@ public abstract class Function implements org.eclipse.wst.xml.xpath2.api.Functio
 	public org.eclipse.wst.xml.xpath2.api.ResultSequence evaluate(Collection/*<ResultSequence>*/ args,
 			EvaluationContext evaluationContext) {
 
-		org.eclipse.wst.xml.xpath2.processor.ResultSequence result = evaluate(args);
+		ResultSequence result = evaluate( args );
 		return result;
 	}
 

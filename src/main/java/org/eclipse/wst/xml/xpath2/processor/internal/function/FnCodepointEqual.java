@@ -31,29 +31,29 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
 
 /**
- * 
+ *
  * <p>
  * String comparison function.
  * </p>
- * 
+ *
  * <p>
  * Usage: fn:codepoint-equal($comparand1 as xs:string?,
  *                           $comparand2 as xs:string?) as xs:boolean?
  * </p>
- * 
+ *
  * <p>
  * Returns true or false depending on whether the value of $comparand1 is equal
  * to the value of $comparand2, according to the Unicode code point collation
  * (http://www.w3.org/2005/xpath-functions/collation/codepoint).
  * </p>
- * 
+ *
  * <p>
  * If either argument is the empty sequence, the result is the empty sequence.
  * </p>
- * 
+ *
  */
 public class FnCodepointEqual extends Function {
-	
+
 	private static Collection _expected_args = null;
 
 	/**
@@ -65,7 +65,7 @@ public class FnCodepointEqual extends Function {
 
 	/**
 	 * Evaluate the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            is evaluated.
 	 * @throws DynamicError
@@ -78,7 +78,7 @@ public class FnCodepointEqual extends Function {
 
 	/**
 	 * Compare the arguments as codepoints
-	 * 
+	 *
 	 * @param args
 	 *            are compared.
 	 * @param dynamicContext
@@ -101,14 +101,15 @@ public class FnCodepointEqual extends Function {
 
 		// This delegates to FnCompare
 		BigInteger result = FnCompare.compare_string(CollationProvider.CODEPOINT_COLLATION, xstr1, xstr2, dynamicContext);
-		if (result != null) rs.add(new XSBoolean(BigInteger.ZERO.equals(result)));
-		
+		if( result != null )
+			return XSBoolean.valueOf( BigInteger.ZERO.equals( result ) );
+
 		return rs.getSequence();
 	}
 
 	/**
 	 * Calculate the expected arguments.
-	 * 
+	 *
 	 * @return The expected arguments.
 	 */
 	public synchronized static Collection expected_args() {

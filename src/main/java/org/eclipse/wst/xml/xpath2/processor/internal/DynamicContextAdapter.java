@@ -72,9 +72,9 @@ public class DynamicContextAdapter implements
 	}
 
 	public Document getDocument(URI uri) {
-		org.eclipse.wst.xml.xpath2.processor.ResultSequence rs = dc.get_doc(uri);
+		ResultSequence rs = dc.get_doc( uri );
 		if (rs == null || rs.empty()) return null;
-		return ((DocType)(rs.get(0))).value();
+		return ((DocType)(rs.first())).value();
 	}
 
 	public Map<String, List<Document>> getCollections() {

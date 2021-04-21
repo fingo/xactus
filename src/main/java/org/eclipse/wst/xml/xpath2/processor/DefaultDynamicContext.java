@@ -11,8 +11,8 @@
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types
  *     David Carver - bug 282223 - implementation of xs:duration data type.
- *                  - bug 262765 - fix handling of range expression op:to and empty sequence 
- *     Jesper Moller- bug 281159 - fix document loading and resolving URIs 
+ *                  - bug 262765 - fix handling of range expression op:to and empty sequence
+ *     Jesper Moller- bug 281159 - fix document loading and resolving URIs
  *     Jesper Moller- bug 286452 - always return the stable date/time from dynamic context
  *     Jesper Moller- bug 275610 - Avoid big time and memory overhead for externals
  *     Jesper Moller- bug 280555 - Add pluggable collation support
@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.xerces.xs.XSModel;
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
+import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
 import org.eclipse.wst.xml.xpath2.processor.internal.DefaultStaticContext;
 import org.eclipse.wst.xml.xpath2.processor.internal.Focus;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.Function;
@@ -47,13 +49,12 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDayTimeDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.xerces.XercesTypeModel;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
-import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
  * The default implementation of a Dynamic Context.
- * 
+ *
  * Initializes and provides functionality of a dynamic context according to the
  * XPath 2.0 specification.
  */
@@ -69,7 +70,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param schema
 	 *            Schema information of document. May be null
 	 * @param doc
@@ -81,7 +82,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param schema
 	 *            Schema information of document. May be null
 	 * @param doc
@@ -97,7 +98,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 	}
 	/**
 	 * Reads the day from a TimeDuration type
-	 * 
+	 *
 	 * @return an xs:integer _tz
 	 * @since 1.1
 	 */
@@ -116,10 +117,10 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 		}
 		return _current_date_time;
 	}
-	
+
 	/**
 	 * Changes the current focus.
-	 * 
+	 *
 	 * @param f
 	 *            focus to set
 	 */
@@ -129,7 +130,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Return the focus
-	 * 
+	 *
 	 * @return _focus
 	 */
 	public Focus focus() {
@@ -138,7 +139,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Retrieve context item that is in focus
-	 * 
+	 *
 	 * @return an AnyType result from _focus.context_item()
 	 */
 	public AnyType context_item() {
@@ -147,7 +148,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Retrieve the position of the focus
-	 * 
+	 *
 	 * @return an integer result from _focus.position()
 	 */
 	public int context_position() {
@@ -156,7 +157,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Retrieve the position of the last focus
-	 * 
+	 *
 	 * @return an integer result from _focus.last()
 	 */
 	public int last() {
@@ -165,7 +166,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Retrieve the variable name
-	 * 
+	 *
 	 * @return an AnyType result from get_var(name) or return NULL
 	 * @since 2.0
 	 */
@@ -181,7 +182,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 	}
 
 	/**
-	 * 
+	 *
 	 * @return a ResultSequence from funct.evaluate(args)
 	 */
 	public ResultSequence evaluate_function(QName name, Collection args)
@@ -195,10 +196,10 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Adds function definitions.
-	 * 
+	 *
 	 * @param fl
 	 *            Function library to add.
-	 * 
+	 *
 	 */
 	public void add_function_library(FunctionLibrary fl) {
 		super.add_function_library(fl);
@@ -207,11 +208,12 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * get document
-	 * 
+	 *
 	 * @return a ResultSequence from ResultSequenceFactory.create_new()
 	 * @since 1.1
 	 */
-	public ResultSequence get_doc(URI resolved) {
+	public org.eclipse.wst.xml.xpath2.api.ResultSequence get_doc( URI resolved )
+	{
 		Document doc = null;
 		if (_loaded_documents.containsKey(resolved)) {
 			 //tried before
@@ -224,7 +226,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 		if (doc == null)
 			return null;
 
-		return ResultSequenceFactory.create_new(new DocType(doc, getTypeModel(doc)));
+		return ResultBuffer.wrap( new DocType( doc, getTypeModel( doc ) ) );
 	}
 	/**
 	 * @since 1.1
@@ -265,7 +267,7 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	/**
 	 * Sets the value of a variable.
-	 * 
+	 *
 	 * @param var
 	 *            Variable name.
 	 * @param val
@@ -274,8 +276,8 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 	public void set_variable(QName var, AnyType val) {
 		super.set_variable(var, val);
 	}
-	
-	
+
+
 	/*
 	 * Set a XPath2 sequence into a variable.
 	 */
@@ -302,41 +304,41 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 
 	// We are explicitly NOT using generics here, in anticipation of JDK1.4 compatibility
 	private static Comparator CODEPOINT_COMPARATOR = new Comparator() {
-		
+
 		public int compare(Object o1, Object o2) {
 			return ((String)o1).compareTo((String)o2);
 		}
 	};
-	
+
 	/**
 	 * @since 1.1
-	 * 
+	 *
 	 */
 	public Comparator get_collation(String uri) {
 		if (CODEPOINT_COLLATION.equals(uri)) return CODEPOINT_COMPARATOR;
-		
+
 		return _collation_provider != null ? _collation_provider.get_collation(uri) : null;
 	}
-	
+
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param provider
 	 * @since 1.1
 	 */
 	public void set_collation_provider(CollationProvider provider) {
 		this._collation_provider = provider;
 	}
-	
+
 	/**
 	 * Use focus().position() to retrieve the value.
 	 * @deprecated  This will be removed in a future version use focus().position().
 	 */
 	public int node_position(Node node) {
 	  // unused parameter!
-	  return _focus.position();	
+	  return _focus.position();
 	}
-	
+
 	/**
 	 * @since 2.0
 	 */

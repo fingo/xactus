@@ -8,9 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *    Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *    Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *    Jesper Moller - bug 280555 - Add pluggable collation support
- *    David Carver (STAR) - bug 262765 - fixed promotion issue 
+ *    David Carver (STAR) - bug 262765 - fixed promotion issue
  *    Jesper Moller - bug 281028 - fix promotion rules for fn:min
  *    Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *    Lukasz Wycisk - bug 361060 - Aggregations with nil=�true� throw exceptions.
@@ -23,9 +23,9 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
@@ -50,7 +50,7 @@ public class FnMin extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -63,10 +63,10 @@ public class FnMin extends Function {
 
 	/**
 	 * Min operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
-	 * @param dynamic 
+	 * @param dynamic
 	 *            Dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.
@@ -76,7 +76,7 @@ public class FnMin extends Function {
 
 		ResultSequence arg = FnMax.get_arg(args, CmpLt.class);
 		if (arg.empty())
-			return ResultSequenceFactory.create_new();
+			return ResultBuffer.EMPTY;
 
 		CmpLt max = null;
 
@@ -85,18 +85,18 @@ public class FnMin extends Function {
 
 		for (Iterator i = arg.iterator(); i.hasNext();) {
 			AnyAtomicType conv = tp.promote((AnyType) i.next());
-			
+
 			if( conv != null ){
-				
+
 				if (conv instanceof XSDouble && ((XSDouble)conv).nan() || conv instanceof XSFloat && ((XSFloat)conv).nan()) {
-					return ResultSequenceFactory.create_new(tp.promote(new XSFloat(Float.NaN)));
+					return tp.promote( new XSFloat( Float.NaN ) );
 				}
 				if (max == null || ((CmpLt)conv).lt((AnyType)max, context)) {
 					max = (CmpLt)conv;
 				}
 			}
 		}
-		return ResultSequenceFactory.create_new((AnyType) max);
+		return (AnyType)max;
 	}
 
 }

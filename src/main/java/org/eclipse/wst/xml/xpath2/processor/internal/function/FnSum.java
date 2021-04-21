@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
- *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type 
+ *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type
  *     Jesper Moller - bug 281028 - fix promotion rules for fn:sum
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *    Lukasz Wycisk - bug 361060 - Aggregations with nil=�true� throw exceptions.
@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.TypeError;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
@@ -54,7 +53,7 @@ public class FnSum extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -78,7 +77,7 @@ public class FnSum extends Function {
 
 	/**
 	 * Sum operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -89,7 +88,7 @@ public class FnSum extends Function {
 
 
 		if (arg.empty())
-			return ResultSequenceFactory.create_new(zero);
+			return zero;
 
 		MathPlus total = null;
 
@@ -98,21 +97,21 @@ public class FnSum extends Function {
 
 		for (Iterator i = arg.iterator(); i.hasNext();) {
 			AnyAtomicType conv = tp.promote((AnyType) i.next());
-			
+
 			if(conv == null){
 				conv = zero;
 			}
-			
+
 			if (conv instanceof XSDouble && ((XSDouble)conv).nan() || conv instanceof XSFloat && ((XSFloat)conv).nan()) {
-				return ResultSequenceFactory.create_new(tp.promote(new XSFloat(Float.NaN)));
+				return tp.promote( new XSFloat( Float.NaN ) );
 			}
 			if (total == null) {
-				total = (MathPlus)conv; 
+				total = (MathPlus)conv;
 			} else {
-				total = (MathPlus)total.plus(ResultSequenceFactory.create_new(conv)).first();
+				total = (MathPlus)total.plus( conv ).first();
 			}
 		}
-		
-		return ResultSequenceFactory.create_new((AnyType) total);
+
+		return (AnyType)total;
 	}
 }

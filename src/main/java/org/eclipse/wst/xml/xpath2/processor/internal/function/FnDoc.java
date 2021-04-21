@@ -8,8 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
- *     Jesper Steen Moller - bug 281159 - fix document loading and resolving URIs 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
+ *     Jesper Steen Moller - bug 281159 - fix document loading and resolving URIs
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -22,9 +22,9 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.SeqType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.DocType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
@@ -55,7 +55,7 @@ public class FnDoc extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -68,7 +68,7 @@ public class FnDoc extends Function {
 
 	/**
 	 * Doc operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @param dc
@@ -86,7 +86,7 @@ public class FnDoc extends Function {
 		ResultSequence arg1 = (ResultSequence) argiter.next();
 
 		if (arg1.empty())
-			return ResultSequenceFactory.create_new();
+			return ResultBuffer.EMPTY;
 
 		String uri = ((XSString) arg1.item(0)).value();
 
@@ -104,7 +104,7 @@ public class FnDoc extends Function {
 
 	/**
 	 * Obtain a list of expected arguments.
-	 * 
+	 *
 	 * @return Result of operation.
 	 */
 	public synchronized static Collection expected_args() {

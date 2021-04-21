@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
- *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type 
+ *     Mukul Gandhi - bug 274805 - improvements to xs:integer data type
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
  *******************************************************************************/
@@ -19,9 +19,9 @@ package org.eclipse.wst.xml.xpath2.processor.internal;
 import java.math.BigInteger;
 import java.util.*;
 
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.typesystem.ItemType;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.*;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLibrary;
 
@@ -34,11 +34,11 @@ public class RangeResultSequence extends ResultSequence {
 	private int _start;
 	private int _end;
 	private int _size;
-	private ResultSequence _tail;
+	private ResultBuffer _tail;
 
 	/**
 	 * set the start and end of the range result sequence
-	 * 
+	 *
 	 * @param start
 	 *            is the integer position of the start of range.
 	 * @param end
@@ -52,12 +52,12 @@ public class RangeResultSequence extends ResultSequence {
 		_start = start;
 		_end = end;
 
-		_tail = ResultSequenceFactory.create_new();
+		_tail = new ResultBuffer();
 	}
 
 	/**
 	 * item is an integer to add to the range.
-	 * 
+	 *
 	 * @param item
 	 *            is an integer.
 	 */
@@ -67,7 +67,7 @@ public class RangeResultSequence extends ResultSequence {
 
 	/**
 	 * remove the tail from the range given.
-	 * 
+	 *
 	 * @param rs
 	 *            is the range
 	 */
@@ -77,19 +77,18 @@ public class RangeResultSequence extends ResultSequence {
 
 	/**
 	 * interate through range.
-	 * 
+	 *
 	 * @return tail
 	 */
 	public ListIterator iterator() {
 		// XXX life is getting hard...
 		if (_size != 0) {
-			ResultSequence newtail = ResultSequenceFactory.create_new();
+			ResultBuffer newtail = new ResultBuffer();
 
 			for (; _start <= _end; _start++)
 				newtail.add(new XSInteger(BigInteger.valueOf(_start)));
 
-			newtail.concat(_tail);
-			_tail.release();
+			newtail.concat( _tail.getSequence() );
 			_tail = newtail;
 
 			_size = 0;
@@ -108,7 +107,8 @@ public class RangeResultSequence extends ResultSequence {
 		if (i < _size)
 			return new XSInteger(BigInteger.valueOf(_start + i));
 		else
-			return _tail.get(i - _size);
+			return (AnyType)_tail.item( i - _size );
+
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class RangeResultSequence extends ResultSequence {
 
 	/**
 	 * create new result sequence
-	 * 
+	 *
 	 * @return null
 	 */
 	public ResultSequence create_new() {
@@ -152,7 +152,7 @@ public class RangeResultSequence extends ResultSequence {
 
 	/**
 	 * asks if the range is empty?
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean empty() {

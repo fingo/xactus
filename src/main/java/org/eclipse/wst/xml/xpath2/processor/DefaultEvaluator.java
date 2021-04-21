@@ -580,8 +580,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public Object visit(OrExpr orex) {
 		boolean res[] = do_logic_exp(orex);
 
-		return ResultSequenceFactory
-				.create_new(new XSBoolean(res[0] || res[1]));
+		return XSBoolean.valueOf((res[0] || res[1]) );
 	}
 
 	/**
@@ -594,8 +593,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public Object visit(AndExpr andex) {
 		boolean res[] = do_logic_exp(andex);
 
-		return ResultSequenceFactory
-				.create_new(new XSBoolean(res[0] && res[1]));
+		return XSBoolean.valueOf( (res[0] && res[1]) );
 	}
 
 	private ResultSequence node_cmp(int type, Collection args) {
@@ -720,7 +718,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	public Object visit(RangeExpr rex) {
 		ResultSequence one = (ResultSequence) rex.left().accept(this);
 		ResultSequence two = (ResultSequence) rex.right().accept(this);
-		if (one.empty() || two.empty()) return ResultSequenceFactory.create_new();
+		if( one.empty() || two.empty() )
+			return ResultBuffer.EMPTY;
 		Collection args = new ArrayList();
 		args.add(one);
 		args.add(two);
@@ -938,7 +937,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// get the sequence type
 		SequenceType seqt = (SequenceType) ioexp.right();
-		return ResultSequenceFactory.create_new(new XSBoolean(isInstanceOf(rs, seqt)));
+		return XSBoolean.valueOf( (isInstanceOf( rs, seqt )) );
 	}
 
 	private boolean isInstanceOf(ResultSequence rs, SequenceType seqt) {
@@ -1002,7 +1001,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			castable = false;
 		}
 
-		return ResultSequenceFactory.create_new(new XSBoolean(castable));
+		return XSBoolean.valueOf( (castable) );
 	}
 
 	/**
@@ -1039,7 +1038,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// prepare args from function
 		Collection args = new ArrayList();
-		args.add(ResultSequenceFactory.create_new(aat));
+		args.add( aat );
 
 		try {
 			Function function = cexp.function();

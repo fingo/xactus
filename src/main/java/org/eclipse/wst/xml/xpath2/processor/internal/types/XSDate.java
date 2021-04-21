@@ -12,8 +12,8 @@
  *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types
  *     Mukul Gandhi - bug 274792 - improvements to xs:date constructor function.
  *     David Carver - bug 282223 - implementation of xs:duration.
- *                                 fixed casting issue. 
- *     David Carver - bug 280547 - fix dates for comparison 
+ *                                 fixed casting issue.
+ *     David Carver - bug 280547 - fix dates for comparison
  *     Jesper Steen Moller  - bug 262765 - fix type tests
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
@@ -33,7 +33,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpEq;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpGt;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpLt;
@@ -56,7 +55,7 @@ Cloneable {
 
 	/**
 	 * Initializes a new representation of a supplied date
-	 * 
+	 *
 	 * @param cal
 	 *            The Calendar representation of the date to be stored
 	 * @param tz
@@ -81,7 +80,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the datatype name
-	 * 
+	 *
 	 * @return "date" which is the dataype name
 	 */
 	public String type_name() {
@@ -90,7 +89,7 @@ Cloneable {
 
 	/**
 	 * Creates a copy of this date representation
-	 * 
+	 *
 	 * @return A copy of this date representation
 	 */
 	public Object clone() throws CloneNotSupportedException {
@@ -107,7 +106,7 @@ Cloneable {
 	 * Parses a String representation of a date (of the form year-month-day or
 	 * year-month-day+timezone) and constructs a new XSDate representation of
 	 * it.
-	 * 
+	 *
 	 * @param str
 	 *            The String representation of the date (and optional timezone)
 	 * @return The XSDate representation of the supplied date
@@ -149,7 +148,7 @@ Cloneable {
 	/**
 	 * Creates a new result sequence consisting of the retrievable date value in
 	 * the supplied result sequence
-	 * 
+	 *
 	 * @param arg
 	 *            The result sequence from which to extract the date value.
 	 * @throws DynamicError
@@ -213,7 +212,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the year from the date stored
-	 * 
+	 *
 	 * @return the year value of the date stored
 	 */
 	public int year() {
@@ -226,7 +225,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the month from the date stored
-	 * 
+	 *
 	 * @return the month value of the date stored
 	 */
 	public int month() {
@@ -235,7 +234,7 @@ Cloneable {
 
 	/**
 	 * Retrieve the day from the date stored
-	 * 
+	 *
 	 * @return the day value of the date stored
 	 */
 	public int day() {
@@ -244,7 +243,7 @@ Cloneable {
 
 	/**
 	 * Retrieves whether this date has an optional timezone associated with it
-	 * 
+	 *
 	 * @return True if there is a timezone associated with this date. False
 	 *         otherwise.
 	 */
@@ -254,7 +253,7 @@ Cloneable {
 
 	/**
 	 * Retrieves a String representation of the date stored
-	 * 
+	 *
 	 * @return String representation of the date stored
 	 */
 	public String getStringValue() {
@@ -301,7 +300,7 @@ Cloneable {
 
 	/**
 	 * Retrive the datatype full pathname
-	 * 
+	 *
 	 * @return "xs:date" which is the datatype full pathname
 	 */
 	public String string_type() {
@@ -310,7 +309,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the Calendar representation of the date stored
-	 * 
+	 *
 	 * @return Calendar representation of the date stored
 	 */
 	public Calendar calendar() {
@@ -319,7 +318,7 @@ Cloneable {
 
 	/**
 	 * Retrieves the timezone associated with the date stored
-	 * 
+	 *
 	 * @return the timezone associated with the date stored
 	 */
 	public XSDuration tz() {
@@ -330,7 +329,7 @@ Cloneable {
 	/**
 	 * Equality comparison on this and the supplied dates (taking timezones into
 	 * account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDate representation of the date to compare to
 	 * @throws DynamicError
@@ -347,7 +346,7 @@ Cloneable {
 
 	/**
 	 * Comparison on this and the supplied dates (taking timezones into account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDate representation of the date to compare to
 	 * @throws DynamicError
@@ -364,7 +363,7 @@ Cloneable {
 
 	/**
 	 * Comparison on this and the supplied dates (taking timezones into account)
-	 * 
+	 *
 	 * @param arg
 	 *            XSDate representation of the date to compare to
 	 * @throws DynamicError
@@ -383,7 +382,7 @@ Cloneable {
 	/**
 	 * Currently unsupported method. Retrieves the date in milliseconds since
 	 * the begining of epoch
-	 * 
+	 *
 	 * @return Number of milliseconds since the begining of the epoch
 	 */
 	public double value() {
@@ -395,7 +394,7 @@ Cloneable {
 	 * Mathematical minus operator between this XSDate and a supplied result
 	 * sequence (XSDate, XSYearMonthDuration and XSDayTimeDuration are only
 	 * valid ones).
-	 * 
+	 *
 	 * @param arg
 	 *            The supplied ResultSequence that is on the right of the minus
 	 *            operator. If this is an XSDate, the result will be a
@@ -420,11 +419,11 @@ Cloneable {
 		if (at instanceof XSDate) {
 			return minusXSDate(arg);
 		}
-		
+
 		if (at instanceof XSYearMonthDuration) {
 			return minusXSYearMonthDuration((XSYearMonthDuration)at);
 		}
-		
+
 		if (at instanceof XSDayTimeDuration) {
 			return minusXSDayTimeDuration((XSDayTimeDuration)at);
 		}
@@ -444,7 +443,7 @@ Cloneable {
 					.newDuration(val.getStringValue());
 			xmlCal.add(dtduration.negate());
 			res = new XSDate(xmlCal.toGregorianCalendar(), res.tz());
-			return ResultSequenceFactory.create_new(res);
+			return res;
 		} catch (CloneNotSupportedException ex) {
 		}
 		return null;
@@ -456,7 +455,7 @@ Cloneable {
 			XSDate res = (XSDate) clone();
 
 			res.calendar().add(Calendar.MONTH, val.monthValue() * -1);
-			return ResultSequenceFactory.create_new(res);
+			return res;
 		} catch (CloneNotSupportedException ex) {
 
 		}
@@ -471,15 +470,14 @@ Cloneable {
 		long duration = thisCal.getTimeInMillis()
 				- thatCal.getTimeInMillis();
 		dtduration = _datatypeFactory.newDuration(duration);
-		return ResultSequenceFactory.create_new(XSDayTimeDuration
-				.parseDTDuration(dtduration.toString()));
+		return XSDayTimeDuration.parseDTDuration( dtduration.toString() );
 	}
 
 	/**
 	 * Mathematical addition operator between this XSDate and a supplied result
 	 * sequence (XDTYearMonthDuration and XDTDayTimeDuration are only valid
 	 * ones).
-	 * 
+	 *
 	 * @param arg
 	 *            The supplied ResultSequence that is on the right of the minus
 	 *            operator. If arg is an XDTYearMonthDuration or an
@@ -501,7 +499,7 @@ Cloneable {
 				XSDate res = (XSDate) clone();
 
 				res.calendar().add(Calendar.MONTH, val.monthValue());
-				return ResultSequenceFactory.create_new(res);
+				return res;
 			} else if (at instanceof XSDayTimeDuration) {
 				XSDayTimeDuration val = (XSDayTimeDuration) at;
 
@@ -516,7 +514,7 @@ Cloneable {
 
 				res.calendar().add(Calendar.MILLISECOND,
 						(int) (val.time_value() * 1000.0));
-				return ResultSequenceFactory.create_new(res);
+				return res;
 			} else {
 				DynamicError.throw_type_error();
 				return null; // unreach

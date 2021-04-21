@@ -8,9 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
- *     Jesper Steen Moller  - Bug 286062 - Add type promotion for numeric operators  
+ *     Jesper Steen Moller  - Bug 286062 - Add type promotion for numeric operators
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -49,7 +49,7 @@ public class FsPlus extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -64,10 +64,10 @@ public class FsPlus extends Function {
 
 	/**
 	 * Convert and promote arguments for operation.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param sc 
+	 * @param sc
 	 * @throws DynamicError
 	 *             Dynamic error.
 	 * @return Result of conversion.
@@ -78,7 +78,7 @@ public class FsPlus extends Function {
 		// Keep track of numeric types for promotion
 		boolean has_float = false;
 		boolean has_double = false;
-		
+
 		// atomize arguments
 		for (Iterator i = args.iterator(); i.hasNext();) {
 			org.eclipse.wst.xml.xpath2.api.ResultSequence rs = FnData.atomize((org.eclipse.wst.xml.xpath2.api.ResultSequence) i.next());
@@ -97,20 +97,20 @@ public class FsPlus extends Function {
 
 			if (arg instanceof XSDouble) has_double = true;
 			if (arg instanceof XSFloat) has_float = true;
-			result.add(ResultBuffer.wrap(arg));
+			result.add( arg );
 		}
 
 		if (has_double) has_float = false;
-		
+
 		if (has_double || has_float) {
 			Collection result2 = new ArrayList();
 
 			// promote arguments
 			for (Iterator i = result.iterator(); i.hasNext();) {
 				org.eclipse.wst.xml.xpath2.api.ResultSequence rs = (org.eclipse.wst.xml.xpath2.api.ResultSequence) i.next();
-								
+
 				Item arg = rs.item(0);
-				
+
 				if (has_double && (arg instanceof XSFloat)) {
 					arg = new XSDouble(((XSFloat)arg).float_value());
 				} else if (has_double && (arg instanceof XSDecimal)) {
@@ -122,17 +122,17 @@ public class FsPlus extends Function {
 			}
 			return result2;
 		}
-		
+
 		return result;
 	}
 
 
 	/**
 	 * General operation on the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
-	 * @param sc 
+	 * @param sc
 	 * @throws DynamicError
 	 *             Dynamic error.
 	 * @return Result of the operation.
@@ -143,7 +143,7 @@ public class FsPlus extends Function {
 
 	/**
 	 * Unary operation on the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @throws DynamicError
@@ -172,14 +172,14 @@ public class FsPlus extends Function {
 	// voodoo
 	/**
 	 * Mathematical operation on the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input arguments.
 	 * @param type
 	 *            type of arguments.
 	 * @param mname
 	 *            Method name for template simulation.
-	 * @param sc 
+	 * @param sc
 	 * @throws DynamicError
 	 *             Dynamic error.
 	 * @return Result of operation.

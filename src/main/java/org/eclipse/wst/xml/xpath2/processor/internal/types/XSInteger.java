@@ -50,7 +50,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Initializes a representation of the supplied integer
-	 * 
+	 *
 	 * @param x
 	 *            Integer to be stored
 	 */
@@ -61,7 +61,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Initializes a representation of the supplied integer
-	 * 
+	 *
 	 * @param x
 	 *            Integer to be stored
 	 */
@@ -72,7 +72,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:integer" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -81,7 +81,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "integer" which is the datatype's name
 	 */
 	public String type_name() {
@@ -90,7 +90,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Retrieves a String representation of the integer stored
-	 * 
+	 *
 	 * @return String representation of the integer stored
 	 */
 	public String getStringValue() {
@@ -101,10 +101,10 @@ public class XSInteger extends XSDecimal {
 	public Number getNativeValue() {
 		return _value;
 	}
-	
+
 	/**
 	 * Check whether the integer represented is 0
-	 * 
+	 *
 	 * @return True is the integer represented is 0. False otherwise
 	 */
 	public boolean zero() {
@@ -114,7 +114,7 @@ public class XSInteger extends XSDecimal {
 	/**
 	 * Creates a new ResultSequence consisting of the extractable integer in the
 	 * supplied ResultSequence
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence from which the integer is to be extracted
 	 * @return New ResultSequence consisting of the integer supplied
@@ -133,12 +133,12 @@ public class XSInteger extends XSDecimal {
 			aat instanceof XSAnyURI) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		if (!isCastable(aat)) {
 			throw DynamicError.cant_cast(null);
 		}
 
-		
+
 		try {
 			BigInteger bigInt = castInteger(aat);
 			return new XSInteger(bigInt);
@@ -147,7 +147,7 @@ public class XSInteger extends XSDecimal {
 		}
 
 	}
-	
+
 	private BigInteger castInteger(Item aat) {
 		if (aat instanceof XSBoolean) {
 			if (aat.getStringValue().equals("true")) {
@@ -156,16 +156,16 @@ public class XSInteger extends XSDecimal {
 				return BigInteger.ZERO;
 			}
 		}
-		
+
 		if (aat instanceof XSDecimal || aat instanceof XSFloat ||
 				aat instanceof XSDouble) {
 				BigDecimal bigDec =  new BigDecimal(aat.getStringValue());
 				return bigDec.toBigInteger();
 		}
-		
+
 		return new BigInteger(aat.getStringValue());
 	}
-	
+
 	private boolean isCastable(Item aat) throws DynamicError {
 		if (aat instanceof XSString || aat instanceof XSUntypedAtomic ||
 			aat instanceof NodeType) {
@@ -180,21 +180,21 @@ public class XSInteger extends XSDecimal {
 		}
 		return false;
 	}
-	
+
 	protected boolean isLexicalValue(String value) {
-		
+
 		try {
 			new BigInteger(value);
 		} catch (NumberFormatException ex) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Retrieves the actual integer value stored
-	 * 
+	 *
 	 * @return The actual integer value stored
 	 */
 	public BigInteger int_value() {
@@ -203,7 +203,7 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Sets the integer stored to that supplied
-	 * 
+	 *
 	 * @param x
 	 *            Integer to be stored
 	 */
@@ -214,8 +214,8 @@ public class XSInteger extends XSDecimal {
 
 	/**
 	 * Mathematical addition operator between this XSInteger and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an addition with
 	 * @return A XSInteger consisting of the result of the mathematical
@@ -226,15 +226,14 @@ public class XSInteger extends XSDecimal {
 		Item at = get_single_arg(carg);
 		if (!(at instanceof XSInteger))
 			DynamicError.throw_type_error();
-		
+
 		XSInteger val = (XSInteger)at;
 
-		return ResultSequenceFactory.create_new(new 
-				                   XSInteger(int_value().add(val.int_value())));
-		
+		return new XSInteger( int_value().add( val.int_value() ) );
+
 	}
 
-	
+
 	private ResultSequence convertResultSequence(ResultSequence arg)
 			throws DynamicError {
 		ResultSequence carg = arg;
@@ -248,12 +247,12 @@ public class XSInteger extends XSDecimal {
 		}
 		carg = constructor(carg);
 		return carg;
-	}	
-	
+	}
+
 	/**
 	 * Mathematical subtraction operator between this XSInteger and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a subtraction with
 	 * @return A XSInteger consisting of the result of the mathematical
@@ -262,15 +261,14 @@ public class XSInteger extends XSDecimal {
 	public ResultSequence minus(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-		
-		return ResultSequenceFactory.create_new(new 
-				                 XSInteger(int_value().subtract(val.int_value())));
+
+		return new XSInteger( int_value().subtract( val.int_value() ) );
 	}
 
 	/**
 	 * Mathematical multiplication operator between this XSInteger and the
-	 * supplied ResultSequence. 
-	 * 
+	 * supplied ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a multiplication with
 	 * @return A XSInteger consisting of the result of the mathematical
@@ -280,15 +278,14 @@ public class XSInteger extends XSDecimal {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-		
-		return ResultSequenceFactory.create_new(new 
-				                 XSInteger(int_value().multiply(val.int_value())));
+
+		return new XSInteger( int_value().multiply( val.int_value() ) );
 	}
 
 	/**
 	 * Mathematical modulus operator between this XSInteger and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a modulus with
 	 * @return A XSInteger consisting of the result of the mathematical modulus.
@@ -297,30 +294,29 @@ public class XSInteger extends XSDecimal {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-		BigInteger result = int_value().remainder(val.int_value()); 
-		
-		return ResultSequenceFactory.create_new(new XSInteger(result));
+		BigInteger result = int_value().remainder(val.int_value());
+
+		return new XSInteger( result );
 	}
 
 	/**
 	 * Negates the integer stored
-	 * 
+	 *
 	 * @return New XSInteger representing the negation of the integer stored
 	 */
 	public ResultSequence unary_minus() {
-		return ResultSequenceFactory
-				.create_new(new XSInteger(int_value().multiply(BigInteger.valueOf(-1))));
+		return new XSInteger( int_value().multiply( BigInteger.valueOf( -1 ) ) );
 	}
 
 	/**
 	 * Absolutes the integer stored
-	 * 
+	 *
 	 * @return New XSInteger representing the absolute of the integer stored
 	 */
 	public NumericType abs() {
 		return new XSInteger(int_value().abs());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.wst.xml.xpath2.processor.internal.types.XSDecimal#gt(org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType)
@@ -328,19 +324,19 @@ public class XSInteger extends XSDecimal {
 	public boolean gt(AnyType arg, DynamicContext context) throws DynamicError {
 		Item carg = convertArg(arg);
         XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-        
+
         int compareResult = int_value().compareTo(val.int_value());
-		
+
 		return compareResult > 0;
 	}
-	
+
 	protected Item convertArg(AnyType arg) throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new(arg);
+		ResultSequence rs = arg;
 		rs = constructor(rs);
 		Item carg = rs.first();
 		return carg;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.wst.xml.xpath2.processor.internal.types.XSDecimal#lt(org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType)
@@ -348,23 +344,23 @@ public class XSInteger extends XSDecimal {
 	public boolean lt(AnyType arg, DynamicContext context) throws DynamicError {
 		Item carg = convertArg(arg);
         XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-        
+
         int compareResult = int_value().compareTo(val.int_value());
-		
+
 		return compareResult < 0;
 	}
-	
+
 	public ResultSequence div(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
-		
+
 		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
 
 		if (val.zero()) {
 			throw DynamicError.div_zero(null);
 		}
-		
+
 		BigDecimal result = getValue().divide(val.getValue(), 18, BigDecimal.ROUND_HALF_EVEN);
-		return ResultSequenceFactory.create_new(new XSDecimal(result));
+		return new XSDecimal( result );
 	}
 
 	public TypeDefinition getTypeDefinition() {
