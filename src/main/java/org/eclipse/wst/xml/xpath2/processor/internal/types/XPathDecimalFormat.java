@@ -18,7 +18,6 @@ package org.eclipse.wst.xml.xpath2.processor.internal.types;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.FieldPosition;
 import java.util.Locale;
 
 /**
@@ -31,104 +30,99 @@ import java.util.Locale;
  * @see 1.1
  *
  */
-public class XPathDecimalFormat extends DecimalFormat {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8229885955864187400L;
+public final class XPathDecimalFormat {
+	private XPathDecimalFormat() {
+	}
+
 	private static final String NEG_INFINITY = "-INF";
 	private static final String POS_INFINITY = "INF";
+	private static final DecimalFormatSymbols SYMBOLS_US = new DecimalFormatSymbols(Locale.US);
+	private static final String XS_FLOAT_DEFAULT_FORMAT = "0.#######E0";
+	private static final String XS_FLOAT_FORMAT_2 = XS_FLOAT_DEFAULT_FORMAT.replaceAll("E0", "");
+	private static final String XS_FLOAT_FORMAT_3 = XS_FLOAT_DEFAULT_FORMAT.replaceAll("0\\.#", "0.0" );
+	private static final String XS_DOUBLE_DEFAULT_FORMAT = "0.################E0";
+	private static final String XS_DOUBLE_FORMAT_2 = XS_DOUBLE_DEFAULT_FORMAT.replaceAll("E0", "");
+	private static final String XS_DOUBLE_FORMAT_3 = XS_DOUBLE_DEFAULT_FORMAT.replaceAll("0\\.#", "0.0");
+	private static final String XS_DECIMAL_FORMAT = "0.####################";
 
-	public XPathDecimalFormat(String pattern) {
-		// Xpath hardcodes this to US locale
-		super(pattern, new DecimalFormatSymbols(Locale.US));
-	}
+	private static final ThreadLocal<DecimalFormat> XS_FLOAT_DEFAULT_DECIMAL_FORMAT =
+		threadLocalizedDecimalFormat(XS_FLOAT_DEFAULT_FORMAT);
+	private static final ThreadLocal<DecimalFormat> XS_FLOAT_DECIMAL_FORMAT_2 =
+		threadLocalizedDecimalFormat(XS_FLOAT_FORMAT_2);
+	private static final ThreadLocal<DecimalFormat> XS_FLOAT_DECIMAL_FORMAT_3 =
+		threadLocalizedDecimalFormat(XS_FLOAT_FORMAT_3);
+
+	private static final ThreadLocal<DecimalFormat> XS_DOUBLE_DECIMAL_FORMAT_2 =
+		threadLocalizedDecimalFormat(XS_DOUBLE_FORMAT_2);
+	private static final ThreadLocal<DecimalFormat> XS_DOUBLE_DECIMAL_FORMAT_3 =
+		threadLocalizedDecimalFormat(XS_DOUBLE_FORMAT_3);
+
+	private static final ThreadLocal<DecimalFormat> XS_DECIMAL_DECIMAL_FORMAT =
+		threadLocalizedDecimalFormat(XS_DECIMAL_FORMAT);
 
 	/**
 	 * Formats the string dropping a Zero Exponent Value if it exists.
 	 * @param obj
 	 * @return
 	 */
-	public String xpathFormat(Object obj) {
-		return formatXPath(obj);
-	}
-
-	private String formatXPath(Object obj) {
-		String curPattern = toPattern();
-		String newPattern = curPattern.replaceAll("E0", "");
+	public static String xpathFormat(Object obj) {
 		if (obj instanceof Float) {
-            return formatFloatValue(obj, curPattern, newPattern);
+            return formatFloatValue((Float)obj);
 		}
+
 		if (obj instanceof Double) {
-			return formatDoubleValue(obj, curPattern, newPattern);
+			return formatDoubleValue(obj);
 		}
-		return super.format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+
+		return XS_DECIMAL_DECIMAL_FORMAT.get().format(obj);
 	}
 
-	private String formatDoubleValue(Object obj, String curPattern,
-			String newPattern) {
+	private static String formatDoubleValue(Object obj) {
 		Double doubleValue = (Double) obj;
-		if (isDoubleNegativeInfinity(doubleValue)) {
+		if (doubleValue.doubleValue() == Double.NEGATIVE_INFINITY) {
 			return NEG_INFINITY;
 		}
-		if (isDoublePositiveInfinity(doubleValue)) {
+		if (doubleValue.doubleValue() == Double.POSITIVE_INFINITY) {
 			return POS_INFINITY;
 		}
-		doubleXPathPattern(obj, curPattern, newPattern);
-		return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+		DecimalFormat decimalFormat = doubleXPathPattern(obj);
+		return decimalFormat.format(obj);
 	}
 
-	private void doubleXPathPattern(Object obj, String curPattern,
-			String newPattern) {
-		BigDecimal doubValue = new BigDecimal((((Double) obj)).doubleValue());
+	private static DecimalFormat doubleXPathPattern(Object obj) {
+		BigDecimal doubleValue = BigDecimal.valueOf((((Double) obj)).doubleValue());
 		BigDecimal minValue = new BigDecimal("-1E6");
 		BigDecimal maxValue = new BigDecimal("1E6");
-		if (doubValue.compareTo(minValue) > 0 && doubValue.compareTo(maxValue) < 0) {
-			applyPattern(newPattern);
-		} else { //if (doubValue.compareTo(minValue) < 0) {
-			applyPattern(curPattern.replaceAll("0\\.#", "0.0"));
+		if (doubleValue.compareTo(minValue) > 0 && doubleValue.compareTo(maxValue) < 0) {
+			return XS_DOUBLE_DECIMAL_FORMAT_2.get();
+		} else { //if (doubleValue.compareTo(minValue) < 0) {
+			return XS_DOUBLE_DECIMAL_FORMAT_3.get();
 		}
 	}
 
-	private boolean isDoublePositiveInfinity(Double doubleValue) {
-		return doubleValue.doubleValue() == Double.POSITIVE_INFINITY;
-	}
-
-	private boolean isDoubleNegativeInfinity(Double doubleValue) {
-		return doubleValue.doubleValue() == Double.NEGATIVE_INFINITY;
-	}
-
-	private String formatFloatValue(Object obj, String curPattern,
-			String newPattern) {
-		Float floatValue = (Float) obj;
-		if (isFloatNegInfinity(floatValue)) {
+	private static String formatFloatValue(Float floatValue) {
+		if (floatValue.floatValue() == Float.NEGATIVE_INFINITY) {
 			return NEG_INFINITY;
 		}
-		if (isFloatPosInfinity(floatValue)) {
+		if (floatValue.floatValue() == Float.POSITIVE_INFINITY) {
 			return POS_INFINITY;
 		}
-		floatXPathPattern(curPattern, newPattern, floatValue);
-		return format(obj, new StringBuffer(), new FieldPosition(0)).toString();
+
+		return floatXPathPattern(floatValue).format(floatValue);
 	}
 
-	private boolean isFloatPosInfinity(Float floatValue) {
-		return floatValue.floatValue() == Float.POSITIVE_INFINITY;
-	}
-
-	private boolean isFloatNegInfinity(Float floatValue) {
-		return floatValue.floatValue() == Float.NEGATIVE_INFINITY;
-	}
-
-	private void floatXPathPattern(String curPattern, String newPattern,
-			Float floatValue) {
+	private static DecimalFormat floatXPathPattern(Float floatValue) {
 		if (floatValue.floatValue() > -1E6f && floatValue.floatValue() < 1E6f) {
-			
-			applyPattern(newPattern);
+			return XS_FLOAT_DECIMAL_FORMAT_2.get();
 		} else if (floatValue.floatValue() <= -1E6f) {
-			applyPattern(curPattern.replaceAll("0\\.#", "0.0" ));
+			return XS_FLOAT_DECIMAL_FORMAT_3.get();
 		}
+
+		return XS_FLOAT_DEFAULT_DECIMAL_FORMAT.get();
 	}
-	
-	
+
+	private static ThreadLocal<DecimalFormat> threadLocalizedDecimalFormat(String pattern) {
+		return ThreadLocal.withInitial(
+			() -> new DecimalFormat(pattern, SYMBOLS_US));
+	}
 }
