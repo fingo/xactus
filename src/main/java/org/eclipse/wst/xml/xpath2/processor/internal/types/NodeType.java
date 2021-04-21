@@ -26,13 +26,13 @@
 
 package org.eclipse.wst.xml.xpath2.processor.internal.types;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.apache.xerces.xs.XSConstants;
 import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.ComplexTypeDefinition;
@@ -41,7 +41,6 @@ import org.eclipse.wst.xml.xpath2.api.typesystem.SimpleTypeDefinition;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
 import org.eclipse.wst.xml.xpath2.processor.PsychoPathTypeHelper;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -292,8 +291,17 @@ public abstract class NodeType extends AnyType {
 		ResultBuffer rs = new ResultBuffer();
 
 		if (simpType.getVariety() == SimpleTypeDefinition.VARIETY_ATOMIC) {
-		   AnyType schemaTypeValue = SchemaTypeValueFactory.newSchemaTypeValue(PsychoPathTypeHelper.getXSDTypeShortCode(simpType), getStringValue());
+			final short shortCode = PsychoPathTypeHelper.getXSDTypeShortCode( simpType );
+			AnyType schemaTypeValue = SchemaTypeValueFactory.newSchemaTypeValue( shortCode, getStringValue() );
 		   if (schemaTypeValue != null) {
+				if( shortCode == XSConstants.QNAME_DT )
+				{
+					QName qName = (QName)schemaTypeValue;
+					if( !qName.expanded() && qName.prefix() != null )
+					{
+						qName.set_namespace( this._node.lookupNamespaceURI( qName.prefix() ) );
+					}
+				}
 				return schemaTypeValue;
 		   } else {
 			   return new XSUntypedAtomic(getStringValue());
