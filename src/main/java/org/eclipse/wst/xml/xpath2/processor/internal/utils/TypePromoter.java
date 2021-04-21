@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.api.Item;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
+import org.eclipse.wst.xml.xpath2.processor.internal.function.FnData;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
@@ -32,13 +33,13 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
 public abstract class TypePromoter {
 	private Class targetType = null;
 
-	abstract public AnyAtomicType doPromote(AnyAtomicType value) throws DynamicError;	
+	abstract public AnyAtomicType doPromote(AnyAtomicType value) throws DynamicError;
 
 	public final AnyAtomicType promote(AnyType value) throws DynamicError {
 		// This is a short cut, really
 		if (value.getClass() == getTargetType()) return (AnyAtomicType)value;
 
-		AnyAtomicType atomized = atomize(value);
+		AnyAtomicType atomized = FnData.atomize( (Item)value );
 		if( atomized == null )
 		{// empty sequence
 			return null;
@@ -47,20 +48,20 @@ public abstract class TypePromoter {
 	}
 
 	/**
-	 * @param typeToConsider The 
+	 * @param typeToConsider The
 	 * @return The supertype to treat it as (i.e. if a xs:nonNegativeInteger is treated as xs:number)
 	 */
-	abstract protected Class substitute(Class typeToConsider);	
+	abstract protected Class substitute(Class typeToConsider);
 
 	abstract protected boolean checkCombination(Class newType);
-		
+
 	public void considerType(Class typeToConsider) throws DynamicError {
 		Class baseType = substitute(typeToConsider);
-		
+
 		if (baseType == null) {
 			throw DynamicError.argument_type_error(typeToConsider);
 		}
-		
+
 		if (targetType == null) {
 			targetType = baseType;
 		} else {
@@ -69,48 +70,33 @@ public abstract class TypePromoter {
 			}
 		}
 	}
-	
-	public void considerTypes(Collection typesToConsider) throws DynamicError {		
+
+	public void considerTypes(Collection typesToConsider) throws DynamicError {
 		for (Iterator iter = typesToConsider.iterator(); iter.hasNext();) {
-			considerType((Class)iter.next());	
+			considerType((Class)iter.next());
 		}
 	}
-	
+
 	public void considerSequence(ResultSequence sequenceToConsider) throws DynamicError {
 		for (int i = 0; i < sequenceToConsider.size(); ++i) {
 			Item item = sequenceToConsider.item(i);
 			considerValue(item);
 		}
 	}
-	
+
 	public Class getTargetType() {
 		return targetType;
 	}
-	
+
 	protected void setTargetType(Class class1) {
 		this.targetType = class1;
 	}
 
-	public AnyAtomicType atomize(Item at) {
-		if (at instanceof NodeType) {
-			ResultSequence nodeValues = ((NodeType)at).typed_value();
-			if(nodeValues.empty()){
-				return null;
-			}
-			return (AnyAtomicType)nodeValues.first();
-		}
-		else {
-			return (AnyAtomicType)at;
-		}
-	}
-	
 	public void considerValue(Item at) throws DynamicError {
-		final AnyAtomicType atomize = this.atomize(at);
+		final AnyAtomicType atomize = FnData.atomize( at );
 		if( atomize != null )
 		{// we known that it is not empty sequence
 			this.considerType(atomize.getClass());
 		}
 	}
-
-
 }
