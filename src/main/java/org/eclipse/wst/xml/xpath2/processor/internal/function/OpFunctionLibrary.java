@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.internal.function;
@@ -16,7 +16,7 @@ package org.eclipse.wst.xml.xpath2.processor.internal.function;
 // this is the equivalent of libc =D
 /**
  * Maintains a library of built-in operators as functions.
- * 
+ *
  * This is necessary if normalization is being used.
  */
 public class OpFunctionLibrary extends FunctionLibraryImpl {
@@ -52,5 +52,6 @@ public class OpFunctionLibrary extends FunctionLibraryImpl {
 		addFunction(new OpIntersect());
 		addFunction(new OpTo());
 		addFunction(new OpUnion());
+		addFunction(new OpConcatenate());
 	}
 }
