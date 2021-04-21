@@ -13,7 +13,7 @@
  *     David Carver (STAR) - bug 277774 - XSDecimal returning wrong values.
  *     David Carver (STAR) - bug 262765 - various numeric formatting fixes and calculations
  *     David Carver (STAR) - bug 282223 - Can't Cast Exponential values to Decimal values.
- *     David Carver (STAR) - bug 262765 - fixed edge case where rounding was occuring when it shouldn't. 
+ *     David Carver (STAR) - bug 262765 - fixed edge case where rounding was occuring when it shouldn't.
  *     Jesper Steen Moller - bug 262765 - fix type tests
  *     David Carver (STAR) - bug 262765 - fixed abs value tests.
  *     Jesper Steen Moller - bug 281028 - fixed division of zero (no, not by)
@@ -32,7 +32,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLibrary;
 
 /**
@@ -42,7 +41,6 @@ public class XSDecimal extends NumericType {
 
 	private static final String XS_DECIMAL = "xs:decimal";
 	private BigDecimal _value;
-	private XPathDecimalFormat format = new XPathDecimalFormat("0.####################");
 
 	/**
 	 * Initiates a representation of 0.0
@@ -53,14 +51,14 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Initiates a representation of the supplied number
-	 * 
+	 *
 	 * @param x
 	 *            Number to be stored
 	 */
 	public XSDecimal(BigDecimal x) {
 		_value = x;
 	}
-	
+
 	public XSDecimal(String x) {
 		//_value = new BigDecimal(x, MathContext.DECIMAL128);
 		_value = new BigDecimal(x);
@@ -68,7 +66,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:decimal" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -77,7 +75,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "decimal" which is the datatype's name
 	 */
 	public String type_name() {
@@ -86,24 +84,24 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Retrieves a String representation of the Decimal value stored
-	 * 
+	 *
 	 * @return String representation of the Decimal value stored
 	 */
 	public String getStringValue() {
-		
+
 		if (zero()) {
 			return "0";
 		}
-		
+
 		// strip trailing zeros
 		_value = new BigDecimal((_value.toString()).replaceFirst("0*", ""));
-		
-		return format.xpathFormat(_value);
+
+		return XPathDecimalFormat.xpathFormat( _value );
 	}
 
 	/**
 	 * Check if this XSDecimal represents 0
-	 * 
+	 *
 	 * @return True if this XSDecimal represents 0. False otherwise
 	 */
 	public boolean zero() {
@@ -113,7 +111,7 @@ public class XSDecimal extends NumericType {
 	/**
 	 * Creates a new result sequence consisting of the retrievable decimal
 	 * number in the supplied result sequence
-	 * 
+	 *
 	 * @param arg
 	 *            The result sequence from which to extract the decimal number.
 	 * @throws DynamicError
@@ -124,28 +122,28 @@ public class XSDecimal extends NumericType {
 			return ResultBuffer.EMPTY;
 
 		Item aat = arg.first();
-		
+
 		if (aat instanceof XSDuration || aat instanceof CalendarType ||
 			aat instanceof XSBase64Binary || aat instanceof XSHexBinary ||
 			aat instanceof XSAnyURI) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		if (aat.getStringValue().indexOf("-INF") != -1) {
 			throw DynamicError.cant_cast(null);
 		}
-		
+
 		if (!isLexicalValue(aat.getStringValue())) {
 			throw DynamicError.invalidLexicalValue();
 		}
-		
+
 		if (!isCastable(aat)) {
 			throw DynamicError.cant_cast(null);
 		}
 
 		try {
 			// XPath doesn't allow for converting Exponents to Decimal values.
-			
+
 			return castDecimal(aat);
 		} catch (NumberFormatException e) {
 			throw DynamicError.cant_cast(null);
@@ -157,19 +155,19 @@ public class XSDecimal extends NumericType {
 		if (value.equalsIgnoreCase("inf")) {
 			return false;
 		}
-		
+
 		if (value.equalsIgnoreCase("-inf")) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean isCastable(Item aat) throws DynamicError {
 		if (aat instanceof XSBoolean || aat instanceof NumericType) {
 			return true;
-		}		
-		
-		if ((aat.getStringValue().indexOf("E") != -1) || 
+		}
+
+		if ((aat.getStringValue().indexOf("E") != -1) ||
 			(aat.getStringValue().indexOf("e") != -1)) {
 			return false;
 		}
@@ -191,24 +189,24 @@ public class XSDecimal extends NumericType {
 		}
 		return new XSDecimal(aat.getStringValue());
 	}
-	
+
 	/**
 	 * Retrieves the actual value of the number stored
-	 * 
+	 *
 	 * @return The actual value of the number stored
 	 * @deprecated Use getValue() instead.
 	 */
 	public double double_value() {
 		return _value.doubleValue();
 	}
-	
+
 	public BigDecimal getValue() {
 		return _value;
 	}
 
 	/**
 	 * Sets the number stored to that supplied
-	 * 
+	 *
 	 * @param x
 	 *            Number to be stored
 	 */
@@ -222,21 +220,21 @@ public class XSDecimal extends NumericType {
 	 * @param at
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDecimal)
-	 * 
-	 * 
+	 *
+	 *
 	 * @return True if the 2 representation represent the same number. False
 	 *         otherwise
 	 */
 	public boolean eq(AnyType at, DynamicContext dynamicContext) throws DynamicError {
 		XSDecimal dt = null;
-		if (!(at instanceof XSDecimal)) { 
-			ResultSequence rs = ResultSequenceFactory.create_new(at);
-			
+		if (!(at instanceof XSDecimal)) {
+			ResultSequence rs = at;
+
 			ResultSequence crs = constructor(rs);
 			if (crs.empty()) {
 				throw DynamicError.throw_type_error();
 			}
-		
+
 			Item cat = crs.first();
 
 			dt = (XSDecimal) cat;
@@ -247,8 +245,8 @@ public class XSDecimal extends NumericType {
 	}
 
 	/**
-	 * Comparison between this number and the supplied representation. 
-	 * 
+	 * Comparison between this number and the supplied representation.
+	 *
 	 * @param arg
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDecimal)
@@ -257,21 +255,21 @@ public class XSDecimal extends NumericType {
 	 */
 	public boolean gt(AnyType arg, DynamicContext context) throws DynamicError {
 		Item carg = convertArg(arg);
-		
+
 		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
 		return (_value.compareTo(val.getValue()) == 1);
 	}
 
 	protected Item convertArg(AnyType arg) throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new(arg);
+		ResultSequence rs = arg;
 		rs = constructor(rs);
 		Item carg = rs.first();
 		return carg;
 	}
-	
+
 	/**
-	 * Comparison between this number and the supplied representation. 
-	 * 
+	 * Comparison between this number and the supplied representation.
+	 *
 	 * @param arg
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDecimal)
@@ -289,7 +287,7 @@ public class XSDecimal extends NumericType {
 	 * Mathematical addition operator between this XSDecimal and the supplied
 	 * ResultSequence. Due to no numeric type promotion or conversion, the
 	 * ResultSequence must be of type XSDecimal.
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an addition with
 	 * @return A XSDecimal consisting of the result of the mathematical
@@ -304,9 +302,9 @@ public class XSDecimal extends NumericType {
 		XSDecimal dt = (XSDecimal) at;
 
 		// own it
-		return ResultSequenceFactory.create_new(new XSDecimal(_value.add(dt.getValue())));
+		return new XSDecimal( _value.add( dt.getValue() ) );
 	}
-	
+
 	private ResultSequence convertResultSequence(ResultSequence arg)
 			throws DynamicError {
 		ResultSequence carg = arg;
@@ -320,19 +318,19 @@ public class XSDecimal extends NumericType {
 		}
 		carg = constructor(carg);
 		return carg;
-	}	
+	}
 
 	/**
 	 * Mathematical subtraction operator between this XSDecimal and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a subtraction with
 	 * @return A XSDecimal consisting of the result of the mathematical
 	 *         subtraction.
 	 */
 	public ResultSequence minus(ResultSequence arg) throws DynamicError {
-		
+
 		ResultSequence carg = convertResultSequence(arg);
 
 		Item at = get_single_arg(carg);
@@ -340,13 +338,13 @@ public class XSDecimal extends NumericType {
 			DynamicError.throw_type_error();
 		XSDecimal dt = (XSDecimal) at;
 
-		return ResultSequenceFactory.create_new(new XSDecimal(_value.subtract(dt.getValue())));
+		return new XSDecimal( _value.subtract( dt.getValue() ) );
 	}
 
 	/**
 	 * Mathematical multiplication operator between this XSDecimal and the
-	 * supplied ResultSequence. 
-	 * 
+	 * supplied ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a multiplication with
 	 * @return A XSDecimal consisting of the result of the mathematical
@@ -357,13 +355,13 @@ public class XSDecimal extends NumericType {
 
 		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
 		BigDecimal result = _value.multiply(val.getValue());
-		return ResultSequenceFactory.create_new(new XSDecimal(result));
+		return new XSDecimal( result );
 	}
 
 	/**
 	 * Mathematical division operator between this XSDecimal and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a division with
 	 * @return A XSDecimal consisting of the result of the mathematical
@@ -371,20 +369,20 @@ public class XSDecimal extends NumericType {
 	 */
 	public ResultSequence div(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
-			
+
 		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
 		if (val.zero()) {
 			throw DynamicError.div_zero(null);
 		}
 		BigDecimal result = getValue().divide(val.getValue(), 18, BigDecimal.ROUND_HALF_EVEN);
-		return ResultSequenceFactory.create_new(new XSDecimal(result));
+		return new XSDecimal( result );
 	}
 
 	/**
 	 * Mathematical integer division operator between this XSDecimal and the
 	 * supplied ResultSequence. Due to no numeric type promotion or conversion,
 	 * the ResultSequence must be of type XSDecimal.
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an integer division with
 	 * @return A XSInteger consisting of the result of the mathematical integer
@@ -400,15 +398,14 @@ public class XSDecimal extends NumericType {
 		BigInteger _ivalue = _value.toBigInteger();
 		BigInteger ival =  val.getValue().toBigInteger();
 		BigInteger result = _ivalue.divide(ival);
-		return ResultSequenceFactory.create_new(new 
-				           XSInteger(result));
+		return new XSInteger( result );
 	}
 
 	/**
 	 * Mathematical modulus operator between this XSDecimal and the supplied
 	 * ResultSequence. Due to no numeric type promotion or conversion, the
 	 * ResultSequence must be of type XSDecimal.
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a modulus with
 	 * @return A XSDecimal consisting of the result of the mathematical modulus.
@@ -417,37 +414,37 @@ public class XSDecimal extends NumericType {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
-		
+
 		// BigDecimal result = _value.remainder(val.getValue());
-		BigDecimal result = remainder(_value, val.getValue()); 
-		
-		return ResultSequenceFactory.create_new(new XSDecimal(result));
+		BigDecimal result = remainder(_value, val.getValue());
+
+		return new XSDecimal( result );
 	}
 
 	public static BigDecimal remainder(BigDecimal value, BigDecimal divisor) {
 		// return value.remainder(divisor);
-		
+
 		// appx as of now. JDK 1.4 doesn't support BigDecimal.remainder(..)
 		BigDecimal dividend = value.divide(divisor, BigDecimal.ROUND_DOWN);
 		BigDecimal ceilDividend = new BigDecimal(dividend.toBigInteger());
-		
-		return value.subtract(ceilDividend.multiply(divisor)); 
+
+		return value.subtract(ceilDividend.multiply(divisor));
 	}
-	
+
 	/**
 	 * Negation of the number stored
-	 * 
+	 *
 	 * @return A XSDecimal representing the negation of this XSDecimal
 	 */
 	public ResultSequence unary_minus() {
 		BigDecimal result = _value.negate();
-		return ResultSequenceFactory.create_new(new XSDecimal(result));
+		return new XSDecimal( result );
 	}
 
 	// functions
 	/**
 	 * Absolutes the number stored
-	 * 
+	 *
 	 * @return A XSDecimal representing the absolute value of the number stored
 	 */
 	public NumericType abs() {
@@ -456,7 +453,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Returns the smallest integer greater than the number stored
-	 * 
+	 *
 	 * @return A XSDecimal representing the smallest integer greater than the
 	 *         number stored
 	 */
@@ -467,7 +464,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Returns the largest integer smaller than the number stored
-	 * 
+	 *
 	 * @return A XSDecimal representing the largest integer smaller than the
 	 *         number stored
 	 */
@@ -478,7 +475,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSDecimal representing the closest long of the number stored.
 	 */
 	public NumericType round() {
@@ -488,7 +485,7 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSDecimal representing the closest long of the number stored.
 	 */
 	public NumericType round_half_to_even() {
@@ -497,8 +494,8 @@ public class XSDecimal extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored with the specified precision.
-	 * 
-	 * @param precision An integer precision 
+	 *
+	 * @param precision An integer precision
 	 * @return A XSDecimal representing the closest long of the number stored.
 	 */
 	public NumericType round_half_to_even(int precision) {

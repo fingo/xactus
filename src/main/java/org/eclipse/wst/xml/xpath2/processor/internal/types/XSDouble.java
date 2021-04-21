@@ -13,8 +13,8 @@
  *     David Carver - bug 277770 - format of XSDouble for zero values incorrect.
  *     Mukul Gandhi - bug 279406 - improvements to negative zero values for xs:double
  *     David Carver (STAR) - bug 262765 - various numeric formatting fixes and calculations
- *     David Carver (STAR) - bug 262765 - fixed rounding errors.      
- *     Jesper Steen Moller - Bug 286062 - Fix idiv error cases and increase precision  
+ *     David Carver (STAR) - bug 262765 - fixed rounding errors.
+ *     Jesper Steen Moller - Bug 286062 - Fix idiv error cases and increase precision
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -29,7 +29,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLibrary;
 
 /**
@@ -39,12 +38,10 @@ public class XSDouble extends NumericType {
 
 	private static final String XS_DOUBLE = "xs:double";
 	private Double _value;
-	private XPathDecimalFormat format = new XPathDecimalFormat(
-			"0.################E0");
 
 	/**
 	 * Initialises a representation of the supplied number
-	 * 
+	 *
 	 * @param x
 	 *            Number to be stored
 	 */
@@ -61,7 +58,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Initialises using a String represented number
-	 * 
+	 *
 	 * @param init
 	 *            String representation of the number to be stored
 	 */
@@ -81,7 +78,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Creates a new representation of the String represented number
-	 * 
+	 *
 	 * @param i
 	 *            String representation of the number to be stored
 	 * @return New XSDouble representing the number supplied
@@ -105,7 +102,7 @@ public class XSDouble extends NumericType {
 	/**
 	 * Creates a new result sequence consisting of the retrievable double number
 	 * in the supplied result sequence
-	 * 
+	 *
 	 * @param arg
 	 *            The result sequence from which to extract the double number.
 	 * @throws DynamicError
@@ -123,19 +120,19 @@ public class XSDouble extends NumericType {
 			aat instanceof XSAnyURI) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		if (!isCastable(aat)) {
 			throw DynamicError.cant_cast(null);
 		}
 
 		XSDouble d = castDouble(aat);
-		
+
 		if (d == null)
 			throw DynamicError.cant_cast(null);
 
 		return d;
 	}
-	
+
 	private boolean isCastable(Item aat) {
 		if (aat instanceof XSString || aat instanceof XSUntypedAtomic ||
 			aat instanceof NodeType) {
@@ -146,7 +143,7 @@ public class XSDouble extends NumericType {
 		}
 		return false;
 	}
-	
+
 	private XSDouble castDouble(Item aat) {
 		if (aat instanceof XSBoolean) {
 			if (aat.getStringValue().equals("true")) {
@@ -156,12 +153,12 @@ public class XSDouble extends NumericType {
 			}
 		}
 		return parse_double(aat.getStringValue());
-		
+
 	}
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:double" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -170,7 +167,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "double" which is the datatype's name
 	 */
 	public String type_name() {
@@ -179,7 +176,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Retrieves a String representation of the Decimal value stored
-	 * 
+	 *
 	 * @return String representation of the Decimal value stored
 	 */
 	public String getStringValue() {
@@ -195,12 +192,12 @@ public class XSDouble extends NumericType {
 			return "NaN";
 		}
 
-		return format.xpathFormat(_value);
+		return XPathDecimalFormat.xpathFormat( _value );
 	}
 
 	/**
 	 * Check for whether this XSDouble represents NaN
-	 * 
+	 *
 	 * @return True if this XSDouble represents NaN. False otherwise.
 	 */
 	public boolean nan() {
@@ -209,7 +206,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Check for whether this XSDouble represents an infinite number (negative or positive)
-	 * 
+	 *
 	 * @return True if this XSDouble represents infinity. False otherwise.
 	 */
 	public boolean infinite() {
@@ -218,7 +215,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Check for whether this XSDouble represents 0
-	 * 
+	 *
 	 * @return True if this XSDouble represents 0. False otherwise.
 	 */
 	public boolean zero() {
@@ -227,9 +224,9 @@ public class XSDouble extends NumericType {
 
 	/*
 	 * Check for whether this XSDouble represents -0
-	 * 
+	 *
 	 * @return True if this XSDouble represents -0. False otherwise.
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public boolean negativeZero() {
@@ -238,7 +235,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Retrieves the actual value of the number stored
-	 * 
+	 *
 	 * @return The actual value of the number stored
 	 */
 	public double double_value() {
@@ -250,15 +247,15 @@ public class XSDouble extends NumericType {
 	 * @param aa
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDouble)
-	 * 
+	 *
 	 * @return True if the 2 representations represent the same number. False
 	 *         otherwise
 	 * @since 1.1
 	 */
 	public boolean eq(AnyType aa, DynamicContext dynamicContext) throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new(aa);
+		ResultSequence rs = aa;
 		ResultSequence crs = constructor(rs);
-		
+
 		if (crs.empty()) {
 			throw DynamicError.throw_type_error();
 		}
@@ -268,16 +265,16 @@ public class XSDouble extends NumericType {
 		if (d.nan() && nan()) {
 			return false;
 		}
-		
+
 		Double thatvalue = new Double(d.double_value());
 		Double thisvalue = new Double(double_value());
-		
+
 		return thisvalue.equals(thatvalue);
 	}
 
 	/**
-	 * Comparison between this number and the supplied representation. 
-	 * 
+	 * Comparison between this number and the supplied representation.
+	 *
 	 * @param arg
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDouble)
@@ -286,13 +283,13 @@ public class XSDouble extends NumericType {
 	 */
 	public boolean gt(AnyType arg, DynamicContext context) throws DynamicError {
 		Item carg = convertArg(arg);
-		
+
 		XSDouble val = (XSDouble) get_single_type(carg, XSDouble.class);
 		return double_value() > val.double_value();
 	}
 
 	protected Item convertArg(AnyType arg) throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new(arg);
+		ResultSequence rs = arg;
 		rs = constructor(rs);
 		Item carg = rs.first();
 		return carg;
@@ -302,7 +299,7 @@ public class XSDouble extends NumericType {
 	 * Comparison between this number and the supplied representation. Currently
 	 * no numeric type promotion exists so the supplied representation must be
 	 * of type XSDouble.
-	 * 
+	 *
 	 * @param arg
 	 *            Representation to be compared with (must currently be of type
 	 *            XSDouble)
@@ -319,8 +316,8 @@ public class XSDouble extends NumericType {
 	// math
 	/**
 	 * Mathematical addition operator between this XSDouble and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an addition with
 	 * @return A XSDouble consisting of the result of the mathematical addition.
@@ -328,13 +325,12 @@ public class XSDouble extends NumericType {
 	public ResultSequence plus(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 		Item at = get_single_arg(carg);
-		
+
 		if (!(at instanceof XSDouble))
 			DynamicError.throw_type_error();
 		XSDouble val = (XSDouble) at;
 
-		return ResultSequenceFactory.create_new(new XSDouble(double_value()
-				+ val.double_value()));
+		return new XSDouble( double_value() + val.double_value() );
 	}
 
 	private ResultSequence convertResultSequence(ResultSequence arg)
@@ -355,8 +351,8 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Mathematical subtraction operator between this XSDouble and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an subtraction with
 	 * @return A XSDouble consisting of the result of the mathematical
@@ -364,18 +360,17 @@ public class XSDouble extends NumericType {
 	 */
 	public ResultSequence minus(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
-		
+
 		XSDouble val = (XSDouble) get_single_type(carg, XSDouble.class);
 
-		return ResultSequenceFactory.create_new(new XSDouble(double_value()
-				- val.double_value()));
+		return new XSDouble( double_value() - val.double_value() );
 	}
 
 	/**
 	 * Mathematical multiplication operator between this XSDouble and the
 	 * supplied ResultSequence. Due to no numeric type promotion or conversion,
 	 * the ResultSequence must be of type XSDouble.
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an multiplication with
 	 * @return A XSDouble consisting of the result of the mathematical
@@ -385,14 +380,13 @@ public class XSDouble extends NumericType {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSDouble val = (XSDouble) get_single_type(carg, XSDouble.class);
-		return ResultSequenceFactory.create_new(new XSDouble(double_value()
-				* val.double_value()));
+		return new XSDouble( double_value() * val.double_value() );
 	}
 
 	/**
 	 * Mathematical division operator between this XSDouble and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an division with
 	 * @return A XSDouble consisting of the result of the mathematical division.
@@ -401,14 +395,13 @@ public class XSDouble extends NumericType {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSDouble val = (XSDouble) get_single_type(carg, XSDouble.class);
-		return ResultSequenceFactory.create_new(new XSDouble(double_value()
-				/ val.double_value()));
+		return new XSDouble( double_value() / val.double_value() );
 	}
 
 	/**
 	 * Mathematical integer division operator between this XSDouble and the
-	 * supplied ResultSequence. 
-	 * 
+	 * supplied ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an integer division with
 	 * @return A XSInteger consisting of the result of the mathematical integer
@@ -429,13 +422,13 @@ public class XSDouble extends NumericType {
 			throw DynamicError.div_zero(null);
 
 		BigDecimal result = new BigDecimal((double_value() / val.double_value()));
-		return ResultSequenceFactory.create_new(new XSInteger(result.toBigInteger()));
+		return new XSInteger( result.toBigInteger() );
 	}
 
 	/**
 	 * Mathematical modulus operator between this XSDouble and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a modulus with
 	 * @return A XSDouble consisting of the result of the mathematical modulus.
@@ -444,24 +437,22 @@ public class XSDouble extends NumericType {
 		ResultSequence carg = convertResultSequence(arg);
 
 		XSDouble val = (XSDouble) get_single_type(carg, XSDouble.class);
-		return ResultSequenceFactory.create_new(new XSDouble(double_value()
-				% val.double_value()));
+		return new XSDouble( double_value() % val.double_value() );
 	}
 
 	/**
 	 * Negation of the number stored
-	 * 
+	 *
 	 * @return A XSDouble representing the negation of this XSDecimal
 	 */
 	public ResultSequence unary_minus() {
-		return ResultSequenceFactory.create_new(new XSDouble(-1
-				* double_value()));
+		return new XSDouble( -1 * double_value() );
 	}
 
 	// functions
 	/**
 	 * Absolutes the number stored
-	 * 
+	 *
 	 * @return A XSDouble representing the absolute value of the number stored
 	 */
 	public NumericType abs() {
@@ -470,7 +461,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Returns the smallest integer greater than the number stored
-	 * 
+	 *
 	 * @return A XSDouble representing the smallest integer greater than the
 	 *         number stored
 	 */
@@ -480,7 +471,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Returns the largest integer smaller than the number stored
-	 * 
+	 *
 	 * @return A XSDouble representing the largest integer smaller than the
 	 *         number stored
 	 */
@@ -490,7 +481,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSDouble representing the closest long of the number stored.
 	 */
 	public NumericType round() {
@@ -501,7 +492,7 @@ public class XSDouble extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSDouble representing the closest long of the number stored.
 	 */
 	public NumericType round_half_to_even() {
@@ -512,7 +503,7 @@ public class XSDouble extends NumericType {
 	/**
 	 * Returns the closest integer of the number stored with the specified
 	 * precision.
-	 * 
+	 *
 	 * @param precision
 	 *            An integer precision
 	 * @return A XSDouble representing the closest long of the number stored.

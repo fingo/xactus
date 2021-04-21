@@ -13,7 +13,7 @@
  *     Mukul Gandhi - bug 279406 - improvements to negative zero values for xs:float
  *     David Carver - bug 262765 - fixed rounding errors.
  *     David Carver - bug 282223 - fixed casting errors.
- *     Jesper Steen Moller - Bug 286062 - Fix idiv error cases and increase precision  
+ *     Jesper Steen Moller - Bug 286062 - Fix idiv error cases and increase precision
  *     Jesper Steen Moller - bug 281028 - Added constructor from string
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
@@ -39,10 +39,10 @@ public class XSFloat extends NumericType {
 
 	private static final String XS_FLOAT = "xs:float";
 	private Float _value;
-	private XPathDecimalFormat format = new XPathDecimalFormat("0.#######E0");
+
 	/**
 	 * Initiates a representation of the supplied number
-	 * 
+	 *
 	 * @param x
 	 *            The number to be stored
 	 */
@@ -59,7 +59,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Initialises using a String represented number
-	 * 
+	 *
 	 * @param init
 	 *            String representation of the number to be stored
 	 */
@@ -78,7 +78,7 @@ public class XSFloat extends NumericType {
 	}
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:float" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -87,7 +87,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Retrieves the datatype's name
-	 * 
+	 *
 	 * @return "float" which is the datatype's name
 	 */
 	public String type_name() {
@@ -96,7 +96,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Retrieves a String representation of the stored number
-	 * 
+	 *
 	 * @return String representation of the stored number
 	 */
 	public String getStringValue() {
@@ -104,19 +104,19 @@ public class XSFloat extends NumericType {
 		   return "0";
 		}
 		if (negativeZero()) {
-		   return "-0";	
+		   return "-0";
 		}
-		
+
 		if (nan()) {
-		   return "NaN";	
+		   return "NaN";
 		}
-								
-		return format.xpathFormat(_value);
+
+		return XPathDecimalFormat.xpathFormat( _value );
 	}
 
 	/**
 	 * Check for whether this datatype represents NaN
-	 * 
+	 *
 	 * @return True is this datatype represents NaN. False otherwise
 	 */
 	public boolean nan() {
@@ -125,7 +125,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Check for whether this datatype represents negative or positive infinity
-	 * 
+	 *
 	 * @return True is this datatype represents infinity. False otherwise
 	 */
 	public boolean infinite() {
@@ -134,27 +134,27 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Check for whether this datatype represents 0
-	 * 
+	 *
 	 * @return True if this datatype represents 0. False otherwise
 	 */
 	public boolean zero() {
 	   return (Float.compare(_value.floatValue(), 0) == 0);
 	}
-	
+
 	/*
 	 * Check for whether this XSFloat represents -0
-	 * 
+	 *
 	 * @return True if this XSFloat represents -0. False otherwise.
 	 * @since 1.1
 	 */
 	public boolean negativeZero() {
 	   return (Float.compare(_value.floatValue(), -0.0f) == 0);
 	}
-	
+
 	/**
 	 * Creates a new ResultSequence consisting of the retrievable float in the
 	 * supplied ResultSequence
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence from which to extract the float
 	 * @return New ResultSequence consisting of the float supplied
@@ -165,20 +165,20 @@ public class XSFloat extends NumericType {
 			return ResultBuffer.EMPTY;
 
 		AnyType aat = (AnyType) arg.first();
-		
+
 		if (aat instanceof XSDuration || aat instanceof CalendarType ||
 			aat instanceof XSBase64Binary || aat instanceof XSHexBinary ||
 			aat instanceof XSAnyURI) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		if (!(aat.string_type().equals("xs:string") || aat instanceof NodeType ||
 			aat.string_type().equals("xs:untypedAtomic") ||
 			aat.string_type().equals("xs:boolean") ||
 			aat instanceof NumericType)) {
 			throw DynamicError.cant_cast(null);
 		}
-		
+
 
 		try {
 			float f;
@@ -204,7 +204,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Retrieves the actual float value stored
-	 * 
+	 *
 	 * @return The actual float value stored
 	 */
 	public float float_value() {
@@ -215,7 +215,7 @@ public class XSFloat extends NumericType {
 	 * Equality comparison between this number and the supplied representation.
 	 * @param aa
 	 *            The datatype to compare with
-	 * 
+	 *
 	 * @return True if the two representations are of the same number. False
 	 *         otherwise
 	 * @throws DynamicError
@@ -229,7 +229,7 @@ public class XSFloat extends NumericType {
 		if (nan() && f.nan()) {
 			return false;
 		}
-		
+
 		Float thatvalue = new Float(f.float_value());
 		Float thisvalue = new Float(float_value());
 
@@ -237,8 +237,8 @@ public class XSFloat extends NumericType {
 	}
 
 	/**
-	 * Comparison between this number and the supplied representation. 
-	 * 
+	 * Comparison between this number and the supplied representation.
+	 *
 	 * @param arg
 	 *            The datatype to compare with
 	 * @return True if the supplied representation is a smaller number than the
@@ -252,8 +252,8 @@ public class XSFloat extends NumericType {
 	}
 
 	/**
-	 * Comparison between this number and the supplied representation. 
-	 * 
+	 * Comparison between this number and the supplied representation.
+	 *
 	 * @param arg
 	 *            The datatype to compare with
 	 * @return True if the supplied representation is a greater number than the
@@ -268,8 +268,8 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Mathematical addition operator between this XSFloat and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an addition with
 	 * @return A XSFloat consisting of the result of the mathematical addition.
@@ -281,14 +281,13 @@ public class XSFloat extends NumericType {
 			DynamicError.throw_type_error();
 		XSFloat val = (XSFloat) at;
 
-		return ResultSequenceFactory.create_new(new XSFloat(float_value()
-				+ val.float_value()));
+		return new XSFloat( float_value() + val.float_value() );
 	}
 
 	/**
 	 * Mathematical subtraction operator between this XSFloat and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a subtraction with
 	 * @return A XSFloat consisting of the result of the mathematical
@@ -301,14 +300,13 @@ public class XSFloat extends NumericType {
 			DynamicError.throw_type_error();
 		XSFloat val = (XSFloat) at;
 
-		return ResultSequenceFactory.create_new(new XSFloat(float_value()
-				- val.float_value()));
+		return new XSFloat( float_value() - val.float_value() );
 	}
 
 	/**
 	 * Mathematical multiplication operator between this XSFloat and the
-	 * supplied ResultSequence. 
-	 * 
+	 * supplied ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a multiplication with
 	 * @return A XSFloat consisting of the result of the mathematical
@@ -317,14 +315,13 @@ public class XSFloat extends NumericType {
 	public ResultSequence times(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = constructor(arg);
 		XSFloat val = (XSFloat) get_single_type(carg, XSFloat.class);
-		return ResultSequenceFactory.create_new(new XSFloat(float_value()
-				* val.float_value()));
+		return new XSFloat( float_value() * val.float_value() );
 	}
 
 	/**
 	 * Mathematical division operator between this XSFloat and the supplied
-	 * ResultSequence. 
-	 * 
+	 * ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a division with
 	 * @return A XSFloat consisting of the result of the mathematical division.
@@ -332,14 +329,13 @@ public class XSFloat extends NumericType {
 	public ResultSequence div(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 		XSFloat val = (XSFloat) get_single_type(carg, XSFloat.class);
-		return ResultSequenceFactory.create_new(new XSFloat(float_value()
-				/ val.float_value()));
+		return new XSFloat( float_value() / val.float_value() );
 	}
 
 	/**
 	 * Mathematical integer division operator between this XSFloat and the
-	 * supplied ResultSequence. 
-	 * 
+	 * supplied ResultSequence.
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform an integer division with
 	 * @return A XSInteger consisting of the result of the mathematical integer
@@ -358,16 +354,16 @@ public class XSFloat extends NumericType {
 		if (val.zero())
 			throw DynamicError.div_zero(null);
 
-		BigDecimal result = BigDecimal.valueOf((new Float((float_value() / 
+		BigDecimal result = BigDecimal.valueOf((new Float((float_value() /
 				                                 val.float_value()))).longValue());
-		return ResultSequenceFactory.create_new(new XSInteger(result.toBigInteger()));
+		return new XSInteger( result.toBigInteger() );
 	}
 
 	/**
 	 * Mathematical modulus operator between this XSFloat and the supplied
 	 * ResultSequence. Due to no numeric type promotion or conversion, the
 	 * ResultSequence must be of type XSFloat.
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence to perform a modulus with
 	 * @return A XSFloat consisting of the result of the mathematical modulus.
@@ -375,23 +371,21 @@ public class XSFloat extends NumericType {
 	public ResultSequence mod(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 		XSFloat val = (XSFloat) get_single_type(carg, XSFloat.class);
-		return ResultSequenceFactory.create_new(new XSFloat(float_value()
-				% val.float_value()));
+		return new XSFloat( float_value() % val.float_value() );
 	}
 
 	/**
 	 * Negates the number stored
-	 * 
+	 *
 	 * @return A XSFloat representing the negation of the number stored
 	 */
 	public ResultSequence unary_minus() {
-		return ResultSequenceFactory
-				.create_new(new XSFloat(-1 * float_value()));
+		return new XSFloat( -1 * float_value() );
 	}
 
 	/**
 	 * Absolutes the number stored
-	 * 
+	 *
 	 * @return A XSFloat representing the absolute value of the number stored
 	 */
 	public NumericType abs() {
@@ -400,7 +394,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Returns the smallest integer greater than the number stored
-	 * 
+	 *
 	 * @return A XSFloat representing the smallest integer greater than the
 	 *         number stored
 	 */
@@ -410,7 +404,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Returns the largest integer smaller than the number stored
-	 * 
+	 *
 	 * @return A XSFloat representing the largest integer smaller than the
 	 *         number stored
 	 */
@@ -420,7 +414,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSFloat representing the closest long of the number stored.
 	 */
 	public NumericType round() {
@@ -431,7 +425,7 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored.
-	 * 
+	 *
 	 * @return A XSFloat representing the closest long of the number stored.
 	 */
 	public NumericType round_half_to_even() {
@@ -440,8 +434,8 @@ public class XSFloat extends NumericType {
 
 	/**
 	 * Returns the closest integer of the number stored with the specified precision.
-	 * 
-	 * @param precision An integer precision 
+	 *
+	 * @param precision An integer precision
 	 * @return A XSFloat representing the closest long of the number stored.
 	 */
 	public NumericType round_half_to_even(int precision) {
@@ -449,14 +443,14 @@ public class XSFloat extends NumericType {
 		BigDecimal round = value.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
 		return new XSFloat(round.floatValue());
 	}
-	
+
 	protected Item convertArg(AnyType arg) throws DynamicError {
-		ResultSequence rs = ResultSequenceFactory.create_new(arg);
+		ResultSequence rs = arg;
 		rs = constructor(rs);
 		Item carg = rs.first();
 		return carg;
 	}
-	
+
 	private ResultSequence convertResultSequence(ResultSequence arg)
 			throws DynamicError {
 		ResultSequence carg = arg;
@@ -471,12 +465,12 @@ public class XSFloat extends NumericType {
 
 		carg = constructor(carg);
 		return carg;
-	}	
-	
+	}
+
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_FLOAT;
 	}
-	
+
 	public Object getNativeValue() {
 		return float_value();
 	}
