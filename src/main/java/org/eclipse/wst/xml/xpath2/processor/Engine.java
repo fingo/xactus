@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath2.processor;
 
+import java.util.Collections;
+import java.util.Set;
+import javax.xml.namespace.QName;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.api.XPath2Engine;
@@ -30,12 +33,16 @@ public class Engine implements XPath2Engine {
 		xPath.setStaticContext(context);
 		StaticNameResolver name_check = new StaticNameResolver(context);
 		name_check.check(xPath);
-		
-		xPath.setAxes(name_check.getAxes());
+
+		final Set<String> axes = name_check.getAxes();
+		xPath.setAxes(axes.isEmpty() ? Collections.emptySet() : axes);
 		xPath.setFreeVariables(name_check.getFreeVariables());
-		xPath.setResolvedFunctions(name_check.getResolvedFunctions());
+		final Set<QName> resolvedFunctions = name_check.getResolvedFunctions();
+		xPath.setResolvedFunctions(resolvedFunctions.isEmpty() ? Collections.emptySet()
+				: resolvedFunctions);
+
 		xPath.setRootUsed(name_check.isRootUsed());
-		
+
 		return xPath;
 	}
 
