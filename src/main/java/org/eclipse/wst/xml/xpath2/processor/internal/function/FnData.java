@@ -10,7 +10,7 @@
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 276134 - improvements to schema aware primitive type support
- *                                 for attribute/element nodes 
+ *                                 for attribute/element nodes
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
@@ -47,7 +47,7 @@ public class FnData extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @return Result of evaluation.
@@ -63,7 +63,7 @@ public class FnData extends Function {
 
 	/**
 	 * Atomize a ResultSequnce argument expression.
-	 * 
+	 *
 	 * @param arg
 	 *            input expression.
 	 * @return Result of operation.
@@ -82,7 +82,7 @@ public class FnData extends Function {
 				NodeType nt = (NodeType) at;
 				rs.concat(nt.typed_value());
 			} else {
-				assert false;
+				throw new RuntimeException("XPath implementation error: " + at);
 			}
 		}
 
@@ -91,21 +91,22 @@ public class FnData extends Function {
 
 	/**
 	 * Atomize argument expression of any type.
-	 * 
+	 *
 	 * @param arg
 	 *            input expression.
 	 * @return Result of operation.
 	 */
-	public static AnyType atomize(Item arg) {
+	public static AnyAtomicType atomize(Item arg) {
 		if (arg instanceof AnyAtomicType)
 			return (AnyAtomicType)arg;
 		else if (arg instanceof NodeType) {
-			NodeType nt = (NodeType) arg;
-
-			return (AnyType) nt.typed_value().first();
-		} else {
-			assert false;
+			ResultSequence nodeValues = ((NodeType)arg).typed_value();
+			if(nodeValues.empty()){
 			return null;
+		}
+			return (AnyAtomicType)nodeValues.first();
+		} else {
+			throw new RuntimeException("XPath implemenatation error: "+arg);
 		}
 	}
 }
