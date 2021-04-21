@@ -2,8 +2,9 @@ package org.eclipse.wst.xml.xpath2.processor.internal.function;
 
 import java.util.Collection;
 
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
+import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 
 public class XSQNameConstructor extends Function
@@ -19,9 +20,9 @@ public class XSQNameConstructor extends Function
     }
 
     @Override
-    public org.eclipse.wst.xml.xpath2.processor.ResultSequence evaluate( Collection args ) throws DynamicError
+	public ResultSequence evaluate( Collection args ) throws DynamicError
     {
-        return ResultSequenceFactory.create_new( this.qname );
+		return ResultBuffer.wrap( this.qname );
     }
 
 }

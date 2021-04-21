@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Moller - bug 280555 - Add pluggable collation support
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
@@ -23,7 +23,6 @@ import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
@@ -53,7 +52,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -66,7 +65,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 	/**
 	 * Deep-Equal expression operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @param context
@@ -93,18 +92,18 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 		boolean result = deep_equal(arg1, arg2, context, collationURI);
 
-		return ResultSequenceFactory.create_new(new XSBoolean(result));
+		return XSBoolean.valueOf( result );
 	}
 
 	/**
 	 * Deep-Equal boolean operation.
-	 * 
+	 *
 	 * @param one
 	 *            input1 xpath expression/variable.
 	 * @param two
 	 *            input2 xpath expression/variable.
 	 * @param context
-	 *            Current dynamic context 
+	 *            Current dynamic context
 	 * @return Result of fn:deep-equal operation.
 	 */
 	public static boolean deep_equal(ResultSequence one, ResultSequence two, EvaluationContext context, String collationURI) {
@@ -129,12 +128,12 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 	/**
 	 * Deep-Equal boolean operation for inputs of any type.
-	 * 
+	 *
 	 * @param one
 	 *            input1 xpath expression/variable.
 	 * @param two
 	 *            input2 xpath expression/variable.
-	 * @param context 
+	 * @param context
 	 * @return Result of fn:deep-equal operation.
 	 */
 	public static boolean deep_equal(AnyType one, AnyType two, EvaluationContext context, String collationURI) {
@@ -153,7 +152,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 	/**
 	 * Deep-Equal boolean operation for inputs of any atomic type.
-	 * 
+	 *
 	 * @param one
 	 *            input1 xpath expression/variable.
 	 * @param two
@@ -183,7 +182,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 			if (a.eq(two, context))
 				return true;
-			
+
 			if (needsStringComparison(one, two)) {
 				XSString xstr1 = new XSString(one.getStringValue());
 				XSString xstr2 = new XSString(two.getStringValue());
@@ -200,7 +199,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 
 	/**
 	 * Deep-Equal boolean operation for inputs of node type.
-	 * 
+	 *
 	 * @param one
 	 *            input1 xpath expression/variable.
 	 * @param two
@@ -210,7 +209,7 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 	public static boolean deep_equal_node(NodeType one, NodeType two, EvaluationContext context) {
 		Node a = one.node_value();
 		Node b = two.node_value();
-		
+
 		if (a.isEqualNode(b)) {
 			return true;
 		}

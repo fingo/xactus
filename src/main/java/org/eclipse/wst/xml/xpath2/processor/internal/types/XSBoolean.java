@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug274784 - improvements to xs:boolean data type implementation
  *     David Carver - bug 282223 - corrected casting to boolean.
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -38,11 +38,12 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 
 	/**
 	 * Initiates the new representation to the boolean supplied
-	 * 
+	 *
 	 * @param x
 	 *       Initializes this datatype to represent this boolean
 	 */
-	public XSBoolean(boolean x) {
+	private XSBoolean( boolean x )
+	{
 		_value = x;
 	}
 
@@ -55,7 +56,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 
 	/**
 	 * Retrieve the full type pathname of this datatype
-	 * 
+	 *
 	 * @return "xs:boolean", the full datatype pathname
 	 */
 	public String string_type() {
@@ -66,10 +67,10 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	public Object getNativeValue() {
 		return Boolean.valueOf(_value);
 	}
-	
+
 	/**
 	 * Retrieve the datatype name
-	 * 
+	 *
 	 * @return "boolean", which is the datatype name.
 	 */
 	public String type_name() {
@@ -78,7 +79,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 
 	/**
 	 * Retrieve the String representation of the boolean value stored
-	 * 
+	 *
 	 * @return the String representation of the boolean value stored
 	 */
 	public String getStringValue() {
@@ -87,7 +88,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 
 	/**
 	 * Retrieves the actual boolean value stored
-	 * 
+	 *
 	 * @return the actual boolean value stored
 	 */
 	public boolean value() {
@@ -97,7 +98,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	/**
 	 * Creates a new result sequence consisting of the retrievable boolean value
 	 * in the supplied result sequence
-	 * 
+	 *
 	 * @param arg
 	 *            The result sequence from which to extract the boolean value.
 	 * @throws DynamicError
@@ -106,18 +107,18 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
 		if (arg.empty())
 		  return ResultBuffer.EMPTY;
-		
+
 		Item anyType = arg.first();
-		
+
 		if (anyType instanceof XSDuration || anyType instanceof CalendarType ||
 			anyType instanceof XSBase64Binary || anyType instanceof XSHexBinary ||
 			anyType instanceof XSAnyURI) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		String str_value = anyType.getStringValue();
-		
-		
+
+
 		if (!(isCastable(anyType, str_value))) {
 		   throw DynamicError.cant_cast(null);
 		}
@@ -132,7 +133,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	}
 
 	private boolean isCastable(Item anyType, String str_value) {
-		return str_value.equals("0") || str_value.equals("1") || 
+		return str_value.equals("0") || str_value.equals("1") ||
 			 str_value.equals("true") || str_value.equals("false") ||
 			 anyType instanceof NumericType;
 	}
@@ -142,7 +143,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * Comparison for equality between the supplied and this boolean
 	 * representation. Returns true if both represent same boolean value, false
 	 * otherwise
-	 * 
+	 *
 	 * @param arg
 	 *            The XSBoolean representation of the boolean value to compare
 	 *            with.
@@ -161,7 +162,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * Comparison between the supplied and this boolean representation. Returns
 	 * true if this XSBoolean represents true and that XSBoolean supplied
 	 * represents false. Returns false otherwise
-	 * 
+	 *
 	 * @param arg
 	 *            The XSBoolean representation of the boolean value to compare
 	 *            with.
@@ -184,7 +185,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * Comparison between the supplied and this boolean representation. Returns
 	 * true if this XSBoolean represents false and that XSBoolean supplied
 	 * represents true. Returns false otherwise
-	 * 
+	 *
 	 * @param arg
 	 *            The XSBoolean representation of the boolean value to compare
 	 *            with.

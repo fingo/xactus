@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
- *     David Carver (STAR) - bug 280972 - fix fn:lang implementation so it matches spec. 
+ *     David Carver (STAR) - bug 280972 - fix fn:lang implementation so it matches spec.
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     David Carver (STAR) - bug 262765 - correct invalidType to throw XPTY0004 instead of FORG0006
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -56,7 +56,7 @@ public class FnLang extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -69,7 +69,7 @@ public class FnLang extends Function {
 
 	/**
 	 * Language operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -92,26 +92,26 @@ public class FnLang extends Function {
 		} else {
 			arg2 = (ResultSequence) citer.next();
 		}
-		
+
 		String lang = "";
 
 		if (!arg1.empty()) {
 			lang = ((XSString) arg1.first()).value();
 		}
 
-		
+
 		if (!(arg2.first() instanceof NodeType) ) {
 			throw DynamicError.invalidType();
 		}
-		
+
 		NodeType an = (NodeType) arg2.first();
 
-		return new XSBoolean(test_lang(an.node_value(), lang));
+		return XSBoolean.valueOf( (test_lang( an.node_value(), lang )) );
 	}
 
 	/**
 	 * Language test operation.
-	 * 
+	 *
 	 * @param node
 	 *            Node to test.
 	 * @param lang
@@ -127,20 +127,20 @@ public class FnLang extends Function {
 
 				if (!"xml:lang".equals(attr.getName()))
 					continue;
-				
+
 				String xmllangValue = attr.getValue();
 				int hyphenIndex = xmllangValue.indexOf('-');
-				
+
 				if (hyphenIndex > -1) {
 					xmllangValue = xmllangValue.substring(0, hyphenIndex);
 				}
 
-				
+
 				String langLanguage = lang;
 				if (lang.length() > 2) {
 					langLanguage = lang.substring(0, 2);
 				}
-				
+
 				return xmllangValue.equalsIgnoreCase(langLanguage);
 			}
 		}
@@ -154,7 +154,7 @@ public class FnLang extends Function {
 
 	/**
 	 * Obtain a list of expected arguments.
-	 * 
+	 *
 	 * @return Result of operation.
 	 */
 	public synchronized static Collection expected_args() {
@@ -167,5 +167,5 @@ public class FnLang extends Function {
 
 		return _expected_args;
 	}
-		
+
 }

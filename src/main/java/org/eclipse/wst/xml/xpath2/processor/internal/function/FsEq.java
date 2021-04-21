@@ -211,8 +211,8 @@ public class FsEq extends Function {
 		// rule d
 		// if value comparison is true, return true.
 
-		ResultSequence one = ResultSequenceFactory.create_new(a);
-		ResultSequence two = ResultSequenceFactory.create_new(b);
+		ResultSequence one = a;
+		ResultSequence two = b;
 
 		Collection args = new ArrayList();
 		args.add(one);
@@ -293,7 +293,7 @@ public class FsEq extends Function {
 
 		// XXX ?
 		if (one.empty() || two.empty())
-			return ResultSequenceFactory.create_new(new XSBoolean(false));
+			return XSBoolean.FALSE;
 
 		// atomize
 		one = FnData.atomize(one);
@@ -306,12 +306,11 @@ public class FsEq extends Function {
 				AnyType b = (AnyType) j.next();
 
 				if (do_general_pair(a, b, comparator, dc))
-					return ResultSequenceFactory
-							.create_new(new XSBoolean(true));
+					return XSBoolean.TRUE;
 			}
 		}
 
-		return ResultSequenceFactory.create_new(new XSBoolean(false));
+		return XSBoolean.FALSE;
 	}
 
 	// voodoo 2
@@ -362,8 +361,7 @@ public class FsEq extends Function {
 			Object margs[] = { arg2.first(), context };
 			Boolean cmpres = (Boolean) method.invoke(arg, margs);
 
-			return ResultSequenceFactory.create_new(new XSBoolean(cmpres
-					.booleanValue()));
+			return XSBoolean.valueOf( cmpres.booleanValue() );
 		} catch (NoSuchMethodException err) {
 			assert false;
 			throw new RuntimeException("cannot compare using method " + mname, err);

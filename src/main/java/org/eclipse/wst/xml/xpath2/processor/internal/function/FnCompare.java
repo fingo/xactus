@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Steen Moeller - bug 280555 - Add pluggable collation support
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -24,31 +24,31 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.SeqType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSInteger;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
 
 /**
- * 
+ *
  * <p>
  * String comparison function.
  * </p>
- * 
+ *
  * <p>
  * Usage: fn:compare($comparand1 as xs:string?, $comparand2 as xs:string?) as
  * xs:integer?
  * </p>
- * 
+ *
  * <p>
  * This class returns -1, 0, or 1, depending on whether the value of $comparand1
  * is respectively less than, equal to, or greater than the value of
  * $comparand2.
  * </p>
- * 
+ *
  * <p>
  * If the value of $comparand2 begins with a string that is equal to the value
  * of $comparand1 (according to the collation that is used) and has additional
@@ -57,7 +57,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
  * $comparand2 and has additional code points following that beginning string,
  * then the result is 1.
  * </p>
- * 
+ *
  * <p>
  * If either argument is the empty sequence, the result is the empty sequence.
  * </p>
@@ -74,7 +74,7 @@ public class FnCompare extends Function {
 
 	/**
 	 * Evaluate the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            is evaluated.
 	 * @throws DynamicError
@@ -87,11 +87,11 @@ public class FnCompare extends Function {
 
 	/**
 	 * Compare the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            are compared (optional 3rd argument is the collation)
 	 * @param dynamicContext
-	 * 	       Current dynamic context 
+	 * 	       Current dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.
 	 * @return The result of the comparison of the arguments.
@@ -114,9 +114,9 @@ public class FnCompare extends Function {
 
 		BigInteger result = compare_string(collationUri, xstr1, xstr2, context);
 		if (result != null) {
-			return ResultSequenceFactory.create_new(new XSInteger(result));
+			return new XSInteger( result );
 		} else {
-			return ResultSequenceFactory.create_new();			
+			return ResultBuffer.EMPTY;
 		}
 	}
 
@@ -126,7 +126,7 @@ public class FnCompare extends Function {
 		if (collator == null) throw DynamicError.unsupported_collation(collationUri);
 
 		if (xstr1 == null || xstr2 == null) return null;
-		
+
 		int ret = collator.compare(xstr1.value(), xstr2.value());
 
 		if (ret == 0)
@@ -139,7 +139,7 @@ public class FnCompare extends Function {
 
 	/**
 	 * Calculate the expected arguments.
-	 * 
+	 *
 	 * @return The expected arguments.
 	 */
 	public synchronized static Collection expected_args() {

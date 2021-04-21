@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Jesper Steen Moller  - bug 262765 - propagate possible errors from xs:boolean
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
 
@@ -39,11 +38,11 @@ public class FnNot extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @return Result of evaluation.
-	 * @throws DynamicError 
+	 * @throws DynamicError
 	 */
 	public ResultSequence evaluate(Collection args, org.eclipse.wst.xml.xpath2.api.EvaluationContext ec) throws DynamicError {
 		// 1 argument only!
@@ -56,11 +55,11 @@ public class FnNot extends Function {
 
 	/**
 	 * Not operation.
-	 * 
+	 *
 	 * @param arg
 	 *            Result from the expressions evaluation.
 	 * @return Result of fn:note operation.
-	 * @throws DynamicError 
+	 * @throws DynamicError
 	 */
 	public static ResultSequence fn_not(ResultSequence arg) throws DynamicError {
 		XSBoolean ret = FnBoolean.fn_boolean(arg);
@@ -70,7 +69,7 @@ public class FnNot extends Function {
 		if (ret.value() == false)
 			answer = true;
 
-		return ResultSequenceFactory.create_new(new XSBoolean(answer));
+		return XSBoolean.valueOf( answer );
 	}
 
 }

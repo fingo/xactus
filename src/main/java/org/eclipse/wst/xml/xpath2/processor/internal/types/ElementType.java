@@ -46,9 +46,8 @@ public class ElementType extends NodeType {
 	private static final String NIL_ATTRIBUTE = "nil";
 	private static final String TRUE_VALUE = "true";
 
-	private Element _value;
 
-	private String _string_value;
+	//	private String _string_value;
 
 	/**
 	 * Initialises to a null element
@@ -65,9 +64,6 @@ public class ElementType extends NodeType {
 	 */
 	public ElementType(Element v, TypeModel tm) {
 		super(v, tm);
-		_value = v;
-
-		_string_value = null;
 	}
 
 	/**
@@ -76,7 +72,7 @@ public class ElementType extends NodeType {
 	 * @return Actual element value being represented
 	 */
 	public Element value() {
-		return _value;
+		return (Element)node_value();
 	}
 
 	/**
@@ -94,9 +90,10 @@ public class ElementType extends NodeType {
 	 * @return String representation of the element being stored
 	 */
 	public String getStringValue() {
-		_string_value = textnode_strings(_value);
-
-		return _string_value;
+		// XXX can we cache ?
+		//if (_string_value != null)
+		//	return _string_value;
+		return textnode_strings( value() );
 	}
 
 	/**
@@ -108,9 +105,11 @@ public class ElementType extends NodeType {
 
 		TypeDefinition typeDef = getType();
 
-		if (!isNilled(_value)) {
+		final Element value = value();
+		if( !isNilled( value ) )
+		{
 			if (typeDef != null) {
-				return getXDMTypedValue(typeDef, typeDef.getSimpleTypes(_value));
+				return getXDMTypedValue( typeDef, typeDef.getSimpleTypes( value ) );
 			}
 			else {
 				return new XSUntypedAtomic(getStringValue());
@@ -159,15 +158,17 @@ public class ElementType extends NodeType {
 	 * @return QName representation of the name of the node
 	 */
 	public QName node_name() {
-		QName name = new QName(_value.getPrefix(), _value.getLocalName(), _value.getNamespaceURI());
+		Element value = value();
+		QName name = new QName(value.getPrefix(), value.getLocalName(), value.getNamespaceURI());
 
 		return name;
 	}
 
 	public ResultSequence nilled() {
-
-		if (_value instanceof PSVIElementNSImpl) {
-			PSVIElementNSImpl psviElement = (PSVIElementNSImpl) _value;
+		Element value = value();
+		if( value instanceof PSVIElementNSImpl )
+		{
+			PSVIElementNSImpl psviElement = (PSVIElementNSImpl)value;
 			return XSBoolean.valueOf(psviElement.getNil());
 		}
 		else {
@@ -190,7 +191,7 @@ public class ElementType extends NodeType {
 	}
 
 	protected boolean isElementType(String typeName) {
-		TypeInfo typeInfo = _value.getSchemaTypeInfo();
+		TypeInfo typeInfo = value().getSchemaTypeInfo();
 		return isType(typeInfo, typeName);
 	}
 

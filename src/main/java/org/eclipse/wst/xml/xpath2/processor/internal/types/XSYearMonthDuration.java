@@ -26,7 +26,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpEq;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpGt;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpLt;
@@ -48,7 +47,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 	/**
 	 * Initialises using the supplied parameters. If the number of months
 	 * supplied is more than 12, the number of years is adjusted accordingly.
-	 * 
+	 *
 	 * @param year
 	 *            Number of years in this duration of time
 	 * @param month
@@ -63,7 +62,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Initialises to the given number of months
-	 * 
+	 *
 	 * @param months
 	 *            Number of months in the duration of time
 	 */
@@ -81,7 +80,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 	/**
 	 * Creates a new XSYearMonthDuration by parsing the supplied String
 	 * represented duration of time
-	 * 
+	 *
 	 * @param str
 	 *            String represented duration of time
 	 * @return New XSYearMonthDuration representing the duration of time
@@ -170,7 +169,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrives the datatype's name
-	 * 
+	 *
 	 * @return "yearMonthDuration" which is the datatype's name
 	 */
 	public String type_name() {
@@ -180,7 +179,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 	/**
 	 * Creates a new ResultSequence consisting of the extractable time duration
 	 * from the supplied ResultSequence
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence from which to extract
 	 * @return New ResultSequence consisting of the time duration extracted
@@ -209,20 +208,20 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 		return ymd;
 	}
-	
+
 	private XSDuration castYearMonthDuration(AnyAtomicType aat) {
 		if (aat instanceof XSDuration) {
 			XSDuration duration = (XSDuration) aat;
 			return new XSYearMonthDuration(duration.year(), duration.month(), duration.negative());
 		}
-		
+
 		return parseYMDuration(aat.getStringValue());
 	}
 
 	/**
 	 * Retrieves whether this duration represents a backward passage through
 	 * time
-	 * 
+	 *
 	 * @return True if this duration represents a backward passage through time.
 	 *         False otherwise
 	 */
@@ -232,7 +231,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrieves a String representation of the duration of time stored
-	 * 
+	 *
 	 * @return String representation of the duration of time stored
 	 */
 	public String getStringValue() {
@@ -259,7 +258,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:yearMonthDuration" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -268,7 +267,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrieves the duration of time stored as the number of months within it
-	 * 
+	 *
 	 * @return Number of months making up this duration of time
 	 */
 	public int monthValue() {
@@ -282,7 +281,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Equality comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if they both represent the duration of time. False otherwise
@@ -303,7 +302,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if the supplied time represents a larger duration than that
@@ -319,7 +318,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if the supplied time represents a smaller duration than that
@@ -336,7 +335,7 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 	/**
 	 * Mathematical addition between this duration stored and the supplied
 	 * duration of time (of type XSYearMonthDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to add
 	 * @return New XSYearMonthDuration representing the resulting duration
@@ -349,13 +348,13 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 		int res = monthValue() + val.monthValue();
 
-		return ResultSequenceFactory.create_new(new XSYearMonthDuration(res));
+		return new XSYearMonthDuration( res );
 	}
 
 	/**
 	 * Mathematical subtraction between this duration stored and the supplied
 	 * duration of time (of type XSYearMonthDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to subtract
 	 * @return New XSYearMonthDuration representing the resulting duration
@@ -368,13 +367,13 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 
 		int res = monthValue() - val.monthValue();
 
-		return ResultSequenceFactory.create_new(new XSYearMonthDuration(res));
+		return new XSYearMonthDuration( res );
 	}
 
 	/**
 	 * Mathematical multiplication between this duration stored and the supplied
 	 * duration of time (of type XSYearMonthDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to multiply by
 	 * @return New XSYearMonthDuration representing the resulting duration
@@ -382,34 +381,34 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 	 * @throws DynamicError
 	 */
 	public ResultSequence times(ResultSequence arg) throws DynamicError {
-		ResultSequence convertedRS = arg;		
+		ResultSequence convertedRS = arg;
 		if (arg.size() == 1) {
 			Item argValue = arg.first();
             if (argValue instanceof XSDecimal) {
-            	convertedRS = ResultSequenceFactory.create_new(new XSDouble(argValue.getStringValue()));	
+				convertedRS = new XSDouble( argValue.getStringValue() );
             }
 		}
-		
+
 		XSDouble val = (XSDouble) NumericType.get_single_type(convertedRS,
 				XSDouble.class);
 
 		if (val.nan()) {
 			throw DynamicError.nan();
 		}
-		
+
 		if (val.infinite()) {
 			throw DynamicError.overflowDateTime();
 		}
-		
+
 		int res = (int) Math.round(monthValue() * val.double_value());
 
-		return ResultSequenceFactory.create_new(new XSYearMonthDuration(res));
+		return new XSYearMonthDuration( res );
 	}
 
 	/**
 	 * Mathematical division between this duration stored and the supplied
 	 * duration of time (of type XSYearMonthDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to divide by
 	 * @return New XSYearMonthDuration representing the resulting duration
@@ -430,29 +429,27 @@ public class XSYearMonthDuration extends XSDuration implements CmpEq, CmpLt,
 			if (!dt.zero())
 				ret = (int) Math.round(monthValue() / dt.double_value());
 
-			return ResultSequenceFactory.create_new(new XSYearMonthDuration(
-					ret));
+			return new XSYearMonthDuration( ret );
 		} else if (at instanceof XSDecimal) {
 			XSDecimal dt = (XSDecimal) at;
-			
+
 			int ret = 0;
-			
+
 			if (!dt.zero())
 				ret = (int) Math.round(monthValue() / dt.getValue().doubleValue());
-			
-			return ResultSequenceFactory.create_new(new XSYearMonthDuration(
-					ret));	
+
+			return new XSYearMonthDuration( ret );
 		} else if (at instanceof XSYearMonthDuration) {
 			XSYearMonthDuration md = (XSYearMonthDuration) at;
 
 			double res = (double) monthValue() / md.monthValue();
 
-			return ResultSequenceFactory.create_new(new XSDecimal(new BigDecimal(res)));
+			return new XSDecimal( new BigDecimal( res ) );
 		} else {
 			DynamicError.throw_type_error();
 			return null; // unreach
 		}
-	}	
+	}
 
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_YEARMONTHDURATION;

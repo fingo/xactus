@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
- *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types 
+ *     Mukul Gandhi - bug 273760 - wrong namespace for functions and data types
  *     Mukul Gandhi - bug 279377 - improvements to multiplication and division operations
  *                                 on xs:dayTimeDuration.
  *     David Carver - bug 282223 - implementation of xs:duration
@@ -27,7 +27,6 @@ import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpEq;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpGt;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.CmpLt;
@@ -54,7 +53,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 	 * Initialises to the supplied parameters. If more than 24 hours is
 	 * supplied, the number of days is adjusted acordingly. The same occurs for
 	 * minutes and seconds
-	 * 
+	 *
 	 * @param days
 	 *            Number of days in this duration of time
 	 * @param hours
@@ -74,7 +73,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Initialises to the given number of seconds
-	 * 
+	 *
 	 * @param secs
 	 *            Number of seconds in the duration of time
 	 */
@@ -95,7 +94,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Creates a copy of this representation of a time duration
-	 * 
+	 *
 	 * @return New XSDayTimeDuration representing the duration of time stored
 	 * @throws CloneNotSupportedException
 	 */
@@ -107,7 +106,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
 		if (arg.empty())
 			return ResultBuffer.EMPTY;
-	
+
 		AnyAtomicType aat = (AnyAtomicType) arg.first();
 		if (aat instanceof NumericType || aat instanceof CalendarType ||
 			aat instanceof XSBoolean || aat instanceof XSBase64Binary ||
@@ -118,29 +117,29 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 		if (!isCastable(aat)) {
 			throw DynamicError.cant_cast(null);
 		}
-	
+
 		XSDuration dtd = castDayTimeDuration(aat);
-	
+
 		if (dtd == null)
 			throw DynamicError.cant_cast(null);
-	
+
 		return dtd;
 	}
-	
+
 	private XSDuration castDayTimeDuration(AnyAtomicType aat) {
 		if (aat instanceof XSDuration) {
 			XSDuration duration = (XSDuration) aat;
 			return new XSDayTimeDuration(duration.days(), duration.hours(), duration.minutes(), duration.seconds(), duration.negative());
 		}
-		
+
 		return parseDTDuration(aat.getStringValue());
 	}
 
-	
+
 	/**
 	 * Creates a new XSDayTimeDuration by parsing the supplied String
 	 * represented duration of time
-	 * 
+	 *
 	 * @param str
 	 *            String represented duration of time
 	 * @return New XSDayTimeDuration representing the duration of time supplied
@@ -235,7 +234,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrives the datatype's name
-	 * 
+	 *
 	 * @return "dayTimeDuration" which is the datatype's name
 	 */
 	public String type_name() {
@@ -244,7 +243,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 	/**
 	 * Retrieves the datatype's full pathname
-	 * 
+	 *
 	 * @return "xs:dayTimeDuration" which is the datatype's full pathname
 	 */
 	public String string_type() {
@@ -254,7 +253,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 	/**
 	 * Mathematical addition between this duration stored and the supplied
 	 * duration of time (of type XSDayTimeDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to add
 	 * @return New XSDayTimeDuration representing the resulting duration after
@@ -264,16 +263,16 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 	public ResultSequence plus(ResultSequence arg) throws DynamicError {
 		XSDuration val = (XSDuration) NumericType
 				.get_single_type(arg, XSDayTimeDuration.class);
-		
+
 		double res = value() + val.value();
 
-		return ResultSequenceFactory.create_new(new XSDayTimeDuration(res));
+		return new XSDayTimeDuration( res );
 	}
 
 	/**
 	 * Mathematical subtraction between this duration stored and the supplied
 	 * duration of time (of type XSDayTimeDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to subtract
 	 * @return New XSDayTimeDuration representing the resulting duration after
@@ -286,13 +285,13 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 		double res = value() - val.value();
 
-		return ResultSequenceFactory.create_new(new XSDayTimeDuration(res));
+		return new XSDayTimeDuration( res );
 	}
 
 	/**
 	 * Mathematical multiplication between this duration stored and the supplied
 	 * duration of time (of type XSDayTimeDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to multiply by
 	 * @return New XSDayTimeDuration representing the resulting duration after
@@ -301,14 +300,14 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 	 */
 	public ResultSequence times(ResultSequence arg) throws DynamicError {
 		ResultSequence convertedRS = arg;
-		
+
 		if (arg.size() == 1) {
 			Item argValue = arg.first();
             if (argValue instanceof XSDecimal) {
-            	convertedRS = ResultSequenceFactory.create_new(new XSDouble(argValue.getStringValue()));	
+				convertedRS = new XSDouble( argValue.getStringValue() );
             }
 		}
-		
+
 		XSDouble val = (XSDouble) NumericType.get_single_type(convertedRS,
 				                                  XSDouble.class);
 		if (val.nan()) {
@@ -317,13 +316,13 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 
 		double res = value() * val.double_value();
 
-		return ResultSequenceFactory.create_new(new XSDayTimeDuration(res));
+		return new XSDayTimeDuration( res );
 	}
 
 	/**
 	 * Mathematical division between this duration stored and the supplied
 	 * duration of time (of type XSDayTimeDuration)
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to divide by
 	 * @return New XSDayTimeDuration representing the resulting duration after
@@ -339,14 +338,14 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 		if (at instanceof XSDouble) {
 			XSDouble dt = (XSDouble) at;
 			double retval = 0;
-			
+
 			if (dt.nan()) {
 				throw DynamicError.nan();
 			}
-			
+
 			if (!dt.zero()) {
 				BigDecimal ret = new BigDecimal(0);
-				
+
 				if (dt.infinite()) {
 					retval = value() / dt.double_value();
 				} else {
@@ -358,22 +357,20 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 				throw DynamicError.overflowUnderflow();
 			}
 
-			return ResultSequenceFactory
-					.create_new(new XSDayTimeDuration(retval));
+			return new XSDayTimeDuration( retval );
 		} else if (at instanceof XSDecimal) {
 			XSDecimal dt = (XSDecimal) at;
-			
+
 			BigDecimal ret = new BigDecimal(0);
-							
+
 			if (!dt.zero()) {
 				ret = new BigDecimal(value());
 				ret = ret.divide(dt.getValue(), 18, BigDecimal.ROUND_HALF_EVEN);
 			} else {
 				throw DynamicError.overflowUnderflow();
 			}
-			
-			return ResultSequenceFactory.create_new(new XSDayTimeDuration(
-					ret.intValue()));	
+
+			return new XSDayTimeDuration( ret.intValue() );
 		} else if (at instanceof XSDayTimeDuration) {
 			XSDuration md = (XSDuration) at;
 
@@ -382,7 +379,7 @@ public class XSDayTimeDuration extends XSDuration implements CmpEq, CmpLt,
 			BigDecimal l = new BigDecimal(md.value());
 			res = res.divide(l, 18, BigDecimal.ROUND_HALF_EVEN);
 
-			return ResultSequenceFactory.create_new(new XSDecimal(res));
+			return ResultBuffer.wrap( new XSDecimal( res ) );
 		} else {
 			DynamicError.throw_type_error();
 			return null; // unreach

@@ -107,7 +107,7 @@ public abstract class NodeType extends AnyType {
 
 	// XXX element should override
 	public ResultSequence nilled() {
-		return ResultSequenceFactory.create_new();
+		return ResultBuffer.EMPTY;
 	}
 
 	// a little factory for converting from DOM to our representation
@@ -155,18 +155,19 @@ public abstract class NodeType extends AnyType {
 		return rs;
 	}
 
-	public static org.eclipse.wst.xml.xpath2.processor.ResultSequence sort_document_order(org.eclipse.wst.xml.xpath2.processor.ResultSequence rs) {
-		ArrayList res = new ArrayList(rs.size());
+	public static ResultSequence sort_document_order( org.eclipse.wst.xml.xpath2.processor.ResultSequence rs )
+	{
+		ResultBuffer res = new ResultBuffer();
 
 		for (Iterator i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 			boolean added = false;
 
 			for (int j = 0; j < res.size(); j++) {
-				NodeType x = (NodeType) res.get(j);
+				NodeType x = (NodeType) res.item(j);
 
 				if (before(node, x)) {
-					res.add(j, node);
+					res.addAt(j, node);
 					added = true;
 					break;
 				}
@@ -175,14 +176,14 @@ public abstract class NodeType extends AnyType {
 				res.add(node);
 		}
 
-		rs = ResultSequenceFactory.create_new();
+		ResultBuffer rb = new ResultBuffer();
 		for (Iterator i = res.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
-			rs.add(node);
+			rb.add( node );
 		}
 
-		return rs;
+		return rb.getSequence();
 	}
 
 	public static boolean same(NodeType a, NodeType b) {

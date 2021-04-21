@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Moller - bug 280555 - Add pluggable collation support
  *     David Carver (STAR) - bug 262765 - fixed promotion issue
  *     Jesper Moller - bug 281028 - fix promotion rules for fn:max
@@ -23,9 +23,9 @@ import java.util.Iterator;
 
 import org.eclipse.wst.xml.xpath2.api.DynamicContext;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
+import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
@@ -50,7 +50,7 @@ public class FnMax extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -63,10 +63,10 @@ public class FnMax extends Function {
 
 	/**
 	 * Max operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
-	 * @param context 
+	 * @param context
 	 *            Relevant dynamic context
 	 * @throws DynamicError
 	 *             Dynamic error.
@@ -76,7 +76,7 @@ public class FnMax extends Function {
 
 		ResultSequence arg = get_arg(args, CmpGt.class);
 		if (arg.empty())
-			return ResultSequenceFactory.create_new();
+			return ResultBuffer.EMPTY;
 
 		CmpGt max = null;
 
@@ -85,23 +85,23 @@ public class FnMax extends Function {
 
 		for (Iterator i = arg.iterator(); i.hasNext();) {
 			AnyAtomicType conv = tp.promote((AnyType) i.next());
-			
+
 			if( conv != null ){
-				
+
 				if (conv instanceof XSDouble && ((XSDouble)conv).nan() || conv instanceof XSFloat && ((XSFloat)conv).nan()) {
-					return ResultSequenceFactory.create_new(tp.promote(new XSFloat(Float.NaN)));
+					return tp.promote( new XSFloat( Float.NaN ) );
 				}
 				if (max == null || ((CmpGt)conv).gt((AnyType)max, dynamicContext)) {
 					max = (CmpGt)conv;
 				}
 			}
 		}
-		return ResultSequenceFactory.create_new((AnyType) max);
+		return (AnyType)max;
 	}
 
 	/**
 	 * Obtain arguments.
-	 * 
+	 *
 	 * @param args
 	 *            input expressions.
 	 * @param op

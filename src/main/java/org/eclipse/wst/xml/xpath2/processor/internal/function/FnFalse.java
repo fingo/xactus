@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -18,7 +18,6 @@ import java.util.Collection;
 
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
 
@@ -35,7 +34,7 @@ public class FnFalse extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -48,7 +47,7 @@ public class FnFalse extends Function {
 
 	/**
 	 * False operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -58,6 +57,6 @@ public class FnFalse extends Function {
 	public static ResultSequence fn_false(Collection args) throws DynamicError {
 		assert args.size() == 0;
 
-		return ResultSequenceFactory.create_new(new XSBoolean(false));
+		return XSBoolean.FALSE;
 	}
 }
