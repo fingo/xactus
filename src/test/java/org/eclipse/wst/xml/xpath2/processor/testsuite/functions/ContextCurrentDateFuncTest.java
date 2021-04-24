@@ -6,9 +6,9 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *******************************************************************************/
 
 package org.eclipse.wst.xml.xpath2.processor.testsuite.functions;
@@ -25,8 +25,8 @@ import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
-      
+
+
 public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
 
    //Evaluation simple call to "fn:current-date" function.
@@ -37,7 +37,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -49,9 +49,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -61,7 +61,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertTrue("XPath Result Error " + xqFile + ":", actual.compareTo(expectedResult) >= 0);
-        
+
 
    }
 
@@ -73,7 +73,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -85,9 +85,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -97,17 +97,17 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertTrue("XPath Result Error " + xqFile + ":", actual.compareTo(expectedResult) >= 0);
-        
+
 
    }
-/*
+
    //Evaluation of "fn:current-date" function as argument to month-from-date function.
    public void test_fn_current_date_3() throws Exception {
       String inputFile = "/TestSources/emptydoc.xml";
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-3.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -117,14 +117,14 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String actual = null;
       Date expectedDate = new Date();
       DateFormat expectedFormat = new SimpleDateFormat("MM");
-      
+
       try {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -145,7 +145,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
 
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -155,12 +155,12 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String actual = null;
       try {
 	   	  compileXPath(xpath);
-	
+
 	      cal = Calendar.getInstance();
 	      ResultSequence rs = evaluate(domDoc);
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -169,10 +169,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
          actual = ex.code();
       }
       assertEquals("XPath Result Error " + xqFile + ":", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)), actual);
-        
+
 
    }
-*/
 
 
    //Evaluation of "fn:current-time" function as part of a subtraction operation.
@@ -183,7 +182,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -195,9 +194,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -207,7 +206,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -217,7 +216,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-6.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -229,9 +228,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -242,7 +241,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
 
       assertNotNull(actual);
       //assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -252,7 +251,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-7.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -264,9 +263,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -277,7 +276,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
 
       assertNotNull(actual);
       //assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -288,7 +287,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = "XPST0017";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -300,9 +299,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -312,7 +311,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
    }
 
    //Evaluation of "fn:current-date" function as part of a subtration operation both operands are equal to current-time function.
@@ -323,7 +322,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -335,9 +334,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -347,7 +346,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -357,7 +356,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-10.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -369,9 +368,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
     	 fail("Returned:" + actual);
@@ -381,7 +380,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       } catch (DynamicError ex) {
          actual = ex.code();
     	 fail("Returned:" + actual);
-      }        
+      }
 
    }
 
@@ -391,7 +390,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-11.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -403,9 +402,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
     	 fail("Returned:" + actual);
@@ -418,7 +417,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
          actual = ex.code();
     	 fail("Returned:" + actual);
 
-      }        
+      }
 
    }
 
@@ -430,7 +429,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -442,9 +441,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -454,7 +453,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -466,7 +465,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -478,9 +477,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -490,7 +489,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -502,7 +501,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -514,9 +513,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -526,7 +525,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -538,7 +537,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -550,9 +549,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -562,7 +561,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -574,7 +573,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -586,9 +585,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -598,7 +597,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -610,7 +609,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -622,9 +621,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -634,7 +633,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -646,7 +645,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -658,9 +657,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -670,7 +669,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -682,7 +681,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -694,9 +693,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -706,7 +705,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -718,7 +717,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -730,9 +729,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -742,7 +741,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -752,7 +751,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-21.xq";
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -764,9 +763,9 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
     	 fail("Returned:" + actual);
@@ -784,4 +783,4 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
    }
 
 }
-      
+
