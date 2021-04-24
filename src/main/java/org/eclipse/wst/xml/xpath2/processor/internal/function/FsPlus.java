@@ -161,8 +161,8 @@ public class FsPlus extends Function {
 		// make sure we got only one numeric atom
 		if (arg.size() != 1)
 			DynamicError.throw_type_error();
-		Item at = arg.first();
-		if (!(at instanceof NumericType))
+		Item at = FnData.atomize(arg.first());
+		if(!(at instanceof NumericType))
 			DynamicError.throw_type_error();
 
 		// no-op
