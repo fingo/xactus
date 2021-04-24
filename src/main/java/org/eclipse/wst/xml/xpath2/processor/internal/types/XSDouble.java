@@ -72,7 +72,7 @@ public class XSDouble extends NumericType {
 				_value = new Double(init);
 			}
 		} catch (NumberFormatException e) {
-			throw DynamicError.cant_cast(null);
+			throw DynamicError.cant_cast(init);
 		}
 	}
 
