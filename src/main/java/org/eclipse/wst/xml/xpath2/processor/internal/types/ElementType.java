@@ -172,7 +172,7 @@ public class ElementType extends NodeType {
 			return XSBoolean.valueOf(psviElement.getNil());
 		}
 		else {
-			return XSBoolean.FALSE;
+			return XSBoolean.valueOf( isNilled(value) );
 		}
 	}
 
