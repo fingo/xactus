@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Mukul Gandhi - bug 281822 - initial API and implementation
- *     David Carver - bug 282223 - implementation of xs:duration 
+ *     David Carver - bug 282223 - implementation of xs:duration
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
+import java.util.TimeZone;
 import org.eclipse.wst.xml.xpath2.api.EvaluationContext;
 import org.eclipse.wst.xml.xpath2.api.ResultBuffer;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
@@ -49,7 +50,7 @@ public class FnDateTime extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -62,7 +63,7 @@ public class FnDateTime extends Function {
 
 	/**
 	 * Evaluate the function using the arguments passed.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @param sc
@@ -84,18 +85,18 @@ public class FnDateTime extends Function {
 		// if either of the parameter is an empty sequence, the result
 		// is an empty sequence
 		if (arg1.empty() || arg2.empty()) {
-			  return ResultBuffer.EMPTY;	
+			  return ResultBuffer.EMPTY;
 		}
 		XSDate param1 = (XSDate)arg1.first();
 		XSTime param2 = (XSTime)arg2.first();
-		
-		Calendar cal = Calendar.getInstance();
+
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.set(param1.year(), param1.month() - 1, param1.day());
 		cal.set(Calendar.HOUR_OF_DAY, param2.hour());
 		cal.set(Calendar.MINUTE, param2.minute());
 		cal.set(Calendar.SECOND, (new Double(Math.floor(param2.second())).intValue()));
 		cal.set(Calendar.MILLISECOND, 0);
-		
+
 		XSDuration dateTimeZone = param1.tz();
 		XSDuration timeTimeZone = param2.tz();
 		if ((dateTimeZone != null && timeTimeZone != null) &&
@@ -118,7 +119,7 @@ public class FnDateTime extends Function {
 
 	/**
 	 * Obtain a list of expected arguments.
-	 * 
+	 *
 	 * @return Result of operation.
 	 */
 	public synchronized static Collection expected_args() {
