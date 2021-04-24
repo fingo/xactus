@@ -293,10 +293,15 @@ public class XSInteger extends XSDecimal {
 	public ResultSequence mod(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 
-		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
-		BigInteger result = int_value().remainder(val.int_value());
+		XSDecimal val = (XSDecimal) get_single_type(carg, XSDecimal.class);
 
-		return new XSInteger( result );
+		if( val instanceof XSInteger )
+		{
+			BigInteger result = int_value().remainder(((XSInteger)val).int_value());
+			return new XSInteger( result );
+		}
+
+		return super.mod(arg);
 	}
 
 	/**

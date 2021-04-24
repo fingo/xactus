@@ -187,6 +187,12 @@ public class XSDecimal extends NumericType {
 				return new XSDecimal(new BigDecimal("0"));
 			}
 		}
+
+		if( aat instanceof XSDecimal )
+		{
+			return (XSDecimal)aat;
+		}
+
 		return new XSDecimal(aat.getStringValue());
 	}
 
