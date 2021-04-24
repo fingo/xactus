@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Moller - bug 280555 - Add pluggable collation support
  *     David Carver (STAR) - bug 262765 - fixed distinct-values comparison logic.
  *                           There is probably an easier way to do the comparison.
@@ -34,6 +34,7 @@ import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyAtomicType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
+import org.eclipse.wst.xml.xpath2.processor.internal.types.XSUntypedAtomic;
 
 /**
  * Returns the sequence that results from removing from $arg all but one of a
@@ -53,7 +54,7 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -66,7 +67,7 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 
 	/**
 	 * Distinct-values operation.
-	 * 
+	 *
 	 * @param args
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -84,7 +85,7 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 		if (citer.hasNext()) {
 			arg2 = (ResultSequence) citer.next();
 		}
-		
+
 		String collationURI = context.getCollationProvider().getDefaultCollation();
 		if (!arg2.empty()) {
 			XSString collation = (XSString) arg2.item(0);
@@ -99,10 +100,10 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 
 		return rs.getSequence();
 	}
-	
+
 	/**
 	 * Support for Contains interface.
-	 * 
+	 *
 	 * @param rs
 	 *            input1 expression sequence.
 	 * @param item
@@ -113,10 +114,10 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 	 */
 	protected static boolean contains(ResultBuffer rs, AnyAtomicType item,
 			DynamicContext context, String collationURI)  {
-		if (!(item instanceof CmpEq))
+		if( !(item instanceof CmpEq) && !(item instanceof XSUntypedAtomic) )
 			return false;
 
 		return hasValue(rs, item, context, collationURI);
 	}
-	
+
 }
