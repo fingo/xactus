@@ -76,7 +76,7 @@ public abstract class AbstractCollationEqualFunction extends Function {
 		}
 		return false;
 	}
-	
+
 	protected static boolean hasValue(ResultBuffer rs, AnyAtomicType item,
 			DynamicContext context, String collationURI) throws DynamicError {
 		XSString itemStr = new XSString(item.getStringValue());
@@ -84,7 +84,7 @@ public abstract class AbstractCollationEqualFunction extends Function {
 		for (Iterator i = rs.iterator(); i.hasNext();) {
 			AnyType at = (AnyType) i.next();
 
-			if (!(at instanceof CmpEq))
+			if( !(at instanceof CmpEq) && !(at instanceof XSUntypedAtomic) )
 				continue;
 
 			if (isBoolean(item, at)) {
@@ -140,11 +140,11 @@ public abstract class AbstractCollationEqualFunction extends Function {
 	protected static boolean isDuration(AnyType item, AnyType at) {
 		return at instanceof XSDuration && item instanceof XSDuration;
 	}
-	
+
 	protected static boolean isDate(AnyType item, AnyType at) {
 		return at instanceof XSDateTime && item instanceof XSDateTime;
 	}
-	
+
 
 	protected static boolean isBoolean(AnyType cmptype, AnyType at) {
 		return at instanceof XSBoolean && cmptype instanceof XSBoolean;
@@ -162,7 +162,7 @@ public abstract class AbstractCollationEqualFunction extends Function {
 					return true;
 				}
 			}
-			
+
 			if (at instanceof XSDouble) {
 				XSDouble d = (XSDouble) at;
 				if (d.nan()) {
@@ -174,7 +174,7 @@ public abstract class AbstractCollationEqualFunction extends Function {
 		if (at instanceof XSString) {
 			return true;
 		}
-		
+
 		if (at instanceof XSUntypedAtomic) {
 			return true;
 		}
