@@ -324,10 +324,10 @@ public class XSInteger extends XSDecimal {
 	 * @see org.eclipse.wst.xml.xpath2.processor.internal.types.XSDecimal#gt(org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType)
 	 */
 	public boolean gt(AnyType arg, DynamicContext context) throws DynamicError {
-		Item carg = convertArg(arg);
-        XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
+		ResultSequence rs = constructorSafe( arg );
+		XSDecimal val = (XSDecimal)get_single_type( rs, XSDecimal.class );
 
-        int compareResult = int_value().compareTo(val.int_value());
+		int compareResult = getValue().compareTo( val.getValue() );
 
 		return compareResult > 0;
 	}
@@ -344,12 +344,22 @@ public class XSInteger extends XSDecimal {
 	 * @see org.eclipse.wst.xml.xpath2.processor.internal.types.XSDecimal#lt(org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType)
 	 */
 	public boolean lt(AnyType arg, DynamicContext context) throws DynamicError {
-		Item carg = convertArg(arg);
-        XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
+		ResultSequence rs = constructorSafe( arg );
+		XSDecimal val = (XSDecimal)get_single_type( rs, XSDecimal.class );
 
-        int compareResult = int_value().compareTo(val.int_value());
+		int compareResult = this.getValue().compareTo( val.getValue() );
 
 		return compareResult < 0;
+	}
+
+	public boolean eq( AnyType arg, DynamicContext dynamicContext ) throws DynamicError
+	{
+		ResultSequence rs = constructorSafe( arg );
+		XSDecimal val = (XSDecimal)get_single_type( rs, XSDecimal.class );
+
+		int compareResult = this.getValue().compareTo( val.getValue() );
+
+		return compareResult == 0;
 	}
 
 	public ResultSequence div(ResultSequence arg) throws DynamicError {
