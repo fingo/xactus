@@ -179,7 +179,7 @@ public class XSDecimal extends NumericType {
 		return false;
 	}
 
-	private XSDecimal castDecimal(Item aat) {
+	XSDecimal castDecimal(Item aat) {
 		if (aat instanceof XSBoolean) {
 			if (aat.getStringValue().equals("true")) {
 				return new XSDecimal(new BigDecimal("1"));

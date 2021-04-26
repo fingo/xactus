@@ -223,14 +223,10 @@ public class XSInteger extends XSDecimal {
 	 */
 	public ResultSequence plus(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
-		Item at = get_single_arg(carg);
-		if (!(at instanceof XSInteger))
-			DynamicError.throw_type_error();
+		XSDecimal val = (XSDecimal)get_single_type( carg, XSDecimal.class );
 
-		XSInteger val = (XSInteger)at;
-
-		return new XSInteger( int_value().add( val.int_value() ) );
-
+		BigDecimal result = val.getValue().add( new BigDecimal( int_value() ) );
+		return createResult( result );
 	}
 
 
@@ -245,7 +241,7 @@ public class XSInteger extends XSDecimal {
 				throw DynamicError.invalidType();
 			}
 		}
-		carg = constructor(carg);
+		carg = constructorSafe( carg );
 		return carg;
 	}
 
@@ -260,9 +256,10 @@ public class XSInteger extends XSDecimal {
 	 */
 	public ResultSequence minus(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
-		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
+		XSDecimal val = (XSDecimal)get_single_type( carg, XSDecimal.class );
 
-		return new XSInteger( int_value().subtract( val.int_value() ) );
+		BigDecimal result = new BigDecimal( int_value() ).subtract( val.getValue() );
+		return createResult( result );
 	}
 
 	/**
@@ -277,9 +274,9 @@ public class XSInteger extends XSDecimal {
 	public ResultSequence times(ResultSequence arg) throws DynamicError {
 		ResultSequence carg = convertResultSequence(arg);
 
-		XSInteger val = (XSInteger) get_single_type(carg, XSInteger.class);
+		XSDecimal val = (XSDecimal)get_single_type( carg, XSDecimal.class );
 
-		return new XSInteger( int_value().multiply( val.int_value() ) );
+		return createResult( val.getValue().multiply( new BigDecimal( int_value() ) ) );
 	}
 
 	/**
@@ -370,5 +367,63 @@ public class XSInteger extends XSDecimal {
 
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_INTEGER;
+	}
+
+	/**
+	 * Creates a new result sequence consisting of the retrievable decimal number in the supplied result sequence
+	 *
+	 * @param arg
+	 *            The result sequence from which to extract the decimal number.
+	 * @throws DynamicError
+	 * @return A new result sequence consisting of the decimal number supplied.
+	 */
+	private ResultSequence constructorSafe( ResultSequence arg ) throws DynamicError
+	{
+		if( arg.empty() )
+			return ResultBuffer.EMPTY;
+
+		Item aat = arg.first();
+
+		if( aat instanceof XSDuration || aat instanceof CalendarType || aat instanceof XSBase64Binary
+			|| aat instanceof XSHexBinary || aat instanceof XSAnyURI )
+		{
+			throw DynamicError.invalidType();
+		}
+
+		if( aat.getStringValue().indexOf( "-INF" ) != -1 )
+		{
+			throw DynamicError.cant_cast( null );
+		}
+
+		if( !super.isLexicalValue( aat.getStringValue() ) )
+		{
+			throw DynamicError.invalidLexicalValue();
+		}
+
+		if( !isCastable( aat ) )
+		{
+			throw DynamicError.cant_cast( null );
+		}
+
+		try
+		{
+			// XPath doesn't allow for converting Exponents to Decimal values.
+
+			return castDecimal( aat );
+		}
+		catch( NumberFormatException e )
+		{
+			throw DynamicError.cant_cast( null );
+		}
+
+	}
+
+	private ResultSequence createResult( BigDecimal result )
+	{
+		if( result.signum() == 0 || result.scale() <= 0 || result.stripTrailingZeros().scale() <= 0 )
+		{
+			return new XSInteger( result.toBigInteger() );
+		}
+		return new XSDecimal( result );
 	}
 }
