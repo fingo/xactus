@@ -6,8 +6,10 @@ Xactus is [FINGO's](https://github.com/fingo) open-source XPath 2.0 processing l
 
 ## Contributing
 
-Pull requests are welcome. We will respond as much as possible. For major changes please open an issue first to discuss what you would like to do.  
+Pull requests are welcome. We will respond as much as possible. For major changes please open an issue first to discuss what you would like to do.
 
-## License 
+To protect the rights of others, we use the Developer Certificate of Origin. If you want to develop a project with us, please confirm authorship via Probot: DCO.
+
+## License
 
 The library is published under the Eclipse Public License v2.0 license, a copy you will find in the [license file](/LICENSE). If you received this library from another party, conditions other than those stated here might apply. Please check it with your Redistributor.
