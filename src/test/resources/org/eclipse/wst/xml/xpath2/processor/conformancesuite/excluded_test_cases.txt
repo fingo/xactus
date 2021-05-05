@@ -600,7 +600,6 @@ MinimalConformance/Functions/ContextFunc/ContextLastFunc/last-2
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-1
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-2
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-3
-MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-4
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-6
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-datetime-7
 MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-dateTime-10
@@ -611,7 +610,6 @@ MinimalConformance/Functions/ContextFunc/ContextCurrentDatetimeFunc/fn-current-d
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-1
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-2
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-3
-MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-4
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-6
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-7
 MinimalConformance/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-10
