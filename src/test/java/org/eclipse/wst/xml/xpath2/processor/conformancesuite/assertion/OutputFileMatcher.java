@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 import org.assertj.core.matcher.AssertionMatcher;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
+import org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.ComparisonType;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
 import org.eclipse.wst.xml.xpath2.processor.testutil.XMLComparisonBuilder;

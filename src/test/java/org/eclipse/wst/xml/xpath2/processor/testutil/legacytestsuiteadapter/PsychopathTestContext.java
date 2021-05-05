@@ -1,4 +1,4 @@
-package org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter;
+package org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter;
 
 import static java.util.stream.Collectors.toList;
 import static org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil.newToOld;
@@ -55,6 +55,10 @@ public class PsychopathTestContext extends AbstractPsychoPathTest {
         }
         throw new UnsupportedOperationException(
             "Comparison type \"" + comparisonType + "\" is unsupported.");
+    }
+
+    public void loadInput(URL url) throws IOException {
+        loadDOMDocument(url);
     }
 
     public void loadInput(Collection<String> inputFiles) throws IOException {

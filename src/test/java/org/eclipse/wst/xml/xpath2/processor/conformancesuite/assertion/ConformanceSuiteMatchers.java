@@ -8,7 +8,7 @@ import java.util.Objects;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.HamcrestCondition;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
+import org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
 
 public final class ConformanceSuiteMatchers {
