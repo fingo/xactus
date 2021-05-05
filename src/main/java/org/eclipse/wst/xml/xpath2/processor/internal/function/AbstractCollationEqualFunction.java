@@ -43,34 +43,35 @@ public abstract class AbstractCollationEqualFunction extends Function {
 		super(name, min_arity, max_arity);
 	}
 
-
 	protected static boolean hasValue(AnyType itema, AnyType itemb, DynamicContext context, String collationURI) throws DynamicError {
-		XSString itemStr = new XSString(itema.getStringValue());
+		if( !(itema instanceof CmpEq) && !(itema instanceof XSUntypedAtomic) )
+			return false;
+
 		if (isBoolean(itema, itemb)) {
 			XSBoolean boolat = (XSBoolean) itema;
 			if (boolat.eq(itemb, context)) {
 				return true;
 			}
-		}
-
-		if (isNumeric(itema, itemb)) {
+		} else if (isNumeric(itema, itemb)) {
 			NumericType numericat = (NumericType) itema;
 			if (numericat.eq(itemb, context)) {
 				return true;
 			}
-		}
-
-		if (isDuration(itema, itemb)) {
+		} else if (isDuration(itema, itemb)) {
 			XSDuration durat = (XSDuration) itema;
 			if (durat.eq(itemb, context)) {
 				return true;
 			}
-		}
-
-		if (needsStringComparison(itema, itemb)) {
+		} else if (itema instanceof QName && itemb instanceof QName ) {
+			QName qname = (QName)itema;
+			if (qname.eq(itemb, context)) {
+				return true;
+			}
+		} else if (needsStringComparison(itema, itemb)) {
 			XSString xstr1 = new XSString(itema.getStringValue());
-			if (FnCompare.compare_string(collationURI, xstr1, itemStr,
-					context).equals(BigInteger.ZERO)) {
+			XSString xstr2 = new XSString( itemb.getStringValue() );
+			if( FnCompare.compare_string( collationURI, xstr1, xstr2,
+				context).equals(BigInteger.ZERO)) {
 				return true;
 			}
 		}
