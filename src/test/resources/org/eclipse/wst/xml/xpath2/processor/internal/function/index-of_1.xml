@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example>
+
+  <P1 id="V01-left-id" other="c-V01-left">V01-left</P1>
+  <P1 id="V01-right-id" other="c-V01-right">V01-right</P1>
+  <P3 id="V05-right-id" other="c-V05-right">V05-right</P3>
+
+</example>

@@ -23,7 +23,7 @@ import org.eclipse.wst.xml.xpath2.processor.DynamicError;
 import org.eclipse.wst.xml.xpath2.processor.StaticError;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.assertion.ContentProvider;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.flattener.TestCaseHierarchyFlattener;
-import org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext;
+import org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter.PsychopathTestContext;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.Input;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.OutputFile;
 import org.eclipse.wst.xml.xpath2.processor.conformancesuite.parser.testcase.TestCase;
