@@ -19,7 +19,7 @@ class FnIndexOfTest {
         context.init();
     }
 
-    @ParameterizedTest(name = "Expression \"{0}\" returns \"{1}\"")
+    @ParameterizedTest(name = "Expression \"{0}\" returns \"{1}\".")
     @CsvSource(delimiterString = "|",
         value = {
         "fn:index-of( (//P1[1],//P1[2]), 'x' )|''",
@@ -37,7 +37,6 @@ class FnIndexOfTest {
 
         context.loadInput(fileURL);
 
-        // Get XSModel object for the Schema
         context.setupContext(null);
 
         context.compile(xPath);

@@ -75,7 +75,7 @@ tasks.named('test', Test).configure {
     it.filter {
         // exclude test suites
         it.excludeTestsMatching('*.All*Tests')
-        it.excludeTestsMatching('org.eclipse.wst.xml.xpath2.processor.conformancesuite.legacytestsuiteadapter.PsychopathTestContext')
+        it.excludeTestsMatching('org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter.PsychopathTestContext')
     }
 }
 
@@ -94,7 +94,7 @@ tasks.withType(Test).configureEach {
     it.useJUnitPlatform()
     it.systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'
-    it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'parallel'
+    it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'concurrent'
     it.systemProperty 'junit.jupiter.execution.parallel.config.strategy', 'dynamic'
 }
 
