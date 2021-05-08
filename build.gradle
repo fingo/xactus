@@ -1,5 +1,8 @@
 plugins {
     id 'java-library'
+    id 'signing'
+    id 'maven-publish'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
 }
 
 repositories {
@@ -14,6 +17,11 @@ java {
 
 def codeGenerationTaskGroup = 'code generation'
 def generatedCodeDestinationPackageDirectory = 'org/eclipse/wst/xml/xpath2/processor/internal'
+def pgpSigningPropertyKeyPrefix = 'signing.pgp.'
+def pgpSecretKeyPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKey"
+def pgpKeyPasswordPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKeyPassword"
+def pgpKeyIdPropertyKey = "${pgpSigningPropertyKeyPrefix}keyId"
+def ossrhPublicationName = 'ossrh'
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
@@ -96,6 +104,60 @@ tasks.withType(Test).configureEach {
     it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'concurrent'
     it.systemProperty 'junit.jupiter.execution.parallel.config.strategy', 'dynamic'
+}
+
+extensions.configure(JavaPluginExtension) {
+    it.withJavadocJar()
+    it.withSourcesJar()
+}
+
+extensions.configure(PublishingExtension) { publishingExtension ->
+    publishingExtension.repositories.maven {
+        def releasesRepoUrl = uri("$buildDir/repos/releases")
+        def snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
+        url = version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+
+    publishingExtension.publications.register(ossrhPublicationName, MavenPublication) {
+        mavenPublication ->
+            mavenPublication.artifactId = 'xactus'
+            mavenPublication.groupId = 'info.fingo.xactus'
+            mavenPublication.version = '0.0.1'
+            mavenPublication.from(project.components.getByName('java'))
+            mavenPublication.pom { mavenPom ->
+                mavenPom.name = 'Xactus'
+                mavenPom.url = 'https://github.com/fingo/xactus'
+                mavenPom.licenses { licenseSpec ->
+                    licenseSpec.license { license ->
+                        license.name = 'Eclipse Public License - v 2.0'
+                        license.url = 'https://www.eclipse.org/legal/epl-2.0/'
+                    }
+                }
+                mavenPom.scm { mavenPomScm ->
+                    mavenPomScm.url = 'https://github.com/fingo/xactus'
+                    mavenPomScm.connection = 'scm:git:git://github.com/fingo/xactus'
+                }
+            }
+    }
+}
+
+extensions.configure(SigningExtension) {
+    if (project.hasProperty(pgpSecretKeyPropertyKey) && project.hasProperty(pgpKeyPasswordPropertyKey)) {
+        def pgpSecretKey = project.property(pgpSecretKeyPropertyKey).toString()
+        def pgpKeyPassword = project.property(pgpKeyPasswordPropertyKey).toString()
+
+        if (project.hasProperty(pgpKeyIdPropertyKey)) {
+            it.useInMemoryPgpKeys(project.property(pgpKeyIdPropertyKey).toString(), pgpSecretKey, pgpKeyPassword)
+        } else {
+            it.useInMemoryPgpKeys(pgpSecretKey, pgpKeyPassword)
+        }
+    }
+
+    it.sign(extensions.findByType(PublishingExtension).publications.getByName(ossrhPublicationName))
+}
+
+tasks.named('javadoc', Javadoc).configure {
+    it.failOnError = false
 }
 
 dependencies {
