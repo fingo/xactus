@@ -9,34 +9,36 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+extensions.configure(JavaPluginExtension) { javaPluginExtension ->
+    javaPluginExtension.toolchain { javaToolchainSec ->
+        javaToolchainSec.languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
-def codeGenerationTaskGroup = 'code generation'
-def generatedCodeDestinationPackageDirectory = 'org/eclipse/wst/xml/xpath2/processor/internal'
-def pgpSigningPropertyKeyPrefix = 'signing.pgp.'
-def pgpSecretKeyPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKey"
-def pgpKeyPasswordPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKeyPassword"
-def pgpKeyIdPropertyKey = "${pgpSigningPropertyKeyPrefix}keyId"
-def ossrhDeploymentPropertyKeyPrefix = 'deployment.ossrh.'
-def ossrhUsernamePropertyKey = "${ossrhDeploymentPropertyKeyPrefix}user"
-def ossrhPasswordPropertyKey = "${ossrhDeploymentPropertyKeyPrefix}password"
-def publicationName = 'mavenJava'
-def ossrhReleasesRepoUri = uri('https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/')
-def ossrhSnapshotsRepoUri = uri('https://s01.oss.sonatype.org/content/repositories/snapshots/')
-def localReleasesRepoUri = uri("$buildDir/repos/releases")
-def localSnapshotsRepoUri = uri("$buildDir/repos/snapshots")
+interface Constants {
+    def CODE_GENERATION_TASK_GROUP = 'code generation'
+    def CODE_GENERATION_TARGET_DIRECTORY = 'org/eclipse/wst/xml/xpath2/processor/internal'
+    def PGP_PROPERTY_KEY_PREFIX = 'signing.pgp.'
+    def PGP_SECRET_KEY_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}secretKey"
+    def PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}secretKeyPassword"
+    def PGP_KEY_ID_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}keyId"
+    def DEPLOYMENT_PROPERTY_KEY_PREFIX = 'deployment.'
+    def OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX = "${DEPLOYMENT_PROPERTY_KEY_PREFIX}ossrh."
+    def OSSRH_USER_NAME_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}user"
+    def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}password"
+    def DEPLOYMENT_VERSION_PROPERTY_KEY = "${DEPLOYMENT_PROPERTY_KEY_PREFIX}version"
+    def PUBLICATION_NAME = 'mavenJava'
+    def OSSRH_RELEASES_REPO_URL = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+    def OSSRH_SNAPSHOT_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+}
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
         def outputDirectory = "$buildDir/jflex-generated"
-        def classesDestinationDirectory = file("$outputDirectory/$generatedCodeDestinationPackageDirectory")
+        def classesDestinationDirectory = file("$outputDirectory/$Constants.CODE_GENERATION_TARGET_DIRECTORY")
         def inputFile = file('src/main/jflex/xpath.lex')
 
-        jFlexExec.group codeGenerationTaskGroup
+        jFlexExec.group Constants.CODE_GENERATION_TASK_GROUP
         jFlexExec.classpath(configurations.named('jflex'))
 
         jFlexExec.inputs.file(inputFile)
@@ -54,10 +56,10 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
     jCupExec ->
         def outputDirectory = "$buildDir/jcup-generated"
-        def classesDestinationDirectory = file("$outputDirectory/$generatedCodeDestinationPackageDirectory")
+        def classesDestinationDirectory = file("$outputDirectory/$Constants.CODE_GENERATION_TARGET_DIRECTORY")
         def inputFile = file('src/main/jcup/xpath.cup')
 
-        jCupExec.group codeGenerationTaskGroup
+        jCupExec.group Constants.CODE_GENERATION_TASK_GROUP
 
         jCupExec.classpath(configurations.named('jcup'))
         jCupExec.main = 'java_cup.Main'
@@ -121,19 +123,19 @@ extensions.configure(JavaPluginExtension) {
 extensions.configure(PublishingExtension) { publishingExtension ->
     publishingExtension.repositories.maven { MavenArtifactRepository repo ->
         repo.name = 'local'
-        repo.url = isSnapshot() ? localSnapshotsRepoUri : localReleasesRepoUri
+        repo.url = uri(isSnapshot() ? "$buildDir/repos/snapshots" : "$buildDir/repos/releases")
     }
 
     publishingExtension.repositories.maven { MavenArtifactRepository repo ->
         repo.name = 'ossrh'
-        repo.url = isSnapshot() ? ossrhSnapshotsRepoUri : ossrhReleasesRepoUri
+        repo.url = uri(isSnapshot() ? Constants.OSSRH_SNAPSHOT_REPO_URL : Constants.OSSRH_RELEASES_REPO_URL)
         repo.credentials {
-            it.username = project.findProperty(ossrhUsernamePropertyKey).toString()
-            it.password = project.findProperty(ossrhPasswordPropertyKey).toString()
+            it.username = project.findProperty(Constants.OSSRH_USER_NAME_PROPERTY_KEY_PREFIX).toString()
+            it.password = project.findProperty(Constants.OSSRH_PASSWORD_PROPERTY_KEY_PREFIX).toString()
         }
     }
 
-    publishingExtension.publications.register(publicationName, MavenPublication) {
+    publishingExtension.publications.register(Constants.PUBLICATION_NAME, MavenPublication) {
         mavenPublication ->
             mavenPublication.artifactId = 'xactus'
             mavenPublication.groupId = 'info.fingo.xactus'
@@ -157,18 +159,19 @@ extensions.configure(PublishingExtension) { publishingExtension ->
 }
 
 extensions.configure(SigningExtension) {
-    if (project.hasProperty(pgpSecretKeyPropertyKey) && project.hasProperty(pgpKeyPasswordPropertyKey)) {
-        def pgpSecretKey = project.property(pgpSecretKeyPropertyKey).toString()
-        def pgpKeyPassword = project.property(pgpKeyPasswordPropertyKey).toString()
+    if (project.hasProperty(Constants.PGP_SECRET_KEY_PROPERTY_KEY) &&
+            project.hasProperty(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY)) {
+        def pgpSecretKey = project.property(Constants.PGP_SECRET_KEY_PROPERTY_KEY).toString()
+        def pgpKeyPassword = project.property(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY).toString()
 
-        if (project.hasProperty(pgpKeyIdPropertyKey)) {
-            it.useInMemoryPgpKeys(project.property(pgpKeyIdPropertyKey).toString(), pgpSecretKey, pgpKeyPassword)
+        if (project.hasProperty(Constants.PGP_KEY_ID_PROPERTY_KEY)) {
+            it.useInMemoryPgpKeys(project.property(Constants.PGP_KEY_ID_PROPERTY_KEY).toString(), pgpSecretKey, pgpKeyPassword)
         } else {
             it.useInMemoryPgpKeys(pgpSecretKey, pgpKeyPassword)
         }
     }
 
-    it.sign(extensions.findByType(PublishingExtension).publications.getByName(publicationName))
+    it.sign(extensions.findByType(PublishingExtension).publications.getByName(Constants.PUBLICATION_NAME))
 }
 
 tasks.named('javadoc', Javadoc).configure {
@@ -191,7 +194,7 @@ dependencies {
 }
 
 def getDeploymentVersion() {
-    project.version
+    project.findProperty(Constants.DEPLOYMENT_VERSION_PROPERTY_KEY)
 }
 
 def isSnapshot() {
