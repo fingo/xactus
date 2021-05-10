@@ -21,7 +21,14 @@ def pgpSigningPropertyKeyPrefix = 'signing.pgp.'
 def pgpSecretKeyPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKey"
 def pgpKeyPasswordPropertyKey = "${pgpSigningPropertyKeyPrefix}secretKeyPassword"
 def pgpKeyIdPropertyKey = "${pgpSigningPropertyKeyPrefix}keyId"
-def ossrhPublicationName = 'ossrh'
+def ossrhDeploymentPropertyKeyPrefix = 'deployment.ossrh.'
+def ossrhUsernamePropertyKey = "${ossrhDeploymentPropertyKeyPrefix}user"
+def ossrhPasswordPropertyKey = "${ossrhDeploymentPropertyKeyPrefix}password"
+def publicationName = 'mavenJava'
+def ossrhReleasesRepoUri = uri('https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/')
+def ossrhSnapshotsRepoUri = uri('https://s01.oss.sonatype.org/content/repositories/snapshots/')
+def localReleasesRepoUri = uri("$buildDir/repos/releases")
+def localSnapshotsRepoUri = uri("$buildDir/repos/snapshots")
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
@@ -112,17 +119,25 @@ extensions.configure(JavaPluginExtension) {
 }
 
 extensions.configure(PublishingExtension) { publishingExtension ->
-    publishingExtension.repositories.maven {
-        def releasesRepoUrl = uri("$buildDir/repos/releases")
-        def snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
-        url = version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    publishingExtension.repositories.maven { MavenArtifactRepository repo ->
+        repo.name = 'local'
+        repo.url = isSnapshot() ? localSnapshotsRepoUri : localReleasesRepoUri
     }
 
-    publishingExtension.publications.register(ossrhPublicationName, MavenPublication) {
+    publishingExtension.repositories.maven { MavenArtifactRepository repo ->
+        repo.name = 'ossrh'
+        repo.url = isSnapshot() ? ossrhSnapshotsRepoUri : ossrhReleasesRepoUri
+        repo.credentials {
+            it.username = project.findProperty(ossrhUsernamePropertyKey).toString()
+            it.password = project.findProperty(ossrhPasswordPropertyKey).toString()
+        }
+    }
+
+    publishingExtension.publications.register(publicationName, MavenPublication) {
         mavenPublication ->
             mavenPublication.artifactId = 'xactus'
             mavenPublication.groupId = 'info.fingo.xactus'
-            mavenPublication.version = '0.0.1'
+            mavenPublication.version = deploymentVersion
             mavenPublication.from(project.components.getByName('java'))
             mavenPublication.pom { mavenPom ->
                 mavenPom.name = 'Xactus'
@@ -153,7 +168,7 @@ extensions.configure(SigningExtension) {
         }
     }
 
-    it.sign(extensions.findByType(PublishingExtension).publications.getByName(ossrhPublicationName))
+    it.sign(extensions.findByType(PublishingExtension).publications.getByName(publicationName))
 }
 
 tasks.named('javadoc', Javadoc).configure {
@@ -173,4 +188,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.19.0'
     // LSSerializerImpl used to serialize ResultSequence to XML - see AbstractPsychoPathTest#buildXMLResultString
     testImplementation 'xalan:serializer:2.7.2'
+}
+
+def getDeploymentVersion() {
+    project.version
+}
+
+def isSnapshot() {
+    deploymentVersion.toString().endsWith("-SNAPSHOT")
 }
