@@ -127,7 +127,7 @@ extensions.configure(PublishingExtension) { publishingExtension ->
     }
 
     publishingExtension.repositories.maven { MavenArtifactRepository repo ->
-        repo.name = 'ossrh'
+        repo.name = 'OSSRH'
         repo.url = uri(isSnapshot() ? Constants.OSSRH_SNAPSHOT_REPO_URL : Constants.OSSRH_RELEASES_REPO_URL)
         repo.credentials {
             it.username = project.findProperty(Constants.OSSRH_USER_NAME_PROPERTY_KEY_PREFIX).toString()
