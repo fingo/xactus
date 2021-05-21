@@ -1,5 +1,5 @@
 name: Test and release a package
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
     build_test_publish:
