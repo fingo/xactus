@@ -2,12 +2,15 @@ plugins {
     id 'java-library'
     id 'signing'
     id 'maven-publish'
-    id 'io.github.gradle-nexus.publish-plugin' version '1.0.0'
+    id 'pl.allegro.tech.build.axion-release' version '1.13.2'
 }
 
 repositories {
     mavenCentral()
 }
+
+project.group = 'info.fingo.xactus'
+project.version = deploymentVersion
 
 extensions.configure(JavaPluginExtension) { javaPluginExtension ->
     javaPluginExtension.toolchain { javaToolchainSec ->
@@ -26,7 +29,6 @@ interface Constants {
     def OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX = "${DEPLOYMENT_PROPERTY_KEY_PREFIX}ossrh."
     def OSSRH_USER_NAME_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}user"
     def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}password"
-    def DEPLOYMENT_VERSION_PROPERTY_KEY = "${DEPLOYMENT_PROPERTY_KEY_PREFIX}version"
     def PUBLICATION_NAME = 'mavenJava'
     def OSSRH_RELEASES_REPO_URL = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
     def OSSRH_SNAPSHOT_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
@@ -137,9 +139,6 @@ extensions.configure(PublishingExtension) { publishingExtension ->
 
     publishingExtension.publications.register(Constants.PUBLICATION_NAME, MavenPublication) {
         mavenPublication ->
-            mavenPublication.artifactId = 'xactus'
-            mavenPublication.groupId = 'info.fingo.xactus'
-            mavenPublication.version = deploymentVersion
             mavenPublication.from(project.components.getByName('java'))
             mavenPublication.pom { mavenPom ->
                 mavenPom.name = 'Xactus'
@@ -194,7 +193,7 @@ dependencies {
 }
 
 def getDeploymentVersion() {
-    project.findProperty(Constants.DEPLOYMENT_VERSION_PROPERTY_KEY)
+    scmVersion.version
 }
 
 def isSnapshot() {
