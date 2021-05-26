@@ -21,14 +21,11 @@ extensions.configure(JavaPluginExtension) { javaPluginExtension ->
 interface Constants {
     def CODE_GENERATION_TASK_GROUP = 'code generation'
     def CODE_GENERATION_TARGET_DIRECTORY = 'org/eclipse/wst/xml/xpath2/processor/internal'
-    def PGP_PROPERTY_KEY_PREFIX = 'signing.pgp.'
-    def PGP_SECRET_KEY_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}secretKey"
-    def PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}secretKeyPassword"
-    def PGP_KEY_ID_PROPERTY_KEY = "${PGP_PROPERTY_KEY_PREFIX}keyId"
-    def DEPLOYMENT_PROPERTY_KEY_PREFIX = 'deployment.'
-    def OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX = "${DEPLOYMENT_PROPERTY_KEY_PREFIX}ossrh."
-    def OSSRH_USER_NAME_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}user"
-    def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "${OSSRH_DEPLOYMENT_PROPERTY_KEY_PREFIX}password"
+    def PGP_SECRET_KEY_PROPERTY_KEY = "pgpSecretKey"
+    def PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY = "pgpSecretKeyPassword"
+    def PGP_KEY_ID_PROPERTY_KEY = "pgpKeyId"
+    def OSSRH_USER_NAME_PROPERTY_KEY_PREFIX = "ossrhUserName"
+    def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "ossrhPassword"
     def PUBLICATION_NAME = 'mavenJava'
     def OSSRH_RELEASES_REPO_URL = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
     def OSSRH_SNAPSHOT_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
