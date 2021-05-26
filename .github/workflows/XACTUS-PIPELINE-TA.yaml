@@ -15,20 +15,21 @@ jobs:
                   java-package: jdk
                   architecture: x64
                   server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-                  server-username: OSSRH_USERNAME # env variable for username in deploy
-                  server-password: OSSRH_TOKEN # env variable for token in deploy
+                  server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
+                  server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
                   gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-                  gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+                  gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
 
             - name: Unit tests
               run: "./gradlew test"
 
             - name: Publish to Maven Central
-              run: "./gradlew -Pdeployment.ossrh.user=${{ secrets.OSSRH_USERNAME }} -Pdeployment.ossrh.password=${{ secrets.OSSRH_TOKEN }} -Psigning.pgp.secretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }} -Psigning.pgp.secretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}  publishMavenJavaPublicationToOSSRHRepository"
+              run: "./gradlew publishMavenJavaPublicationToOSSRHRepository"
               env:
-                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-                OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-                MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+                ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
+                ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
+                ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+                ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
             - name: Output link to HTML report as annotation
               if: always()
