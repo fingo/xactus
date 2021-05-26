@@ -24,7 +24,7 @@ jobs:
               run: "./gradlew test"
 
             - name: Publish to Maven Central
-              run: "./gradlew -Pdeployment.ossrh.user=secrets.OSSRH_USERNAME publishMavenJavaPublicationToOSSRHRepository"
+              run: "./gradlew -Pdeployment.ossrh.user=${{ secrets.OSSRH_USERNAME }} publishMavenJavaPublicationToOSSRHRepository"
 #              run: "./gradlew -Pdeployment.ossrh.user=${{ secrets.OSSRH_USERNAME }} -Pdeployment.ossrh.password=${{ secrets.OSSRH_TOKEN }} -Psigning.pgp.secretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }} -Psigning.pgp.secretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}  publishMavenJavaPublicationToOSSRHRepository"
               env:
                 OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
