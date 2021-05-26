@@ -14,16 +14,22 @@ jobs:
                   java-version: '8.0.275'
                   java-package: jdk
                   architecture: x64
-#                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-#                  server-username: MAVEN_USERNAME # env variable for username in deploy
-#                  server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
-#                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-#                  gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+                  server-username: OSSRH_USERNAME # env variable for username in deploy
+                  server-password: OSSRH_TOKEN # env variable for token in deploy
+                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+                  gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
 
             - name: Unit tests
               run: "./gradlew test"
 
-            # @todo: Publish to Maven Central
+            - name: Publish to Maven Central
+              run: "./gradlew -Pdeployment.ossrh.user=secrets.OSSRH_USERNAME publishMavenJavaPublicationToOSSRHRepository"
+#              run: "./gradlew -Pdeployment.ossrh.user=${{ secrets.OSSRH_USERNAME }} -Pdeployment.ossrh.password=${{ secrets.OSSRH_TOKEN }} -Psigning.pgp.secretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }} -Psigning.pgp.secretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}  publishMavenJavaPublicationToOSSRHRepository"
+              env:
+                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+                OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+                MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
             - name: Output link to HTML report as annotation
               if: always()
