@@ -14,16 +14,22 @@ jobs:
                   java-version: '8.0.275'
                   java-package: jdk
                   architecture: x64
-#                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-#                  server-username: MAVEN_USERNAME # env variable for username in deploy
-#                  server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
-#                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-#                  gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+                  server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
+                  server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
+                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+                  gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
 
             - name: Unit tests
               run: "./gradlew test"
 
-            # @todo: Publish to Maven Central
+            - name: Publish to Maven Central
+              run: "./gradlew publishMavenJavaPublicationToOSSRHRepository"
+              env:
+                ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
+                ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
+                ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+                ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
             - name: Output link to HTML report as annotation
               if: always()
