@@ -6,7 +6,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     David Carver (STAR) - bug 226245 - initial API and implementation
  *     Jesper Steen Moller - bug 343804 - Updated API information
@@ -19,14 +19,14 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
-import org.eclipse.wst.xml.xpath2.processor.Engine;
-import org.eclipse.wst.xml.xpath2.processor.JFlexCupParser;
-import org.eclipse.wst.xml.xpath2.processor.StaticError;
-import org.eclipse.wst.xml.xpath2.processor.XPathParser;
-import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
-import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
-import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
+import info.fingo.xactus.api.XPath2Expression;
+import info.fingo.xactus.processor.Engine;
+import info.fingo.xactus.processor.JFlexCupParser;
+import info.fingo.xactus.processor.StaticError;
+import info.fingo.xactus.processor.XPathParser;
+import info.fingo.xactus.processor.XPathParserException;
+import info.fingo.xactus.processor.util.DynamicContextBuilder;
+import info.fingo.xactus.processor.util.StaticContextBuilder;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -37,7 +37,7 @@ public class XPath20Helper {
 
 	public XPath20Helper() {
 	}
-	
+
 	public static void compile(String xpathExp) throws XPathExpressionException {
 		try {
 			XPathParser xpathParser = new JFlexCupParser();
@@ -78,7 +78,7 @@ public class XPath20Helper {
 
 		public NodeList execute(Node contextNode) {
 			DynamicContextBuilder dynContext = new DynamicContextBuilder(staticContextBuilder);
-			 org.eclipse.wst.xml.xpath2.api.ResultSequence rs = xPathExpression.evaluate(dynContext, new Object[] { contextNode });
+			 info.fingo.xactus.api.ResultSequence rs = xPathExpression.evaluate(dynContext, new Object[] { contextNode });
 			 return new NodeListImpl(rs);
 		}
 

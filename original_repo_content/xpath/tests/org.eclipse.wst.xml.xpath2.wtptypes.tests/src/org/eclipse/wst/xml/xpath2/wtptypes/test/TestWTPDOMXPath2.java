@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     David Carver (STAR) - initial API and implementation 
+ *     David Carver (STAR) - initial API and implementation
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *******************************************************************************/
 
@@ -21,16 +21,16 @@ import org.apache.xerces.xs.XSModel;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
-import org.eclipse.wst.xml.xpath2.processor.DefaultEvaluator;
-import org.eclipse.wst.xml.xpath2.processor.DynamicContext;
-import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.Evaluator;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.StaticError;
-import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
+import info.fingo.xactus.processor.DefaultEvaluator;
+import info.fingo.xactus.processor.DynamicContext;
+import info.fingo.xactus.processor.DynamicError;
+import info.fingo.xactus.processor.Evaluator;
+import info.fingo.xactus.processor.ResultSequence;
+import info.fingo.xactus.processor.StaticError;
+import info.fingo.xactus.processor.XPathParserException;
+import info.fingo.xactus.processor.ast.XPath;
+import info.fingo.xactus.processor.internal.types.AnyType;
+import info.fingo.xactus.processor.internal.types.NodeType;
 import org.eclipse.wst.xml.xpath2.wtptypes.XsdDOMTypeProvider;
 
 public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
@@ -73,7 +73,7 @@ public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
 
 		// set up XPath default namespace in Dynamic Context
 		DynamicContext dc = setupDynamicContext2(new XsdDOMTypeProvider.XsdTypeModel((IDOMDocument)domDoc));
-		
+
 		assertXPathTrue("/Example/x[1] instance of element(*, x_Type)", dc, domDoc);
 		assertXPathTrue("not (/Example/x[1] instance of element(*, y_Type))", dc, domDoc);
 		assertXPathTrue("/Example/x instance of x_Type+", dc, domDoc);
@@ -1912,7 +1912,7 @@ public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
 				actual);
 
 	}
-	
+
 	// Evaluates unabbreviated syntax - parent::node() - Selects the parent of
 	// the context node.
 	public void test_unabbreviatedSyntax_8() throws Exception {
@@ -2742,7 +2742,7 @@ public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
 	      String expectedResult = getExpectedResult(resultFile);
 	      URL fileURL = bundle.getEntry(inputFile);
 	      domDoc = load(fileURL);
-	      
+
 	      // Get XML Schema Information for the Document
 	      XSModel schema = null;
 
@@ -2752,12 +2752,12 @@ public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
 	      String actual = null;
 	      try {
 		   	  XPath path = compileXPath(dc, xpath);
-		
+
 		      Evaluator eval = new DefaultEvaluator(dc, domDoc);
 		      ResultSequence rs = eval.evaluate(path);
-	         
+
 	          actual = buildXMLResultString(rs);
-		
+
 	      } catch (XPathParserException ex) {
 	    	 actual = ex.code();
 	      } catch (StaticError ex) {
@@ -2767,10 +2767,10 @@ public class TestWTPDOMXPath2 extends AbstractPsychoPathWTPTest {
 	      }
 
 	      assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-	        
+
 
 	   }
-	
+
 	protected String buildXMLResultString(ResultSequence rs) throws Exception {
 		Iterator iterator = rs.iterator();
 		StringBuffer buffer = new StringBuffer();

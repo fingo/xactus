@@ -18,7 +18,7 @@
  *******************************************************************************/
 
 
-package org.eclipse.wst.xml.xpath2.processor.internal;
+package info.fingo.xactus.processor.internal;
 
 import java_cup.runtime.*;
 
@@ -180,7 +180,7 @@ NCName		= ( {Letter} | "_") ( {NCNameChar} )*
 				// get rid of quotes
 				String str = yytext();
 				assert str.length() >= 2;
-				return symbol(XpathSym.STRING, org.eclipse.wst.xml.xpath2.processor.internal.utils.LiteralUtils.unquote(str));
+				return symbol(XpathSym.STRING, info.fingo.xactus.processor.internal.utils.LiteralUtils.unquote(str));
 			}
 {Digits}		{ return symbol(XpathSym.INTEGER, new java.math.BigInteger(yytext())); }
 {DoubleLiteral}		{ return symbol(XpathSym.DOUBLE, new Double(yytext())); }

@@ -15,14 +15,14 @@
 // *******************************************************************************/
 
 
-package org.eclipse.wst.xml.xpath2.processor.internal;
+package info.fingo.xactus.processor.internal;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
-import org.eclipse.wst.xml.xpath2.processor.internal.ast.*;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.*;
+import info.fingo.xactus.processor.ast.XPath;
+import info.fingo.xactus.processor.internal.ast.*;
+import info.fingo.xactus.processor.internal.types.*;
 
 
 parser code 	{:

@@ -39,9 +39,9 @@ import org.eclipse.wst.xml.xpath.core.util.XPath20Helper;
 import org.eclipse.wst.xml.xpath.core.util.XPathCoreHelper;
 import org.eclipse.wst.xml.xpath.ui.internal.Messages;
 import org.eclipse.wst.xml.xpath.ui.internal.XPathUIPlugin;
-import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.internal.DefaultResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.XSString;
+import info.fingo.xactus.processor.DynamicError;
+import info.fingo.xactus.processor.internal.DefaultResultSequence;
+import info.fingo.xactus.processor.internal.types.XSString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,7 +83,7 @@ public class XPathComputer {
 	private String expression;
 	private String text;
 	private NodeList nodeList;
-	
+
 	private SimpleXPathEngine xpath2Engine;
 	private SimpleXPathEngine xpath1Engine;
 
@@ -120,7 +120,7 @@ public class XPathComputer {
 		synchronized (XPATH_LOCK) {
 			if (text != null) {
 				SimpleXPathEngine engine = getCurrentEngine();
-				
+
 				IDOMDocument doc = (node.getNodeType() == Node.DOCUMENT_NODE) ? (IDOMDocument) node : (IDOMDocument) node.getOwnerDocument();
 				updateNamespaces(engine, doc);
 
@@ -142,7 +142,7 @@ public class XPathComputer {
 			return xpath1Engine;
 		}
 	}
-	
+
 	public void setText(String text) throws XPathExpressionException {
 		this.text = text;
 		updateExpression();
@@ -183,10 +183,10 @@ public class XPathComputer {
 		try {
 			if (node != null) {
 				synchronized (XPATH_LOCK) {
-					
+
 					SimpleXPathEngine engine = getCurrentEngine();
 					if (! engine.isValid()) engine.parse(text);
-					
+
 					status = evaluateXPath(engine);
 				}
 			}
@@ -223,7 +223,7 @@ public class XPathComputer {
 			engine.setNamespaceContext(null);
 		}
 	}
-	
+
 	public static class XPath10Engine implements SimpleXPathEngine {
 
 		private javax.xml.xpath.XPathExpression goodXPath = null;
@@ -231,9 +231,9 @@ public class XPathComputer {
 		private NamespaceContext namespaceContext;
 
 		public void setNamespaceContext(NamespaceContext namespaceContext) {
-			this.namespaceContext = namespaceContext; 
+			this.namespaceContext = namespaceContext;
 		}
-		
+
 		private javax.xml.xpath.XPath newXPath = new XPathFactoryImpl().newXPath();
 
 		public void parse(String expression) throws XPathExpressionException {
@@ -242,7 +242,7 @@ public class XPathComputer {
 				newXPath.setNamespaceContext(namespaceContext);
 			}
 			goodXPath = newXPath.compile(expression);
-		}			
+		}
 
 		public NodeList execute(Node contextNode) throws XPathExpressionException {
 				try {
@@ -254,12 +254,12 @@ public class XPathComputer {
 					} else throw xee;
 				}
 			}
-			
+
 		public boolean isValid() {
 			return goodXPath != null;
 		}
 	}
-	
+
 	public void dispose() {
 		if (model != null) {
 			model.removeModelStateListener(modelStateListener);

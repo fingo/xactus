@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*******************************************************************************
  * Copyright (c) 2009 Standards for Technology in Automotive Retail and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * Contributors:
  *     David Carver - STAR - Stylesheet for testing purposes.
  *******************************************************************************/
- 
+
  This stylesheet is used to generate a Test per test-group for the XPath 2.0
  testing suite.  It uses as input the XQTSCatalog.xml file.
  -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xqts="http://www.w3.org/2005/02/query-test-XQTSCatalog">
    <xsl:output indent="yes" method="text" encoding="UTF-8"/>
-   
+
    <xsl:variable name="location">/Queries/XQuery</xsl:variable>
    <xsl:param name="group">Catalog</xsl:param>
-   
+
    <xsl:template match="/">
       <xsl:text>
 /*******************************************************************************
@@ -28,24 +28,24 @@
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *******************************************************************************/
-package org.eclipse.wst.xml.xpath2.processor.testsuite;
+package info.fingo.xactus.processor.testsuite;
 
 import java.net.URL;
 
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.wst.xml.xpath2.processor.*;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
-import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
+import info.fingo.xactus.processor.*;
+import info.fingo.xactus.processor.ast.XPath;
+import info.fingo.xactus.processor.internal.types.AnyType;
+import info.fingo.xactus.processor.test.AbstractPsychoPathTest;
+
       </xsl:text>
       <xsl:apply-templates/>
    </xsl:template>
-   
+
    <xsl:template match="xqts:test-suite">
       <xsl:text>
 public class </xsl:text>
@@ -57,11 +57,11 @@ public class </xsl:text>
 }
       </xsl:text>
    </xsl:template>
-   
+
    <xsl:template match="xqts:test-group">
        <xsl:apply-templates select="xqts:test-group | xqts:test-case"/>
    </xsl:template>
-   
+
    <xsl:template match="xqts:test-case">
       <xsl:if test="@is-XPath2 = 'true'">
         <xsl:variable name="testName" select="@name"/>
@@ -89,7 +89,7 @@ public class </xsl:text>
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -99,12 +99,12 @@ public class </xsl:text>
       String actual = null;
       try {
 	   	  XPath path = compileXPath(dc, xpath);
-	
+
 	      Evaluator eval = new DefaultEvaluator(dc, domDoc);
 	      ResultSequence rs = eval.evaluate(path);
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -114,14 +114,14 @@ public class </xsl:text>
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 </xsl:text>
         <xsl:text>
    }
 </xsl:text>
       </xsl:if>
    </xsl:template>
-   
+
    <xsl:template name="SetVariables">
       <xsl:text>      String inputFile = "/TestSources/</xsl:text>
       <xsl:value-of select="xqts:input-file"/>
@@ -137,7 +137,7 @@ public class </xsl:text>
       <xsl:value-of select="xqts:output-file"/>
       <xsl:text>";</xsl:text>
    </xsl:template>
-   
+
    <xsl:template name="replace-string">
       <xsl:param name="text"/>
       <xsl:param name="replace"/>
@@ -157,9 +157,9 @@ public class </xsl:text>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   
+
    <xsl:template match="* | node()">
-   
+
    </xsl:template>
-   
+
 </xsl:stylesheet>

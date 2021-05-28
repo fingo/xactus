@@ -23,8 +23,8 @@ import org.eclipse.wst.xml.core.internal.contentmodel.CMNode;
 import org.eclipse.wst.xml.core.internal.contentmodel.modelquery.CMDocumentManager;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.ssemodelquery.ModelQueryAdapter;
-import org.eclipse.wst.xml.xpath2.api.typesystem.TypeDefinition;
-import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
+import info.fingo.xactus.api.typesystem.TypeDefinition;
+import info.fingo.xactus.api.typesystem.TypeModel;
 import org.eclipse.wst.xsd.contentmodel.internal.XSDImpl.XSDAttributeUseAdapter;
 import org.eclipse.wst.xsd.contentmodel.internal.XSDImpl.XSDElementDeclarationAdapter;
 import org.eclipse.wst.xsd.contentmodel.internal.XSDImpl.XSDSchemaAdapter;
@@ -58,7 +58,7 @@ public class XsdDOMTypeProvider {
 		try {
 			documentManager.setPropertyEnabled(CMDocumentManager.PROPERTY_ASYNC_LOAD, false);
 			documentManager.setPropertyEnabled(CMDocumentManager.PROPERTY_AUTO_LOAD, true);
-			
+
 			return query.query();
 		} finally {
 			documentManager.setPropertyEnabled(CMDocumentManager.PROPERTY_ASYNC_LOAD, wasAsync);
@@ -69,43 +69,43 @@ public class XsdDOMTypeProvider {
 	public static class XsdTypeModel implements TypeModel {
 		private final ModelQueryAdapter modelAdapter;
 		private final IDOMDocument doc;
-	
+
 		public XsdTypeModel(IDOMDocument doc) {
 			this.doc = doc;
 			modelAdapter = (ModelQueryAdapter) doc.getAdapterFor(ModelQueryAdapter.class);
 		}
-	
+
 		private XSDTypeDefinition lookupXSDType(final String namespace, final String localName) {
 			return wrapCMQuery(modelAdapter.getModelQuery().getCMDocumentManager(), new WrappedCMQuery<XSDTypeDefinition>() {
 				public XSDTypeDefinition query() {
-					
+
 					CMDocument cmDoc = modelAdapter.getModelQuery().getCorrespondingCMDocument(doc.getDocumentElement());
-					
+
 					if (cmDoc instanceof XSDSchemaAdapter) {
 						XSDSchema schema = (XSDSchema) ((XSDSchemaAdapter)cmDoc).getKey();
 						XSDTypeDefinition typeDefinition = schema.resolveTypeDefinition(namespace, localName);
-						if (typeDefinition.getBaseType() == null) return null; // crude check for on-the-fly created unresolved types 
+						if (typeDefinition.getBaseType() == null) return null; // crude check for on-the-fly created unresolved types
 						return typeDefinition;
 					}
 					return null;
 				}
 			});
 		}
-	
+
 		public TypeDefinition lookupType(String namespace, String name) {
 			XSDTypeDefinition xsdDef = lookupXSDType(namespace, name);
 			return xsdDef != null ? new XsdTypeDefinition(xsdDef) : null;
 		}
-	
+
 		public TypeDefinition lookupElementDeclaration(final String namespace,
 				final String elementName) {
-	
+
 			return wrapCMQuery(modelAdapter.getModelQuery().getCMDocumentManager(), new WrappedCMQuery<XsdTypeDefinition>() {
 				public XsdTypeDefinition query() {
 					CMDocument cmDoc = modelAdapter.getModelQuery().getCorrespondingCMDocument(doc.getDocumentElement());
 					if (cmDoc instanceof XSDSchemaAdapter) {
 						XSDSchema schema = (XSDSchema) ((XSDSchemaAdapter)cmDoc).getKey();
-						
+
 						XSDElementDeclaration declaration = schema.resolveElementDeclaration(namespace, elementName);
 						if (declaration != null) return new XsdTypeDefinition(declaration.getTypeDefinition());
 					}
@@ -113,17 +113,17 @@ public class XsdDOMTypeProvider {
 				}
 			});
 		}
-	
+
 		public TypeDefinition lookupAttributeDeclaration(final String namespace,
 				final String attributeName) {
-			
+
 			return wrapCMQuery(modelAdapter.getModelQuery().getCMDocumentManager(), new WrappedCMQuery<XsdTypeDefinition>() {
 				public XsdTypeDefinition query() {
 					CMDocument cmDoc = modelAdapter.getModelQuery().getCorrespondingCMDocument(doc.getDocumentElement());
-					
+
 					if (cmDoc instanceof XSDSchemaAdapter) {
 						XSDSchema schema = (XSDSchema) ((XSDSchemaAdapter)cmDoc).getKey();
-						
+
 						XSDAttributeDeclaration declaration = schema.resolveAttributeDeclaration(namespace, attributeName);
 						if (declaration != null) return new XsdTypeDefinition(declaration.getTypeDefinition());
 					}
@@ -131,7 +131,7 @@ public class XsdDOMTypeProvider {
 				}
 			});
 		}
-	
+
 		public TypeDefinition getType(final Node node) {
 			return wrapCMQuery(modelAdapter.getModelQuery().getCMDocumentManager(), new WrappedCMQuery<XsdTypeDefinition>() {
 				public XsdTypeDefinition query() {
@@ -140,12 +140,12 @@ public class XsdDOMTypeProvider {
 						if (declaration == null) {
 							CMNode nodeDecl = modelAdapter.getModelQuery().getOrigin(node);
 							if (nodeDecl instanceof CMAttributeDeclaration) declaration =  (CMAttributeDeclaration) nodeDecl;
-						}							
+						}
 						if (declaration instanceof XSDAttributeUseAdapter) {
 							XSDAttributeUse au = (XSDAttributeUse)((XSDAttributeUseAdapter)declaration).getKey();
 							return new XsdTypeDefinition(au.getAttributeDeclaration().getTypeDefinition());
 						}
-					} else if (node instanceof Element) {						
+					} else if (node instanceof Element) {
 						CMElementDeclaration declaration = modelAdapter.getModelQuery().getCMElementDeclaration((Element)node);
 						if (declaration == null) {
 							CMNode nodeDecl = modelAdapter.getModelQuery().getOrigin(node);
@@ -160,53 +160,53 @@ public class XsdDOMTypeProvider {
 				}
 			});
 		}
-	
+
 		public class XsdTypeDefinition implements TypeDefinition {
-		
+
 			private final XSDTypeDefinition typeDefinition;
-		
+
 			public XsdTypeDefinition(XSDTypeDefinition typeDefinition) {
 				this.typeDefinition = typeDefinition;
 			}
-		
+
 			public String getNamespace() {
 				return typeDefinition.getTargetNamespace();
 			}
-		
+
 			public String getName() {
 				return getName();
 			}
-		
+
 			public boolean isComplexType() {
 				return typeDefinition instanceof XSDComplexTypeDefinition;
 			}
-		
+
 			public TypeDefinition getBaseType() {
 				XSDTypeDefinition base = null;
-				
+
 				if (typeDefinition instanceof XSDSimpleTypeDefinition) {
 					base = ((XSDSimpleTypeDefinition)typeDefinition).getBaseTypeDefinition();
 				} else if (typeDefinition instanceof XSDComplexTypeDefinition) {
 					base = ((XSDComplexTypeDefinition)typeDefinition).getBaseTypeDefinition();
 				}
-				
+
 				return (base != null) ? new XsdTypeDefinition(base) : null;
 			}
-		
+
 			public TypeDefinition getSimpleType() {
 				return null;
 			}
-					
+
 			public boolean derivedFromType(TypeDefinition ancestorType,
 					short derivationMethod) {
 				if (ancestorType == null) throw new NullPointerException("ancestorType must be non-null"); //!NON-NLS-1
-				
+
 				XSDTypeDefinition xsdAncestor = mapXsdType(ancestorType);
 				if (xsdAncestor == null) return false;
-	
+
 				return isDerivedFrom(xsdAncestor, this.typeDefinition, derivationMethod);
 			}
-	
+
 			private XSDTypeDefinition mapXsdType(TypeDefinition ancestorType) {
 				if (ancestorType instanceof XsdTypeDefinition) {
 					return ((XsdTypeDefinition)ancestorType).typeDefinition;
@@ -216,12 +216,12 @@ public class XsdDOMTypeProvider {
 					return lookupXSDType(ancestorType.getNamespace(), ancestorType.getName());
 				}
 			}
-		
+
 			public boolean derivedFrom(String namespace, String name,
 					short derivationMethod) {
 				XSDTypeDefinition ancestorType = lookupXSDType(namespace, name);
 				if (ancestorType == null) return false;
-				
+
 				return isDerivedFrom(ancestorType, this.typeDefinition, derivationMethod);
 			}
 
@@ -236,13 +236,13 @@ public class XsdDOMTypeProvider {
 			public Class getNativeType() {
 				return null;
 			}
-		
+
 		}
 	}
 
 	static boolean isDerivedFrom(XSDTypeDefinition base, XSDTypeDefinition derived, short derivationMethod) {
 		if (base == derived) return true;
-		
+
 		// TODO: Check flags
 		return false;
 	}
