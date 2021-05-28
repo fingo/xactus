@@ -1,7 +1,8 @@
-<html><body><p><font size="+1"><strong>Package org.eclipse.wst.xml.xpath2.api</strong></font></p><hr><h2><font size="-1"><strong>org.eclipse.wst.xml.xpath2.api</strong></font><br>
+<html><body><p><font size="+1"><strong>Package info.fingo.xactus.api</strong></font></p><hr><h2><font size="-1"><strong>info.fingo.xactus.api</strong></font><br>
                Class DynamicContext</h2><br><hr><pre>public class <strong>DynamicContext</strong>
-extends </pre>Interface for dynamic context. This covers the Dynamic Context as defined by the XPath2 specification, EXCEPT for 
- context item and size (handled in EvaluationContext)<p></p><hr><table width="100%" border="1"><tr cols="2" bgcolor="#CCCCFF"><td colspan="2" width="100%"><h2>Method Summary</h2></td></tr><tr valign="top"><td width="20%" align="right"><code>public org.eclipse.wst.xml.xpath2.api.CollationProvider</code></td><td width="" align="left"><code><a href="#method_getCollationProvider">getCollationProvider</a>()</code><br>
+extends </pre>Interface for dynamic context. This covers the Dynamic Context as defined by the XPath2 specification, EXCEPT for
+ context item and size (handled in EvaluationContext)<p></p><hr><table width="100%" border="1"><tr cols="2" bgcolor="#CCCCFF"><td colspan="2" width="100%"><h2>Method Summary</h2></td></tr><tr valign="top"><td width="20%" align="right"><code>public
+    info.fingo.xactus.api.CollationProvider</code></td><td width="" align="left"><code><a href="#method_getCollationProvider">getCollationProvider</a>()</code><br>
                &nbsp;&nbsp;&nbsp;&nbsp;
                Actual collation providers available for use dynamically. This could
  differ from the collations available statically, but would give
@@ -65,7 +66,8 @@ extends </pre>Interface for dynamic context. This covers the Dynamic Context as 
  does not have a timezone is used in a comparison or arithmetic
  operation. The implicit timezone is an implementation-defined value of
  type xs:dayTimeDuration. See [XML Schema] for the range of legal values
- of a timezone.]</td></tr><tr valign="top"><td width="20%" align="right"><code>public org.eclipse.wst.xml.xpath2.api.ResultSequence</code></td><td width="" align="left"><code><a href="#method_getVariable">getVariable</a>(javax.xml.namespace.QName name)</code><br>
+ of a timezone.]</td></tr><tr valign="top"><td width="20%" align="right"><code>public
+    info.fingo.xactus.api.ResultSequence</code></td><td width="" align="left"><code><a href="#method_getVariable">getVariable</a>(javax.xml.namespace.QName name)</code><br>
                &nbsp;&nbsp;&nbsp;&nbsp;
                Get variable.</td></tr><tr valign="top"><td width="20%" align="right"><code>public java.net.URI</code></td><td width="" align="left"><code><a href="#method_resolveUri">resolveUri</a>(java.lang.String uri)</code><br>
                &nbsp;&nbsp;&nbsp;&nbsp;
@@ -73,7 +75,7 @@ extends </pre>Interface for dynamic context. This covers the Dynamic Context as 
                   Methods Detail
                </h2></td></tr></table><h2><a name="method_getCollationProvider">getCollationProvider</a></h2><p><code>public org.eclipse.wst.xml.xpath2.api.CollationProvider <strong>getCollationProvider</strong>()</code></p><p>Actual collation providers available for use dynamically. This could
  differ from the collations available statically, but would give
- unexpected results.</p><h3>Returns</h3><p><code>org.eclipse.wst.xml.xpath2.api.CollationProvider</code></p><hr><h2><a name="method_getCollections">getCollections</a></h2><p><code>public java.util.Map <strong>getCollections</strong>()</code></p><p>[Definition: Available collections. This is a mapping of
+ unexpected results.</p><h3>Returns</h3><p><code>info.fingo.xactus.api.CollationProvider</code></p><hr><h2><a name="method_getCollections">getCollections</a></h2><p><code>public java.util.Map <strong>getCollections</strong>()</code></p><p>[Definition: Available collections. This is a mapping of
  strings onto sequences of nodes. The string represents the absolute URI
  of a resource. The sequence of nodes represents the result of the
  fn:collection function when that URI is supplied as the argument. ] The
@@ -121,4 +123,4 @@ extends </pre>Interface for dynamic context. This covers the Dynamic Context as 
  does not have a timezone is used in a comparison or arithmetic
  operation. The implicit timezone is an implementation-defined value of
  type xs:dayTimeDuration. See [XML Schema] for the range of legal values
- of a timezone.]</p><h3>Returns</h3><p><code>javax.xml.datatype.Duration</code> - current date time and implicit timezone.</p><hr><h2><a name="method_getVariable">getVariable</a></h2><p><code>public org.eclipse.wst.xml.xpath2.api.ResultSequence <strong>getVariable</strong>(javax.xml.namespace.QName name)</code></p><p>Get variable.</p><h3>Parameters</h3><p><code>name</code> - is the name of the variable.</p><h3>Returns</h3><p><code>org.eclipse.wst.xml.xpath2.api.ResultSequence</code> - variable.</p><hr><h2><a name="method_resolveUri">resolveUri</a></h2><p><code>public java.net.URI <strong>resolveUri</strong>(java.lang.String uri)</code></p><p>Resolve an URI</p><h3>Parameters</h3><p><code>uri</code> - is the possibly relative URI to resolve</p><h3>Returns</h3><p><code>java.net.URI</code> - the absolutized, resolved URI.</p><hr></body></html>
+ of a timezone.]</p><h3>Returns</h3><p><code>javax.xml.datatype.Duration</code> - current date time and implicit timezone.</p><hr><h2><a name="method_getVariable">getVariable</a></h2><p><code>public org.eclipse.wst.xml.xpath2.api.ResultSequence <strong>getVariable</strong>(javax.xml.namespace.QName name)</code></p><p>Get variable.</p><h3>Parameters</h3><p><code>name</code> - is the name of the variable.</p><h3>Returns</h3><p><code>info.fingo.xactus.api.ResultSequence</code> - variable.</p><hr><h2><a name="method_resolveUri">resolveUri</a></h2><p><code>public java.net.URI <strong>resolveUri</strong>(java.lang.String uri)</code></p><p>Resolve an URI</p><h3>Parameters</h3><p><code>uri</code> - is the possibly relative URI to resolve</p><h3>Returns</h3><p><code>java.net.URI</code> - the absolutized, resolved URI.</p><hr></body></html>

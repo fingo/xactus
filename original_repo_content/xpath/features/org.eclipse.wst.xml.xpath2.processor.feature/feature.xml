@@ -13,7 +13,7 @@
  -->
 
 <feature
-      id="org.eclipse.wst.xml.xpath2.processor.feature"
+      id="info.fingo.xactus.processor.feature"
       label="%featureName"
       version="2.0.302.qualifier"
       provider-name="%providerName"
@@ -39,7 +39,7 @@
    </requires>
 
    <plugin
-         id="org.eclipse.wst.xml.xpath2.processor"
+         id="info.fingo.xactus.processor"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -59,7 +59,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.wst.xml.xpath2.processor.doc.user"
+         id="info.fingo.xactus.processor.doc.user"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

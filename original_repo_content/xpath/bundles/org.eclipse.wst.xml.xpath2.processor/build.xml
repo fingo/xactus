@@ -10,13 +10,13 @@
  *
  * Contributors:
  *     David Carver - initial API and implementation
- *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars 
+ *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
  *     Jesper S Moller - bug 311480 - more debug info, better cleanup
  *******************************************************************************/
 
 -->
 <project name="proj1" default="generate_parser" basedir=".">
-    <property name="src" location="${basedir}"/>   
+    <property name="src" location="${basedir}"/>
     <property name="cupJar" location="${basedir}/lib/javacup10.jar"/>
     <description>
     Build File for Compiler Project
@@ -38,8 +38,8 @@
 	    	<arg value="-symbols"/>
 	    	<arg value="XpathSym"/>
 	    	<arg value="-package"/>
-	    	<arg value="org.eclipse.wst.xml.xpath2.processor.internal"/>
-	    	<arg value="-dump"/>    	
+	    	<arg value="info.fingo.xactus.processor.internal"/>
+	    	<arg value="-dump"/>
 	    </java>
 		<move tofile="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XPathCup.java" file="XPathCup.java"/>
 		<move tofile="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XpathSym.java" file="XpathSym.java"/>

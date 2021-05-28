@@ -6,13 +6,13 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     David Carver (STAR) - initial API and implementation
  *     Jin Mingjan - bug 262765 -  extractXPathExpression and getExpectedResults
  *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
  *     Jesper S Moller - bug 283214 - fix XML result serialization
- *     Jesper S Moller - bug 283404 - fixed locale  
+ *     Jesper S Moller - bug 283404 - fixed locale
  *     Jesper S Moller - bug 281159 - fix document URIs and also filter XML namespace
  *     Jesper S Moller - bug 275610 - Avoid big time and memory overhead for externals
  *     Jesper Steen Moeller - bug 282096 - make test harness handle all string encoding
@@ -60,32 +60,32 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.sse.core.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.IModelManager;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
-import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
-import org.eclipse.wst.xml.xpath2.processor.DOMLoader;
-import org.eclipse.wst.xml.xpath2.processor.DOMLoaderException;
-import org.eclipse.wst.xml.xpath2.processor.DefaultDynamicContext;
-import org.eclipse.wst.xml.xpath2.processor.DefaultEvaluator;
-import org.eclipse.wst.xml.xpath2.processor.DynamicContext;
-import org.eclipse.wst.xml.xpath2.processor.DynamicError;
-import org.eclipse.wst.xml.xpath2.processor.Evaluator;
-import org.eclipse.wst.xml.xpath2.processor.JFlexCupParser;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.StaticChecker;
-import org.eclipse.wst.xml.xpath2.processor.StaticError;
-import org.eclipse.wst.xml.xpath2.processor.StaticNameResolver;
-import org.eclipse.wst.xml.xpath2.processor.XPathParser;
-import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
-import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
-import org.eclipse.wst.xml.xpath2.processor.function.FnFunctionLibrary;
-import org.eclipse.wst.xml.xpath2.processor.function.XSCtrLibrary;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.DocType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.userdefined.UserDefinedCtrLibrary;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.xerces.XercesTypeModel;
+import info.fingo.xactus.api.typesystem.TypeModel;
+import info.fingo.xactus.processor.DOMLoader;
+import info.fingo.xactus.processor.DOMLoaderException;
+import info.fingo.xactus.processor.DefaultDynamicContext;
+import info.fingo.xactus.processor.DefaultEvaluator;
+import info.fingo.xactus.processor.DynamicContext;
+import info.fingo.xactus.processor.DynamicError;
+import info.fingo.xactus.processor.Evaluator;
+import info.fingo.xactus.processor.JFlexCupParser;
+import info.fingo.xactus.processor.ResultSequence;
+import info.fingo.xactus.processor.StaticChecker;
+import info.fingo.xactus.processor.StaticError;
+import info.fingo.xactus.processor.StaticNameResolver;
+import info.fingo.xactus.processor.XPathParser;
+import info.fingo.xactus.processor.XPathParserException;
+import info.fingo.xactus.processor.XercesLoader;
+import info.fingo.xactus.processor.ast.XPath;
+import info.fingo.xactus.processor.function.FnFunctionLibrary;
+import info.fingo.xactus.processor.function.XSCtrLibrary;
+import info.fingo.xactus.processor.internal.types.AnyType;
+import info.fingo.xactus.processor.internal.types.DocType;
+import info.fingo.xactus.processor.internal.types.NodeType;
+import info.fingo.xactus.processor.internal.types.QName;
+import info.fingo.xactus.processor.internal.types.XSBoolean;
+import info.fingo.xactus.processor.internal.types.userdefined.UserDefinedCtrLibrary;
+import info.fingo.xactus.processor.internal.types.xerces.XercesTypeModel;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -106,7 +106,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	IDOMModel model = null;
 
 	private DynamicContext dynamicContext = null;
-	
+
 	private static final String INPUT_CONTEXT = "input-context";
 	private static final String INPUT_CONTEXT1 = "input-context1";
 	private static final String INPUT_CONTEXT2 = "input-context2";
@@ -123,7 +123,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		bundle = Platform
 				.getBundle("org.w3c.xqts.testsuite");
 
-		
+
 		if (bundle == null) {
 			System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 		}
@@ -146,7 +146,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 			return url.openStream();
 		}
 	}
-	
+
 	protected InputSource getTestSource(String systemId) {
 		if (systemId.startsWith("http://")) {
 			try {
@@ -162,10 +162,10 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		}
 		return new InputSource(systemId);
 	}
-	
+
 	protected EntityResolver makeTestResolver() {
 		return new EntityResolver2() {
-			
+
 			public InputSource resolveEntity(String publicId, String systemId) {
 				if (systemId.startsWith("http://")) {
 					URL u;
@@ -192,24 +192,24 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
                     String systemId) throws SAXException, IOException {
 				return resolveEntity(publicId, systemId);
 			}
-			
+
 		};
 	}
-	
+
 	protected void loadDOMDocument(URL fileURL, Schema schema) throws IOException, DOMLoaderException {
 		InputStream is = testResolve(fileURL);
 		DOMLoader domloader = new XercesLoader(schema);
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
 		domDoc.setDocumentURI(fileURL.toString());
-		
+
 	}
-	
+
 	protected void load2DOMDocument(URL fileURL, URL fileURL2) throws IOException,
 			DOMLoaderException {
 		InputStream is = testResolve(fileURL);
 		InputStream is2 = testResolve(fileURL2);
-		
+
 		DOMLoader domloader = new XercesLoader();
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
@@ -218,7 +218,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		domDoc2.setDocumentURI(fileURL2.toString());
 		is.close();
 		is2.close();
-	}	
+	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -245,8 +245,8 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		domloader.set_validating(false);
 		domDoc = domloader.load(is);
 	}
-	
-	
+
+
 
 	private Schema getSchema(InputStream schemaIs) throws SAXException {
 		SchemaFactory sf = SchemaFactory
@@ -277,7 +277,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		DefaultDynamicContext dc = new DefaultDynamicContext(typeModel);
 //		DefaultDynamicContext dc = new DefaultDynamicContext(schema, domDoc);
 		dynamicContext = dc;
-		
+
 		dc.add_namespace("xs", "http://www.w3.org/2001/XMLSchema");
 		dc.add_namespace("xsd", "http://www.w3.org/2001/XMLSchema");
 		dc.add_namespace("fn", "http://www.w3.org/2005/xpath-functions");
@@ -292,7 +292,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	protected DefaultDynamicContext setupDynamicContext2(TypeModel model) {
 		DefaultDynamicContext dc = new DefaultDynamicContext(model);
 		dynamicContext = dc;
-		
+
 		dc.add_namespace("xs", "http://www.w3.org/2001/XMLSchema");
 		dc.add_namespace("xsd", "http://www.w3.org/2001/XMLSchema");
 		dc.add_namespace("fn", "http://www.w3.org/2005/xpath-functions");
@@ -305,7 +305,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	}
 
 	protected void addXPathDefaultNamespace(String uri) {
-	   dynamicContext.add_namespace(null, uri);	
+	   dynamicContext.add_namespace(null, uri);
 	}
 
 	protected XPath compileXPath(DynamicContext dc, String xpath) throws XPathParserException, StaticError {
@@ -316,17 +316,17 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		name_check.check(path);
 		return path;
 	}
-	
+
 	protected XPath compileXPath(DynamicContext dc, String xpath, boolean isRootlessAccess) throws XPathParserException, StaticError {
        XPathParser xpp = new JFlexCupParser();
-       XPath path = null; 
+       XPath path = null;
        if (isRootlessAccess) {
           path = xpp.parse(xpath, isRootlessAccess);
        }
        else {
-    	   path = xpp.parse(xpath); 
+    	   path = xpp.parse(xpath);
        }
-       
+
        StaticChecker name_check = new StaticNameResolver(dc);
        name_check.check(path);
        return path;
@@ -388,7 +388,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	public String unwrapResult(String expectedResult, String elemName) {
 		return trimSurrounding(expectedResult, "<"+ elemName + ">", "</" + elemName + ">");
 	}
-	
+
 	protected String getExpectedResult(String resultFile, String elemName) {
 		return unwrapResult(getExpectedResult(resultFile), elemName);
 	}
@@ -427,14 +427,14 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 			} else if (content.indexOf(INPUT_CONTEXT2) != -1) {
 				inputMap.put(INPUT_CONTEXT2, inputFile);
 			}
-			//	        
+			//
 			if (content.indexOf(DECLARE_NAMESPACE) != -1 || content.indexOf(IMPORT_SCHEMA_NAMESPACE) != -1) {
 				setupNamespace(content);
 			}
 			//
 			assertTrue(content.lastIndexOf(S_COMMENT2) != -1);// assert to get
 			xpath2Expr = content.substring(content.lastIndexOf(S_COMMENT2) + 2)
-					.trim();			
+					.trim();
 			xqreader.close();
 			isxq.close();
 		} catch (IOException e) {
@@ -467,7 +467,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		int indexOfStart = xpath2Expr.indexOf(str);
 		int indexOfEnd = xpath2Expr.indexOf(endStr);
 		if (indexOfStart >= 0 && indexOfEnd >= 0) {
-			xpath2Expr = xpath2Expr.substring(indexOfStart + str.length(), indexOfEnd).trim(); 
+			xpath2Expr = xpath2Expr.substring(indexOfStart + str.length(), indexOfEnd).trim();
 		}
 		return xpath2Expr;
 	}
@@ -486,7 +486,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	protected DynamicContext setupVariables(DynamicContext dc) {
 		dc.add_variable(new QName("x"));
 		dc.add_variable(new QName("var"));
-		
+
 		if (domDoc != null) {
 			AnyType docType = new DocType(domDoc, dc.getTypeModel(domDoc));
 			dc.set_variable(new QName("input-context1"), docType);
@@ -505,20 +505,20 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		Iterator iterator = rs.iterator();
 		while (iterator.hasNext()) {
 			AnyType anyType = (AnyType)iterator.next();
-			
+
 			actual = actual + anyType.string_value() + " ";
 		}
 
 		return actual.trim();
 	}
-	
+
 	protected String buildXMLResultString(ResultSequence rs) throws Exception {
         DOMImplementationLS domLS = (DOMImplementationLS) domDoc.getImplementation().getFeature("LS", "3.0");
         LSOutput outputText = domLS.createLSOutput();
         LSSerializer serializer = domLS.createLSSerializer();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputText.setByteStream(outputStream);
-        
+
 		String actual = new String();
 		Iterator iterator = rs.iterator();
 		boolean queueSpace = false;
@@ -542,16 +542,16 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		outputStream.close();
 		return actual.trim();
 	}
-	
+
 	protected String formatResultString(String resultFile) throws Exception {
 		DOMLoader domloader = new XercesLoader(null);
 		domloader.set_validating(false);
-		InputStream is = bundle.getEntry(resultFile).openStream();		
+		InputStream is = bundle.getEntry(resultFile).openStream();
 		Document resultDoc = domloader.load(is);
 
         DOMImplementationLS domLS = (DOMImplementationLS) resultDoc.getImplementation().getFeature("LS", "3.0");
         LSSerializer serializer = domLS.createLSSerializer();
-        
+
         String actual = serializer.writeToString(resultDoc.getDocumentElement());
 
 		actual = actual.replace("<?xml version=\"1.0\" encoding=\"UTF-16\"?>", "");
@@ -601,7 +601,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 	protected XSBoolean evaluateBoolXPath(String xpath, DynamicContext dc, Document doc) {
 		return  (XSBoolean) evaluateSimpleXPath(xpath, dc, doc, XSBoolean.class);
 	}
-		
+
 	protected AnyType evaluateSimpleXPath(String xpath, DynamicContext dc, Document doc, Class resultClass) {
 		XPath path;
 		try {
@@ -613,7 +613,7 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 		catch (StaticError e) {
 			throw new RuntimeException("Static error: " + e.getMessage(), e);
 		}
-	
+
 		Evaluator eval = new DefaultEvaluator(dc, doc);
 		ResultSequence rs;
 		try {
@@ -623,10 +623,10 @@ public class AbstractPsychoPathWTPTest extends XMLTestCase {
 			throw new RuntimeException("Evaluation error: " + e.getMessage(), e);
 		}
 		assertEquals("Expected single result from \'" + xpath + "\'", 1, rs.size());
-		
+
 		AnyType result = rs.first();
 		assertTrue("Exected XPath result instanceof class " + resultClass.getSimpleName() + " from \'" + xpath + "\', got " + result.getClass(), resultClass.isInstance(result));
-		
+
 		return result;
 	}
 

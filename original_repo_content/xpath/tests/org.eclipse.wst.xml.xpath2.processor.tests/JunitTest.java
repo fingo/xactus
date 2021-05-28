@@ -7,21 +7,21 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     David Carver - STAR - initial api and implementation bug 262765 
+ *     David Carver - STAR - initial api and implementation bug 262765
  *******************************************************************************/
-package org.eclipse.wst.xml.xpath2.processor.testsuite;
+package info.fingo.xactus.processor.testsuite;
 
 import java.net.URL;
 
 import org.apache.xerces.xs.XSModel;
-import org.eclipse.wst.xml.xpath2.processor.*;
-import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
-import org.eclipse.wst.xml.xpath2.processor.test.AbstractPsychoPathTest;
-      
-      
+import info.fingo.xactus.processor.*;
+import info.fingo.xactus.processor.ast.XPath;
+import info.fingo.xactus.processor.internal.types.AnyType;
+import info.fingo.xactus.processor.test.AbstractPsychoPathTest;
+
+
 public class CatalogTest extends AbstractPsychoPathTest {
 
    //Check variable name is used, if source is not "emptydoc".
@@ -32,7 +32,7 @@ public class CatalogTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -44,9 +44,9 @@ public class CatalogTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -56,7 +56,7 @@ public class CatalogTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -68,7 +68,7 @@ public class CatalogTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -80,9 +80,9 @@ public class CatalogTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -92,7 +92,7 @@ public class CatalogTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
@@ -104,7 +104,7 @@ public class CatalogTest extends AbstractPsychoPathTest {
       String expectedResult = getExpectedResult(resultFile);
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
-      
+
       // Get XML Schema Information for the Document
       XSModel schema = getGrammar();
 
@@ -116,9 +116,9 @@ public class CatalogTest extends AbstractPsychoPathTest {
           compileXPath(xpath);
           ResultSequence rs = evaluate(domDoc);
 
-         
+
           actual = buildResultString(rs);
-	
+
       } catch (XPathParserException ex) {
     	 actual = ex.code();
       } catch (StaticError ex) {
@@ -128,9 +128,8 @@ public class CatalogTest extends AbstractPsychoPathTest {
       }
 
       assertEquals("XPath Result Error " + xqFile + ":", expectedResult, actual);
-        
+
 
    }
 
 }
-      

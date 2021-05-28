@@ -91,7 +91,7 @@ tasks.named('test', Test).configure {
     it.filter {
         // exclude test suites
         it.excludeTestsMatching('*.All*Tests')
-        it.excludeTestsMatching('org.eclipse.wst.xml.xpath2.processor.testutil.legacytestsuiteadapter.PsychopathTestContext')
+        it.excludeTestsMatching('info.fingo.xactus.processor.testutil.legacytestsuiteadapter.PsychopathTestContext')
     }
 }
 

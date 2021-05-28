@@ -33,7 +33,7 @@
    </license>
    <requires>
       <import feature="org.eclipse.wst.xsl.feature" version="0.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.wst.xml.xpath2.processor.feature" version="0.0.0" match="greaterOrEqual"/>
+      <import feature="info.fingo.xactus.processor.feature" version="0.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

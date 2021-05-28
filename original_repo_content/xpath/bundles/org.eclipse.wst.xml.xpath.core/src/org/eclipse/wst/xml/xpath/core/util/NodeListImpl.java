@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.wst.xml.xpath.core.util;
 
-import org.eclipse.wst.xml.xpath2.api.Item;
-import org.eclipse.wst.xml.xpath2.api.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.NodeType;
+import info.fingo.xactus.api.Item;
+import info.fingo.xactus.api.ResultSequence;
+import info.fingo.xactus.processor.internal.types.NodeType;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -31,14 +31,14 @@ import org.w3c.dom.UserDataHandler;
 public class NodeListImpl implements NodeList {
 
 	ResultSequence rs;
-	
+
 	/**
 	 * @since 1.2
 	 */
 	public NodeListImpl(ResultSequence result) {
 		rs = result;
 	}
-	
+
 	public int getLength() {
 		return rs.size();
 	}
