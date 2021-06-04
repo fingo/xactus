@@ -25,4 +25,8 @@ public class XSQNameConstructor extends Function
 		return ResultBuffer.wrap( this.qname );
     }
 
+    public QName getQname()
+    {
+        return this.qname;
+    }
 }
