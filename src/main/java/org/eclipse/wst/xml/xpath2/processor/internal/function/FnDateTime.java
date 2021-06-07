@@ -90,12 +90,18 @@ public class FnDateTime extends Function {
 		XSDate param1 = (XSDate)arg1.first();
 		XSTime param2 = (XSTime)arg2.first();
 
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		cal.set(param1.year(), param1.month() - 1, param1.day());
-		cal.set(Calendar.HOUR_OF_DAY, param2.hour());
-		cal.set(Calendar.MINUTE, param2.minute());
-		cal.set(Calendar.SECOND, (new Double(Math.floor(param2.second())).intValue()));
-		cal.set(Calendar.MILLISECOND, 0);
+		String instantString = String.format(
+			"%s%04d-%02d-%02dT%02d:%02d:%02d",
+			param1.year() < 0 ? "-" : "",
+			Math.abs(param1.year()),
+			param1.month(),
+			param1.day(),
+			param2.hour(),
+			param2.minute(),
+			new Double(Math.floor(param2.second())).intValue());
+		XSDateTime xsDateTime = XSDateTime.parseDateTime(instantString);
+
+		Calendar cal = xsDateTime.calendar();
 
 		XSDuration dateTimeZone = param1.tz();
 		XSDuration timeTimeZone = param2.tz();
