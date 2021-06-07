@@ -436,7 +436,7 @@ Cloneable {
 		int ms = (int) (t[2] * 1000D - ((int) t[2] * 1000));
 
 		String instantString = String.format("%s%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-			d[0] < 0 ? "-" : "",
+			d[0] < -1 ? "-" : "",
 			d[0] < 0 ? -1 * d[0] - 1 : d[0],
 			d[1],
 			d[2],
