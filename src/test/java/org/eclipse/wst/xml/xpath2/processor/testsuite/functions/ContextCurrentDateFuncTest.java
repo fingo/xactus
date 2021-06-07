@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import javax.xml.datatype.Duration;
 
 import org.apache.xerces.xs.XSModel;
 import org.eclipse.wst.xml.xpath2.processor.DynamicError;
@@ -141,7 +142,7 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
    public void test_fn_current_date_4() throws Exception {
       String inputFile = "/TestSources/emptydoc.xml";
       String xqFile = "/Queries/XQuery/Functions/ContextFunc/ContextCurrentDateFunc/fn-current-date-4.xq";
-      Calendar cal = null;
+      Calendar cal = Calendar.getInstance();
 
       URL fileURL = bundle.getEntry(inputFile);
       loadDOMDocument(fileURL);
@@ -150,13 +151,13 @@ public class ContextCurrentDateFuncTest extends AbstractPsychoPathTest {
       XSModel schema = getGrammar();
 
       setupDynamicContext(schema);
-
+      Duration tz = dynamicContextBuilder.getTimezoneOffset();
+      tz.addTo(cal);
       String xpath = extractXPathExpression(xqFile, inputFile);
       String actual = null;
       try {
 	   	  compileXPath(xpath);
 
-	      cal = Calendar.getInstance();
 	      ResultSequence rs = evaluate(domDoc);
 
           actual = buildResultString(rs);
