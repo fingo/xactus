@@ -1,0 +1,8 @@
+<root>
+  <element_with_text_only_content>
+            text-only content with leading and trailing whitespaces
+  </element_with_text_only_content>
+  <element_with_mixed_content>
+    mixed content with <b>leading   </b> and <i> trailing </i> whitespaces
+  </element_with_mixed_content>
+</root>
