@@ -14,7 +14,7 @@ class XSDateTimeTest extends XPathExpressionTestBase {
     private static URL emptyDoc;
 
     @BeforeAll
-    static void setupBundle() {
+    static void setupDocument() {
         emptyDoc = Platform.getBundle("org.w3c.xqts.testsuite")
             .getEntry("/TestSources/emptydoc.xml");
     }

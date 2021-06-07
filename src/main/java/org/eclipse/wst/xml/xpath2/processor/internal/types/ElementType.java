@@ -131,25 +131,23 @@ public class ElementType extends NodeType {
 	 * @return String representation of the node supplied
 	 */
 	public static String textnode_strings(Node node) {
-		String result = "";
+		StringBuilder stringBuilder = new StringBuilder();
 
 		if (node.getNodeType() == Node.TEXT_NODE) {
-			Text tn = (Text) node;
-			result += tn.getData();
+			stringBuilder.append(((Text)node).getData());
 		}
 
-		NodeList nl = node.getChildNodes();
+		NodeList childNodes = node.getChildNodes();
 
-		StringBuffer buf = new StringBuffer(result);
 		// concatenate children
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node n = nl.item(i);
-
-			buf.append(textnode_strings(n));
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			stringBuilder.append(textnode_strings(childNodes.item(i)));
 		}
 
-		result = buf.toString();
-		return result;
+		String nodeText = stringBuilder.toString();
+
+		return node.getNodeType() == Node.ELEMENT_NODE ?
+			nodeText.trim() : nodeText;
 	}
 
 	/**

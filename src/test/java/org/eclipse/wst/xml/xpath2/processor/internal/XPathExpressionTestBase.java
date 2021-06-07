@@ -19,12 +19,9 @@ public class XPathExpressionTestBase {
     protected String executeXPathExpression(URL fileURL,
                                             String xPath,
                                             ComparisonType comparisonType) throws IOException {
-        context.loadInput(fileURL);
-        context.setupContext(null);
-        context.compile(xPath);
-        ResultSequence rs = context.evaluate();
-
-        return context.buildResult(rs, comparisonType);
+        return context.buildResult(
+            executeXPathExpression(fileURL, xPath),
+            comparisonType);
     }
 
     protected ResultSequence executeXPathExpression(URL fileURL,
