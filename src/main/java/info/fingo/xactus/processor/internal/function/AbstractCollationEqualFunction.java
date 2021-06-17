@@ -35,88 +35,84 @@ public abstract class AbstractCollationEqualFunction extends Function {
 
 	public AbstractCollationEqualFunction(QName name, int arity) {
 		super(name, arity);
-		// TODO Auto-generated constructor stub
 	}
 
 	public AbstractCollationEqualFunction(QName name, int min_arity,
-			int max_arity) {
+										  int max_arity) {
 		super(name, min_arity, max_arity);
 	}
 
-	protected static boolean hasValue(AnyType itema, AnyType itemb, DynamicContext context, String collationURI) throws DynamicError {
+	protected static boolean hasValue(AnyType itema,
+									  AnyType itemb,
+									  DynamicContext context,
+									  String collationURI) throws DynamicError {
+		return hasValue(itema, itemb, context, collationURI, false);
+	}
+
+	protected static boolean hasValue(AnyType itema,
+									  AnyType itemb,
+									  DynamicContext context,
+									  String collationURI,
+									  boolean nanEqualsNan) throws DynamicError {
 		if( !(itema instanceof CmpEq) && !(itema instanceof XSUntypedAtomic) )
 			return false;
 
-		if (isBoolean(itema, itemb)) {
-			XSBoolean boolat = (XSBoolean) itema;
-			if (boolat.eq(itemb, context)) {
-				return true;
-			}
-		} else if (isNumeric(itema, itemb)) {
-			NumericType numericat = (NumericType) itema;
-			if (numericat.eq(itemb, context)) {
-				return true;
-			}
-		} else if (isDuration(itema, itemb)) {
-			XSDuration durat = (XSDuration) itema;
-			if (durat.eq(itemb, context)) {
-				return true;
-			}
-		} else if (itema instanceof QName && itemb instanceof QName ) {
-			QName qname = (QName)itema;
-			if (qname.eq(itemb, context)) {
-				return true;
-			}
-		} else if (needsStringComparison(itema, itemb)) {
-			XSString xstr1 = new XSString(itema.getStringValue());
-			XSString xstr2 = new XSString( itemb.getStringValue() );
-			if( FnCompare.compare_string( collationURI, xstr1, xstr2,
-				context).equals(BigInteger.ZERO)) {
-				return true;
-			}
+		if (nanEqualsNan &&
+			itema instanceof org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable &&
+			itemb instanceof org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable &&
+			((org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable) itema).nan() &&
+			((org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable) itemb).nan()) {
+			return true;
 		}
+
+		if (isBoolean(itema, itemb)) {
+			return ((XSBoolean) itema).eq(itemb, context);
+		}
+
+		if (isNumeric(itema, itemb)) {
+			return ((NumericType) itema).eq(itemb, context);
+		}
+
+		if (isDuration(itema, itemb)) {
+			return ((XSDuration) itema).eq(itemb, context);
+		}
+
+		if (itema instanceof QName && itemb instanceof QName ) {
+			return ((QName)itema).eq(itemb, context);
+		}
+
+		if (needsStringComparison(itema, itemb)) {
+			return BigInteger.ZERO.equals(
+				FnCompare.compare_string(
+					collationURI,
+					new XSString(itema.getStringValue()),
+					new XSString(itemb.getStringValue()),
+					context));
+		}
+
 		return false;
 	}
 
-	protected static boolean hasValue(ResultBuffer rs, AnyAtomicType item,
-			DynamicContext context, String collationURI) throws DynamicError {
-		XSString itemStr = new XSString(item.getStringValue());
+	protected static boolean hasValue(ResultBuffer rs,
+									  AnyAtomicType item,
+									  DynamicContext context,
+									  String collationURI) throws DynamicError {
+		return hasValue(rs,item, context, collationURI, false);
+	}
 
+	protected static boolean hasValue(ResultBuffer rs,
+									  AnyAtomicType item,
+									  DynamicContext context,
+									  String collationURI,
+									  boolean nanEqualsNan) throws DynamicError {
 		for (Iterator i = rs.iterator(); i.hasNext();) {
 			AnyType at = (AnyType) i.next();
 
-			if( !(at instanceof CmpEq) && !(at instanceof XSUntypedAtomic) )
-				continue;
-
-			if (isBoolean(item, at)) {
-				XSBoolean boolat = (XSBoolean) at;
-				if (boolat.eq(item, context)) {
-					return true;
-				}
-			}
-
-			if (isNumeric(item, at)) {
-				NumericType numericat = (NumericType) at;
-				if (numericat.eq(item, context)) {
-					return true;
-				}
-			}
-
-			if (isDuration(item, at)) {
-				XSDuration durat = (XSDuration) at;
-				if (durat.eq(item, context)) {
-					return true;
-				}
-			}
-
-			if (needsStringComparison(item, at)) {
-				XSString xstr1 = new XSString(at.getStringValue());
-				if (FnCompare.compare_string(collationURI, xstr1, itemStr,
-						context).equals(BigInteger.ZERO)) {
-					return true;
-				}
+			if (hasValue(item, at, context, collationURI, nanEqualsNan)) {
+				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -133,7 +129,7 @@ public abstract class AbstractCollationEqualFunction extends Function {
 	}
 
 	protected static boolean needsStringComparison(AnyAtomicType item,
-			AnyType at) {
+												   AnyType at) {
 		AnyType anyItem = (AnyType) item;
 		return needsStringComparison(anyItem, at);
 	}
@@ -172,14 +168,6 @@ public abstract class AbstractCollationEqualFunction extends Function {
 			}
 		}
 
-		if (at instanceof XSString) {
-			return true;
-		}
-
-		if (at instanceof XSUntypedAtomic) {
-			return true;
-		}
-		return false;
+		return at instanceof XSString || at instanceof XSUntypedAtomic;
 	}
-
 }
