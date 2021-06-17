@@ -117,7 +117,7 @@ public class FnDistinctValues extends AbstractCollationEqualFunction {
 		if( !(item instanceof CmpEq) && !(item instanceof XSUntypedAtomic) )
 			return false;
 
-		return hasValue(rs, item, context, collationURI);
+		return hasValue(rs, item, context, collationURI, true);
 	}
 
 }

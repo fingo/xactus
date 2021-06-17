@@ -35,7 +35,7 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 /**
  * A representation of the Float datatype
  */
-public class XSFloat extends NumericType {
+public class XSFloat extends NumericType implements NaNable {
 
 	private static final String XS_FLOAT = "xs:float";
 	private Float _value;
@@ -119,6 +119,7 @@ public class XSFloat extends NumericType {
 	 *
 	 * @return True is this datatype represents NaN. False otherwise
 	 */
+	@Override
 	public boolean nan() {
 		return Float.isNaN(_value.floatValue());
 	}
