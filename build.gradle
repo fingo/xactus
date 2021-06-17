@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 plugins {
     id 'java-library'
     id 'signing'
@@ -20,7 +22,9 @@ extensions.configure(JavaPluginExtension) { javaPluginExtension ->
 
 interface Constants {
     def CODE_GENERATION_TASK_GROUP = 'code generation'
-    def CODE_GENERATION_TARGET_DIRECTORY = 'org/eclipse/wst/xml/xpath2/processor/internal'
+    // this is to improve code searching
+    def CODE_GENERATION_TARGET_DIRECTORY =
+            'info.fingo.xactus.processor.internal'.replaceAll(Pattern.quote('.'), '/')
     def PGP_SECRET_KEY_PROPERTY_KEY = "pgpSecretKey"
     def PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY = "pgpSecretKeyPassword"
     def PGP_KEY_ID_PROPERTY_KEY = "pgpKeyId"
