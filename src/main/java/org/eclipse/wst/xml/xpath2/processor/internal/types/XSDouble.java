@@ -34,7 +34,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLi
 /**
  * A representation of the Double datatype
  */
-public class XSDouble extends NumericType {
+public class XSDouble extends NumericType implements NaNable {
 
 	private static final String XS_DOUBLE = "xs:double";
 	private Double _value;
@@ -200,6 +200,7 @@ public class XSDouble extends NumericType {
 	 *
 	 * @return True if this XSDouble represents NaN. False otherwise.
 	 */
+	@Override
 	public boolean nan() {
 		return Double.isNaN(_value.doubleValue());
 	}
