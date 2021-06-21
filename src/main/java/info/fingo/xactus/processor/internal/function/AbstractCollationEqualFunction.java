@@ -13,6 +13,7 @@
  *******************************************************************************/
 package info.fingo.xactus.processor.internal.function;
 
+import info.fingo.xactus.processor.internal.types.NaNable;
 import java.math.BigInteger;
 import java.util.Iterator;
 
@@ -58,10 +59,10 @@ public abstract class AbstractCollationEqualFunction extends Function {
 			return false;
 
 		if (nanEqualsNan &&
-			itema instanceof org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable &&
-			itemb instanceof org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable &&
-			((org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable) itema).nan() &&
-			((org.eclipse.wst.xml.xpath2.processor.internal.types.NaNable) itemb).nan()) {
+			itema instanceof NaNable &&
+			itemb instanceof NaNable &&
+			((NaNable) itema).nan() &&
+			((NaNable) itemb).nan()) {
 			return true;
 		}
 
