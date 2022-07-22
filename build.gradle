@@ -187,7 +187,7 @@ tasks.named('javadoc', Javadoc).configure {
 
 dependencies {
     implementation 'xerces:xercesImpl:2.12.2'
-    implementation 'com.ibm.icu:icu4j:68.2'
+    implementation 'com.ibm.icu:icu4j:71.1'
     jcup 'edu.princeton.cup:java-cup:10k'
     jflex 'de.jflex:jflex:1.4.3'
 
