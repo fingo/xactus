@@ -73,7 +73,7 @@ def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
         jCupExec.group Constants.CODE_GENERATION_TASK_GROUP
 
         jCupExec.classpath(configurations.named('jcup'))
-        jCupExec.mainClass.set  'java_cup.Main'
+        jCupExec.mainClass.set 'java_cup.Main'
 
         jCupExec.workingDir = classesDestinationDirectory
 
@@ -154,7 +154,7 @@ extensions.configure(PublishingExtension) { publishingExtension ->
                 mavenPom.url = 'https://github.com/fingo/xactus'
                 mavenPom.description = 'Open-source XPath 2.0 processing library based on Eclipse\'s XPath 2.0 implementation from the Eclipse Web Tools Platform Project.'
                 mavenPom.developers { mavenPomDeveloperSpec ->
-                    mavenPomDeveloperSpec.developer{ mavenPomDeveloper ->
+                    mavenPomDeveloperSpec.developer { mavenPomDeveloper ->
                         mavenPomDeveloper.name = 'Janusz Wiśniowski'
                         mavenPomDeveloper.email = 'janusz@januszwisniowski.it'
                     }
@@ -191,7 +191,7 @@ extensions.configure(SigningExtension) {
 
 tasks.named('javadoc', Javadoc).configure {
     it.failOnError = false
-    it.options.encoding = "UTF-8"
+    it.options.encoding = 'UTF-8'
 }
 
 tasks.withType(JavaCompile).configureEach {
