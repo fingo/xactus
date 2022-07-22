@@ -53,12 +53,6 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 
         jFlexExec.args '-d', classesDestinationDirectory.absolutePath, inputFile.absolutePath
 
-        jFlexExec.mainClass.set 'jflex.Main'
-
-        jFlexExec.javaLauncher.set javaToolchainsService.launcherFor {
-            it.languageVersion.set(JavaLanguageVersion.of(11))
-        }
-
         jFlexExec.doFirst {
             classesDestinationDirectory.mkdirs()
         }
@@ -206,7 +200,7 @@ dependencies {
     implementation 'xerces:xercesImpl:2.12.2'
     implementation 'com.ibm.icu:icu4j:71.1'
     jcup 'edu.princeton.cup:java-cup:10k'
-    jflex 'de.jflex:jflex:1.8.2'
+    jflex 'de.jflex:jflex:1.4.3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
