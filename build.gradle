@@ -4,7 +4,7 @@ plugins {
     id 'java-library'
     id 'signing'
     id 'maven-publish'
-    id 'pl.allegro.tech.build.axion-release' version '1.13.2'
+    id 'pl.allegro.tech.build.axion-release' version '1.13.14'
 }
 
 repositories {
