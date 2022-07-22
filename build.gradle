@@ -35,8 +35,6 @@ interface Constants {
     def OSSRH_SNAPSHOT_REPO_URL = 'https://oss.sonatype.org/content/repositories/snapshots/'
 }
 
-JavaToolchainService javaToolchainsService = project.extensions.getByType(JavaToolchainService)
-
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
         def outputDirectory = "$buildDir/jflex-generated"
