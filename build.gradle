@@ -35,6 +35,8 @@ interface Constants {
     def OSSRH_SNAPSHOT_REPO_URL = 'https://oss.sonatype.org/content/repositories/snapshots/'
 }
 
+JavaToolchainService javaToolchainsService = project.extensions.getByType(JavaToolchainService)
+
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
         def outputDirectory = "$buildDir/jflex-generated"
@@ -51,6 +53,12 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 
         jFlexExec.args '-d', classesDestinationDirectory.absolutePath, inputFile.absolutePath
 
+        jFlexExec.mainClass.set 'jflex.Main'
+
+        jFlexExec.javaLauncher.set javaToolchainsService.launcherFor {
+            it.languageVersion.set(JavaLanguageVersion.of(11))
+        }
+
         jFlexExec.doFirst {
             classesDestinationDirectory.mkdirs()
         }
@@ -65,7 +73,7 @@ def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
         jCupExec.group Constants.CODE_GENERATION_TASK_GROUP
 
         jCupExec.classpath(configurations.named('jcup'))
-        jCupExec.main = 'java_cup.Main'
+        jCupExec.mainClass.set  'java_cup.Main'
 
         jCupExec.workingDir = classesDestinationDirectory
 
@@ -183,13 +191,22 @@ extensions.configure(SigningExtension) {
 
 tasks.named('javadoc', Javadoc).configure {
     it.failOnError = false
+    it.options.encoding = "UTF-8"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.with {
+        it.encoding = 'UTF-8'
+        it.compilerArgs << '-Xlint'
+        it.deprecation = true
+    }
 }
 
 dependencies {
     implementation 'xerces:xercesImpl:2.12.2'
     implementation 'com.ibm.icu:icu4j:71.1'
     jcup 'edu.princeton.cup:java-cup:10k'
-    jflex 'de.jflex:jflex:1.4.3'
+    jflex 'de.jflex:jflex:1.8.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
@@ -200,6 +217,7 @@ dependencies {
     testImplementation 'xalan:serializer:2.7.2'
 }
 
+@SuppressWarnings('GrMethodMayBeStatic')
 def getDeploymentVersion() {
     scmVersion.version
 }
