@@ -4,7 +4,7 @@ plugins {
     id 'java-library'
     id 'signing'
     id 'maven-publish'
-    id 'pl.allegro.tech.build.axion-release' version '1.13.14'
+    alias(libs.plugins.axion)
 }
 
 repositories {
@@ -195,20 +195,17 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-    implementation 'xerces:xercesImpl:2.12.2'
-    implementation 'com.ibm.icu:icu4j:71.1'
-    jcup 'edu.princeton.cup:java-cup:10k'
-    // Unfortunately newer JFlex versions make tests fail - to be investigated (XPTH-78)
-    //noinspection GradlePackageUpdate
-    jflex 'de.jflex:jflex:1.4.3'
+    implementation libs.xerces
+    implementation libs.icu4j
+    jcup libs.jcup
+    jflex libs.jflex
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
-    testImplementation 'org.xmlunit:xmlunit-core:2.9.0'
-    testImplementation 'org.xmlunit:xmlunit-matchers:2.9.0'
-    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation testLibs.bundles.jupiter
+    testImplementation testLibs.bundles.xmlunit
+
+    testImplementation testLibs.bundles.assertj
     // LSSerializerImpl used to serialize ResultSequence to XML - see AbstractPsychoPathTest#buildXMLResultString
-    testImplementation 'xalan:serializer:2.7.2'
+    testImplementation libs.xalan.serializer
 }
 
 @SuppressWarnings('GrMethodMayBeStatic')
