@@ -1,1 +1,32 @@
 rootProject.name = 'xactus'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.13.14')
+
+            library('xerces', 'xerces', 'xercesImpl').version('2.12.2')
+            library('icu4j', 'com.ibm.icu', 'icu4j').version('71.1')
+            // Unfortunately newer JFlex versions make tests fail - to be investigated (XPTH-78)
+            library('jflex', 'de.jflex', 'jflex').version('1.4.3')
+            library('jcup', 'edu.princeton.cup', 'java-cup').version('10k')
+            library('xalan-serializer', 'xalan', 'serializer').version('2.7.2')
+        }
+
+        testLibs {
+            version('jupiter', '5.8.2')
+            library('junit-jupiter', 'org.junit.jupiter', 'junit-jupiter').versionRef('jupiter')
+            library('junit-vintage-engine', 'org.junit.vintage', 'junit-vintage-engine').versionRef('jupiter')
+            bundle('jupiter', ['junit-jupiter', 'junit-vintage-engine'])
+
+            version('xmlunit', '2.9.0')
+            library('xmlunit-core', 'org.xmlunit', 'xmlunit-core').versionRef('xmlunit')
+            library('xmlunit-matchers', 'org.xmlunit', 'xmlunit-matchers').versionRef('xmlunit')
+            bundle('xmlunit', ['xmlunit-core', 'xmlunit-matchers'])
+
+            version('assertj', '3.23.1')
+            library('assertj-core', 'org.assertj', 'assertj-core').versionRef('assertj')
+            bundle('assertj', ['assertj-core'])
+        }
+    }
+}
