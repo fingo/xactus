@@ -209,5 +209,5 @@ NCName		= ( {Letter} | "_") ( {NCNameChar} )*
 			  if(commentLevel == 0)
 		          	yybegin(YYINITIAL);
 			}
-	.|\n		{ /* ignore */ }
+	[^]		{ /* ignore */ }
 }
