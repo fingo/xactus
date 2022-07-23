@@ -8,7 +8,7 @@ dependencyResolutionManagement {
             library('xerces', 'xerces', 'xercesImpl').version('2.12.2')
             library('icu4j', 'com.ibm.icu', 'icu4j').version('71.1')
             // Unfortunately newer JFlex versions make tests fail - to be investigated (XPTH-78)
-            library('jflex', 'de.jflex', 'jflex').version('1.4.3')
+            library('jflex', 'de.jflex', 'jflex').version('1.8.2')
             library('jcup', 'edu.princeton.cup', 'java-cup').version('10k')
             library('xalan-serializer', 'xalan', 'serializer').version('2.7.2')
         }
