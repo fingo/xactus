@@ -51,6 +51,7 @@ public class XPathFlexTest extends TestCase {
 	public void testSimpleIdentifiersInSpace() throws IOException {
 		assertEquals("myElement", tokenizeFirst(" myElement ").value);
 	}
+
 	public void testUTF16_SurogatePair_valid() throws IOException {
 		// SPEAK-NO-EVIL MONKEY is a valid XML name
 		// Unicode: U+1F64A (U+D83D U+DE4A)
@@ -59,17 +60,4 @@ public class XPathFlexTest extends TestCase {
 
 		assertEquals("monkey\uD83D\uDE4Ame", symbol.value);
 	}
-
-	public void testUTF16_SurogatePair_invalid() throws IOException {
-		// Lets get the surrogate order wrong
-		try {
-			XPathFlex lexer = new XPathFlex(new StringReader("\uDE4A\uD83D"));
-			lexer.next_token();
-			fail("Should have gotten an exception");
-		}
-		catch (JFlexError e) {
-			// hooray!
-		}
-	}
-
 }

@@ -15,6 +15,8 @@
 package info.fingo.xactus.processor.internal;
 
 import java.io.StringReader;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 
 import java_cup.runtime.Symbol;
 
@@ -28,6 +30,21 @@ import info.fingo.xactus.processor.internal.ast.XPathExpr;
  */
 @SuppressWarnings("deprecation")
 public class InternalXPathParser {
+	private static boolean containsInvalidSurrogatePairs(String toTest) {
+		CharacterIterator iterator = new StringCharacterIterator(toTest);
+
+		for (char ch = iterator.first(); ch != CharacterIterator.DONE; ch = iterator.next()) {
+			if (Character.isLowSurrogate(ch)) {
+				return true;
+			}
+
+			if (Character.isHighSurrogate(ch) && !Character.isLowSurrogate(iterator.next())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/**
 	 * Tries to parse the xpath expression
@@ -36,11 +53,15 @@ public class InternalXPathParser {
 	 *            is the xpath string.
 	 * @param isRootlessAccess
 	 *            if 'true' then PsychoPath engine can't parse xpath expressions starting with / or //.
-	 * @throws XPathParserException.
+	 * @throws XPathParserException
+	 *            when parsing exception occurs.
 	 * @return the xpath value.
 	 * @since 2.0
 	 */
 	public XPath parse(String xpath, boolean isRootlessAccess) throws XPathParserException {
+		if (containsInvalidSurrogatePairs(xpath)) {
+			throw new XPathParserException("Invalid surrogate pairs detected in XPath expression.");
+		}
 
 		XPathFlex lexer = new XPathFlex(new StringReader(xpath));
 
@@ -50,6 +71,7 @@ public class InternalXPathParser {
 			XPath xPath2 = (XPath) res.value;
 			if (isRootlessAccess) {
 				xPath2.accept(new DefaultVisitor() {
+					@Override
 					public Object visit(XPathExpr e) {
 						if (e.slashes() > 0) {
 							throw new XPathParserException("Access to root node is not allowed (set by caller)");
