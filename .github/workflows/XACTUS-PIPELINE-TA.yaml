@@ -12,6 +12,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
+          cache: maven
           java-version: '8'
           java-package: jdk
           architecture: x64
@@ -38,6 +39,7 @@ jobs:
         if: always()
         with:
           junit_files: build/test-results/**/*.xml
+          check_name: Test results summary
 
       - name: Archive Gradle HTML test report as ZIP artifact
         uses: actions/upload-artifact@v3
@@ -64,7 +66,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: JUnit tests
+          name: Test results report
           path: build/test-results/**/*.xml
           reporter: java-junit
           fail-on-error: true
