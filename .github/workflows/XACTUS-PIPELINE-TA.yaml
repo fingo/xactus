@@ -3,7 +3,7 @@ on: [ push, workflow_dispatch ]
 
 jobs:
   build_test_publish:
-    name: Build/Test/Publish
+    name: Build // Test // Publish
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
