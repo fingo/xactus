@@ -27,6 +27,10 @@ dependencyResolutionManagement {
             version('assertj', '3.23.1')
             library('assertj-core', 'org.assertj', 'assertj-core').versionRef('assertj')
             bundle('assertj', ['assertj-core'])
+
+            version('mockito', '4.11.0')
+            library('mockito-core', 'org.mockito', 'mockito-core').versionRef('mockito')
+            bundle('mockito', ['mockito-core'])
         }
     }
 }
