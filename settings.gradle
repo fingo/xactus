@@ -3,7 +3,7 @@ rootProject.name = 'xactus'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.13.14')
+            plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.14.3')
 
             library('xerces', 'xerces', 'xercesImpl').version('2.12.2')
             library('icu4j', 'com.ibm.icu', 'icu4j').version('71.1')
