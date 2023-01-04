@@ -1,2 +1,0 @@
-<!ELEMENT main (notmain)+>
-<!ELEMENT notmain (#PCDATA)>
