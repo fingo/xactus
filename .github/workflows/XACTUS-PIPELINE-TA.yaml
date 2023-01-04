@@ -63,7 +63,7 @@ jobs:
           reporter: java-junit
 
       - name: Publish to Maven Central
-        run: "./gradlew publishMavenJavaPublicationToOSSRHRepository"
+        run: "./gradlew -i publishMavenJavaPublicationToOSSRHRepository"
         if: success() && (github.ref == 'refs/heads/master' || startsWith('refs/tags/', github.ref))
         env:
           ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
