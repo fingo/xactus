@@ -32,7 +32,7 @@ interface Constants {
     def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "ossrhPassword"
     def PUBLICATION_NAME = 'mavenJava'
     def OSSRH_RELEASES_REPO_URL = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-    def OSSRH_SNAPSHOT_REPO_URL = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    def OSSRH_SNAPSHOT_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
 }
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
