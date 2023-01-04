@@ -1,1 +1,0 @@
-<c:out value="<%= Thing.class %>"></c:out>
