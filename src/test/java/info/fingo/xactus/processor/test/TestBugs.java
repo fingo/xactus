@@ -82,6 +82,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import info.fingo.xactus.processor.internal.types.*;
+import info.fingo.xactus.processor.util.ResultSequenceUtil;
 import org.apache.xerces.xs.XSModel;
 import info.fingo.xactus.processor.testutil.bundle.Platform;
 import info.fingo.xactus.api.CollationProvider;
@@ -98,15 +100,9 @@ import info.fingo.xactus.processor.ResultSequenceFactory;
 import info.fingo.xactus.processor.StaticError;
 import info.fingo.xactus.processor.XPathParserException;
 import info.fingo.xactus.processor.function.FnFunctionLibrary;
-import info.fingo.xactus.processor.internal.types.NumericType;
-import info.fingo.xactus.processor.internal.types.XSBoolean;
-import info.fingo.xactus.processor.internal.types.XSDecimal;
-import info.fingo.xactus.processor.internal.types.XSDouble;
-import info.fingo.xactus.processor.internal.types.XSDuration;
-import info.fingo.xactus.processor.internal.types.XSFloat;
-import info.fingo.xactus.processor.internal.types.XSInteger;
-import info.fingo.xactus.processor.internal.types.XSString;
 import info.fingo.xactus.processor.testutil.bundle.Bundle;
+import org.mockito.Mockito;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class TestBugs extends AbstractPsychoPathTest {
@@ -2775,6 +2771,49 @@ public class TestBugs extends AbstractPsychoPathTest {
 		rs = evaluate(domDoc);
 		actual = ((XSBoolean) rs.first()).getStringValue();
 		assertEquals("true", actual);
+	}
+
+	public void testSelectorFromRoot() throws Exception {
+		URL fileURL = bundle.getEntry("/bugTestFiles/bugSelectorFromRoot.xml");
+		loadDOMDocument(fileURL);
+
+		// Get XML Schema Information for the Document
+		XSModel schema = getGrammar();
+
+		setupDynamicContext(schema);
+
+		String xpath = "/Sample/Person/Name";
+		compileXPath(xpath);
+
+		// test a - on Document
+		ResultSequence rs = evaluate(domDoc);
+
+		ElementType result = (ElementType) rs.first();
+		assertNotNull(result);
+
+		String actual = result.getStringValue();
+		assertEquals("John", actual);
+
+		// test b - on root Element
+		Element root = domDoc.getDocumentElement();
+		rs = ResultSequenceUtil.newToOld(newXPath.evaluate(dynamicContextBuilder, new Object[]{root}));
+
+		result = (ElementType) rs.first();
+		assertNotNull(result);
+
+		actual = result.getStringValue();
+		assertEquals("John", actual);
+
+		// test c - on root Element which parent node is null
+		Element spyRoot = Mockito.spy(domDoc.getDocumentElement());
+		Mockito.when(spyRoot.getParentNode()).thenReturn(null);
+		rs = ResultSequenceUtil.newToOld(newXPath.evaluate(dynamicContextBuilder, new Object[]{spyRoot}));
+
+		result = (ElementType) rs.first();
+		assertNotNull(result);
+
+		actual = result.getStringValue();
+		assertEquals("John", actual);
 	}
 
 	/*   "added for future use"

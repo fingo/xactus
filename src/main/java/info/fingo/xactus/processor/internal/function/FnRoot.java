@@ -115,8 +115,10 @@ public class FnRoot extends Function {
 			}
 
 			// found it
-			if (newroot == null)
+			if (newroot == null) {
+				root = root.getOwnerDocument();
 				break;
+			}
 
 			root = newroot;
 		}

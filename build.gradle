@@ -203,6 +203,7 @@ dependencies {
 
     testImplementation testLibs.bundles.jupiter
     testImplementation testLibs.bundles.xmlunit
+    testImplementation testLibs.bundles.mockito
 
     testImplementation testLibs.bundles.assertj
     // LSSerializerImpl used to serialize ResultSequence to XML - see AbstractPsychoPathTest#buildXMLResultString
