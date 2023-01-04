@@ -34,7 +34,7 @@ jobs:
 
       - name: Output link to HTML report as annotation
         if: always()
-        run: "echo '::error file=README.md,line=1,col=1::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
+        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
 
       - name: Archive test results as annotations
         uses: EnricoMi/publish-unit-test-result-action@v2
