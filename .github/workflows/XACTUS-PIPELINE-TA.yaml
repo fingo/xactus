@@ -3,6 +3,7 @@ on: [ push, workflow_dispatch ]
 
 jobs:
   build_test_publish:
+    name: Build/Test/Publish
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -32,10 +33,6 @@ jobs:
           ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-      - name: Output link to HTML report as annotation
-        if: always()
-        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
-
       - name: Archive test results as annotations
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
@@ -58,6 +55,19 @@ jobs:
           publish_dir: ./build/reports/tests/test
           destination_dir: "${{ github.run_number }}"
           keep_files: true
+
+      - name: Output link to HTML report as annotation
+        if: always()
+        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
+
+      - name: Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: JUnit tests
+          path: build/test-results/**/*.xml
+          reporter: java-junit
+          fail-on-error: true
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
