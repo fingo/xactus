@@ -2,9 +2,11 @@ name: Test and release a package
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, releases/** ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, releases/** ]
+  pull_request_target:
+    branches: [ master, releases/** ]
 
 jobs:
   build_test_publish:
