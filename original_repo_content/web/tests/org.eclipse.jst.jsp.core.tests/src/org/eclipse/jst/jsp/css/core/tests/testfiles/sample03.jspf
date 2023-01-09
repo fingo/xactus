@@ -1,6 +1,0 @@
-
-
-.hoge {
-	color : ${XXX};
-	border-color : <%= YYY %>;
-}

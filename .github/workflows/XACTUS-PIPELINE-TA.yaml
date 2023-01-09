@@ -1,69 +1,82 @@
 name: Test and release a package
-on: [push, workflow_dispatch]
+on: [ push, workflow_dispatch ]
 
 jobs:
-    build_test_publish:
-        runs-on: ubuntu-20.04
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v2
+  build_test_publish:
+    name: Build // Test // Publish
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-            - name: Setup Java
-              uses: actions/setup-java@v1
-              with:
-                  java-version: '8.0.275'
-                  java-package: jdk
-                  architecture: x64
-                  server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-                  server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
-                  server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
-                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-                  gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          cache: gradle
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+          server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
+          server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
 
-            - name: Unit tests
-              run: "./gradlew test"
+      - name: Unit tests
+        run: "./gradlew test"
 
-            - name: Publish to Maven Central
-              run: "./gradlew publishMavenJavaPublicationToOSSRHRepository"
-              env:
-                ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
-                ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
-                ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-                ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Publish test results summary
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: build/test-results/**/*.xml
+          check_name: Test results summary
 
-            - name: Output link to HTML report as annotation
-              if: always()
-              run: "echo '::error file=README.md,line=1,col=1::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
+      - name: Create HTML test report artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: tests-results
+          path: build/reports/tests/test
 
-            - name: Archive test results as annotations
-              uses: EnricoMi/publish-unit-test-result-action@v1
-              if: always()
-              with:
-                  files: build/test-results/**/*.xml
+      - name: Publish HTML test report to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          external_repository: fingo/results-xactus
+          deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
+          publish_dir: ./build/reports/tests/test
+          destination_dir: "${{ github.run_number }}"
+          keep_files: true
 
-            - name: Archive Gradle HTML test report as ZIP artifact
-              uses: actions/upload-artifact@v2
-              if: always()
-              with:
-                  name: tests-results
-                  path: build/reports/tests/test
+      - name: Log link to the test report on Github Pages
+        if: always()
+        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
 
-            - name: Archive Gradle HTML test report as Github Page
-              uses: peaceiris/actions-gh-pages@v3
-              if: always()
-              with:
-                  external_repository: fingo/results-xactus
-                  deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
-                  publish_dir: ./build/reports/tests/test
-                  destination_dir: "${{ github.run_number }}"
-                  keep_files: true
+      - name: Test results report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Test results report
+          path: build/test-results/**/*.xml
+          reporter: java-junit
 
-            - name: Slack Notification
-              uses: rtCamp/action-slack-notify@v2
-              if: always()
-              env:
-                  SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
-                  SLACK_COLOR: "${{job.status}}"
-                  SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                  SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html"
-                  SLACK_USERNAME: "Github"
+      - name: Publish to Maven Central
+        run: "./gradlew -i publishMavenJavaPublicationToOSSRHRepository"
+        if: success() && (github.ref == 'refs/heads/master' || startsWith('refs/tags/', github.ref))
+        env:
+          ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
+          ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
+          SLACK_COLOR: "${{job.status}}"
+          SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          SLACK_FOOTER: "https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html"
+          SLACK_USERNAME: "Github"

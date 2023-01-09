@@ -145,7 +145,7 @@ extensions.configure(PublishingExtension) { publishingExtension ->
             mavenPublication.pom { mavenPom ->
                 mavenPom.name = 'Xactus'
                 mavenPom.url = 'https://github.com/fingo/xactus'
-                mavenPom.description = 'Open-source XPath 2.0 processing library based on Eclipse\'s XPath 2.0 implementation from the Eclipse Web Tools Platform Project.'
+                mavenPom.description = 'Open-source XPath 2.0 processing library based on Eclipse\'s implementation from the Eclipse Web Tools Platform project.'
                 mavenPom.developers { mavenPomDeveloperSpec ->
                     mavenPomDeveloperSpec.developer { mavenPomDeveloper ->
                         mavenPomDeveloper.name = 'Janusz Wiśniowski'
