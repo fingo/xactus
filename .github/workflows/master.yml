@@ -37,9 +37,7 @@ jobs:
     name: Run tests
     needs: compile
     runs-on: ubuntu-latest
-    outputs:
-      test_report_url: https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html
-      # TODO testResultsArtifactUrl: ?
+    # TODO testResultsArtifactUrl: ?
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,40 +49,66 @@ jobs:
           architecture: x64
           distribution: 'temurin'
       - name: Run tests
+        continue-on-error: true
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
       - name: Create JUnit HTML test report artifact
         uses: actions/upload-artifact@v3
-        if: always()
         with:
-          name: JUnit HTML test results
+          name: junit-html-test-report
           path: build/reports/tests/test
       - name: Create JUnit XML test report artifact
         uses: actions/upload-artifact@v3
-        if: always()
         with:
-          name: JUnit XML test results
+          name: junit-xml-test-report
           path: build/test-results/
+
+  publish_test_results_summary:
+    name: Publish test results summary
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download XML test results artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: junit-xml-test-report
+          path: junit-xml-test-report
       - name: Publish test results summary
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
         with:
-          junit_files: build/test-results/**/*.xml
+          junit_files: junit-xml-test-report/**/*.xml
           check_name: Test results summary
+
+  publish_html_test_report:
+    name: Publish HTML test report
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      test_report_url: ${{ steps.generate_report_url.outputs.test_report_url }}
+    steps:
+      - name: Download XML test results artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: junit-html-test-report
+          path: junit-html-test-report
+      - name: Generate report path
+        id: generate_report_path
+        run: echo "test_report_path=test-results/${{ github.run_id }}" >> $GITHUB_OUTPUT
       - name: Publish HTML test report to Github Pages
-        id: publish_test_results
         uses: peaceiris/actions-gh-pages@v3
         if: always()
         with:
           external_repository: fingo/results-xactus
           deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
-          publish_dir: ./build/reports/tests/test
-          destination_dir: "${{ github.run_number }}"
+          publish_dir: ./junit-html-test-report
+          destination_dir: ${{ steps.generate_report_path.outputs.test_report_path }}
           keep_files: true
-      - name: Log link to the test report on Github Pages
-        if: always()
-        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
+      - name: Generate report URL
+        id: generate_report_url
+        run: echo "test_report_url=https://fingo.github.io/results-xactus/${{ steps.generate_report_path.outputs.test_report_path }}/index.html" >> $GITHUB_OUTPUT
+      - name: Log URL to the test HTML report
+        run: "echo '::notice::jUnit HTML report is available at ${{ steps.generate_report_url.outputs.test_report_url }}'"
 
   publish:
     name: Publish artifacts to Sonatype
@@ -126,7 +150,7 @@ jobs:
   slack:
     name: Send out Slack notification
     runs-on: ubuntu-latest
-    needs: [ test, publish ]
+    needs: [ test, publish, publish_html_test_report ]
     if: always()
     steps:
       - name: Send Slack message
@@ -135,5 +159,5 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
           SLACK_COLOR: "${{job.status}}"
           SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-          SLACK_FOOTER: ${{ needs.test.outputs.test_report_url }}
+          SLACK_FOOTER: ${{ needs.publish_html_test_report.outputs.test_report_url }}
           SLACK_USERNAME: "Github"
