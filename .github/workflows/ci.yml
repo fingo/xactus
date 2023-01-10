@@ -107,8 +107,9 @@ jobs:
       - name: Generate report URL
         id: generate_report_url
         run: echo "test_report_url=https://fingo.github.io/results-xactus/${{ steps.generate_report_path.outputs.test_report_path }}/index.html" >> $GITHUB_OUTPUT
-      - name: Log URL of the report
-        run: "echo '::notice::jUnit HTML report is available at ${{ steps.generate_report_url.outputs.test_report_url }}'"
+      - name: Place report URL in the summary
+        run: |
+          echo "Link to the HTML test report: <${{ steps.generate_report_url.outputs.test_report_url }}>" >> $GITHUB_STEP_SUMMARY
 
   publish:
     name: Publish artifacts to Sonatype
@@ -162,8 +163,8 @@ jobs:
           SLACK_USERNAME: "Github"
           SLACK_TITLE: "Summary"
           SLACK_MESSAGE: |
-            *Commit message*
+            # Commit message
             ${{ github.event.head_commit.message }}
             
-            *HTML test report browse URL*
+            # HTML test report
             ${{ needs.publish_html_test_report.outputs.test_report_url }}
