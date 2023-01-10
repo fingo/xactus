@@ -1,3 +1,10 @@
+import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import com.gradle.scan.plugin.BuildScanExtension
+
+plugins {
+    id 'com.gradle.enterprise' version '3.12'
+}
+
 rootProject.name = 'xactus'
 
 dependencyResolutionManagement {
@@ -31,6 +38,16 @@ dependencyResolutionManagement {
             version('mockito', '4.11.0')
             library('mockito-core', 'org.mockito', 'mockito-core').versionRef('mockito')
             bundle('mockito', ['mockito-core'])
+        }
+    }
+}
+
+extensions.configure(GradleEnterpriseExtension) { gradleEnterpriseExtension ->
+    if (System.getenv('CI') == 'true') {
+        gradleEnterpriseExtension.buildScan { BuildScanExtension buildScanExtension ->
+            buildScanExtension.publishAlways()
+            buildScanExtension.termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+            buildScanExtension.termsOfServiceAgree = 'yes'
         }
     }
 }
