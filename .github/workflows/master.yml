@@ -24,7 +24,6 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          cache: gradle
           java-version: '8'
           java-package: jdk
           architecture: x64
@@ -47,7 +46,6 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          cache: gradle
           java-version: '8'
           java-package: jdk
           architecture: x64
@@ -99,7 +97,6 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          cache: gradle
           java-version: '8'
           java-package: jdk
           architecture: x64
