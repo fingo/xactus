@@ -94,7 +94,7 @@ jobs:
           path: junit-html-test-report
       - name: Generate report path
         id: generate_report_path
-        run: echo "test_report_path=test-results/${{ github.run_id }}/${{ github.run_number }}" >> $GITHUB_OUTPUT
+        run: echo "test_report_path=test-results/${{ github.run_id }}/${{ github.run_attempt }}" >> $GITHUB_OUTPUT
       - name: Publish report to Github Pages
         uses: peaceiris/actions-gh-pages@v3
         if: always()
