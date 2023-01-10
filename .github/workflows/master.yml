@@ -159,5 +159,11 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
           SLACK_COLOR: "${{job.status}}"
           SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-          SLACK_FOOTER: ${{ needs.publish_html_test_report.outputs.test_report_url }}
           SLACK_USERNAME: "Github"
+          SLACK_TITLE: "Summary"
+          SLACK_MESSAGE: |
+            *Commit message*
+            ${{ github.event.head_commit.message }}
+            
+            *Links*
+            * HTML test report: ${{ needs.publish_html_test_report.outputs.test_report_url }}
