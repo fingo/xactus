@@ -1,0 +1,125 @@
+name: Build :: Test :: Publish
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master, releases/** ]
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    name: Gradle wrapper validation
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+  compile:
+    needs: validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          cache: gradle
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+      - name: Compile sources
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean testClasses
+
+  test:
+    needs: compile
+    runs-on: ubuntu-latest
+    outputs:
+      test_report_url: https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html
+      # TODO testResultsArtifactUrl: ?
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          cache: gradle
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+      - name: Run tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
+      - name: Create JUnit HTML test report artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: JUnit HTML test results
+          path: build/reports/tests/test
+      - name: Create JUnit XML test report artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: JUnit XML test results
+          path: build/test-results/
+      - name: Publish test results summary
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: build/test-results/**/*.xml
+          check_name: Test results summary
+      - name: Publish HTML test report to Github Pages
+        id: publish_test_results
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          external_repository: fingo/results-xactus
+          deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
+          publish_dir: ./build/reports/tests/test
+          destination_dir: "${{ github.run_number }}"
+          keep_files: true
+      - name: Log link to the test report on Github Pages
+        if: always()
+        run: "echo '::notice::jUnit HTML report is available at https://fingo.github.io/results-xactus/${{ github.run_number }}/index.html'"
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    # todo link to published artifact in outputs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          cache: gradle
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+          server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
+          server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
+      - name: Publish artifact
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: -i publishMavenJavaPublicationToOSSRHRepository
+
+  slack:
+    needs: [ test, publish ]
+    if: always()
+    steps:
+      - name: Send Slack message
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
+          SLACK_COLOR: "${{job.status}}"
+          SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          SLACK_FOOTER: ${{ needs.test.outputs.test_report_url }}
+          SLACK_USERNAME: "Github"
