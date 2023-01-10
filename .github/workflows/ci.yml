@@ -163,8 +163,8 @@ jobs:
           SLACK_USERNAME: "Github"
           SLACK_TITLE: "Summary"
           SLACK_MESSAGE: |
-            # Commit message
+            *Commit message*
             ${{ github.event.head_commit.message }}
             
-            # HTML test report
+            *HTML test report*
             ${{ needs.publish_html_test_report.outputs.test_report_url }}
