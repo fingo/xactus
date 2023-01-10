@@ -64,8 +64,8 @@ jobs:
           name: junit-xml-test-report
           path: build/test-results/test
 
-  publish_test_results_summary:
-    name: Publish test results
+  publish_test_results_overview:
+    name: Publish test results overview
     needs: test
     runs-on: ubuntu-latest
     steps:
