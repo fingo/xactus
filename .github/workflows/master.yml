@@ -112,6 +112,7 @@ jobs:
           arguments: -i publishMavenJavaPublicationToOSSRHRepository
 
   slack:
+    runs-on: ubuntu-latest
     needs: [ test, publish ]
     if: always()
     steps:
