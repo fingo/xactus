@@ -1,4 +1,4 @@
-name: 'Compile :: Test :: Publish (master/release)'
+name: 'Validate and publish'
 on:
   workflow_dispatch:
   push:
@@ -19,6 +19,8 @@ jobs:
     steps:
       - id: configuration
         run: |
+          echo "trigger event: ${{ github.event_name }}"
+          echo "trigger event: ${{ github.repository }}"
           echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
           echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
 
@@ -33,7 +35,7 @@ jobs:
 
   compile:
     name: Compile sources
-    needs: validation
+    needs: valida tion
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
