@@ -53,7 +53,6 @@ jobs:
           architecture: x64
           distribution: 'temurin'
       - name: Run tests
-        continue-on-error: true
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
@@ -70,6 +69,8 @@ jobs:
 
   publish_test_results_overview:
     name: Publish test results overview
+    # don't run this job if workflow was cancelled
+    if: success() || failure()
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -87,6 +88,8 @@ jobs:
   publish_html_test_report:
     name: Publish HTML test report
     needs: test
+    # don't run this job if workflow was cancelled
+    if: success() || failure()
     runs-on: ubuntu-latest
     outputs:
       test_report_url: ${{ steps.generate_report_url.outputs.test_report_url }}
