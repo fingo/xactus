@@ -20,7 +20,7 @@ jobs:
       - id: configuration
         run: |
           echo "trigger event: ${{ github.event_name }}"
-          echo "trigger event: ${{ github.repository }}"
+          echo "trigger event repository: ${{ github.repository }}"
           echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
           echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
 
@@ -35,7 +35,7 @@ jobs:
 
   compile:
     name: Compile sources
-    needs: valida tion
+    needs: validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
