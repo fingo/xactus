@@ -10,6 +10,18 @@ env:
   GRADLE_OPTS: -Dorg.gradle.caching=true -Dorg.gradle.daemon=false
 
 jobs:
+  configuration:
+    name: Configure build
+    runs-on: ubuntu-latest
+    outputs:
+      is_pr: ${{ steps.configuration.outputs.is_pr }}
+      is_fork_pr: ${{ steps.configuration.outputs.is_fork_pr }}
+    steps:
+      - id: configuration
+        run: |
+          echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
+          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
+
   validation:
     name: Validate Gradle wrapper
     runs-on: ubuntu-latest
@@ -53,16 +65,19 @@ jobs:
           architecture: x64
           distribution: 'temurin'
       - name: Run tests
-        continue-on-error: true
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
       - name: Create JUnit HTML test report artifact
+        # don't run this step only if workflow was cancelled
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: junit-html-test-report
           path: build/reports/tests/test
       - name: Create JUnit XML test report artifact
+        # don't run this step only if workflow was cancelled
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: junit-xml-test-report
@@ -70,6 +85,8 @@ jobs:
 
   publish_test_results_overview:
     name: Publish test results overview
+    # don't run this job only if workflow was cancelled
+    if: success() || failure()
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -86,7 +103,9 @@ jobs:
 
   publish_html_test_report:
     name: Publish HTML test report
-    needs: test
+    needs: [ test, configuration ]
+    # don't run this job only if workflow was cancelled, or we're running on a fork PR
+    if: ${{ needs.configuration.outputs.is_fork_pr == 'false' && (success() || failure()) }}
     runs-on: ubuntu-latest
     outputs:
       test_report_url: ${{ steps.generate_report_url.outputs.test_report_url }}
@@ -117,7 +136,8 @@ jobs:
 
   publish:
     name: Publish artifacts to Sonatype
-    needs: test
+    needs: [ test, configuration ]
+    if: ${{ needs.configuration.outputs.is_pr == 'false' }}
     runs-on: ubuntu-latest
     outputs:
       sonatype_artifact_url: ${{ steps.generate_sonatype_artifact_url.outputs.url }}
@@ -164,10 +184,11 @@ jobs:
           echo "Published artifact URL: ${{ steps.generate_sonatype_artifact_url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
 
   slack:
+    needs: [ test, publish, publish_html_test_report, configuration ]
+    # don't run this job only if we're running on a fork PR
+    if: ${{ needs.configuration.outputs.is_fork_pr == 'false' && always() }}
     name: Send out Slack notification
     runs-on: ubuntu-latest
-    needs: [ test, publish, publish_html_test_report ]
-    if: always()
     steps:
       - name: Send Slack message
         uses: rtCamp/action-slack-notify@v2
