@@ -37,7 +37,6 @@ jobs:
     name: Run tests
     needs: compile
     runs-on: ubuntu-latest
-    # TODO testResultsArtifactUrl: ?
     steps:
       - name: Checkout
         uses: actions/checkout@v3
