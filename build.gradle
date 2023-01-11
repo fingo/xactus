@@ -46,6 +46,7 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 
         jFlexExec.inputs.file(inputFile)
         jFlexExec.outputs.dir("$outputDirectory")
+        jFlexExec.outputs.cacheIf { true }
 
         jFlexExec.workingDir = classesDestinationDirectory
 
@@ -72,6 +73,7 @@ def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
 
         jCupExec.inputs.file(inputFile)
         jCupExec.outputs.dir("$outputDirectory")
+        jCupExec.outputs.cacheIf { true }
 
         jCupExec.args '-symbols', 'XpathSym', '-parser', 'XPathCup', inputFile.absolutePath
 

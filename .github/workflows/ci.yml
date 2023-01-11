@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ master, releases/** ]
+env:
+  GRADLE_OPTS: -Dorg.gradle.caching=true
 
 jobs:
   validation:
