@@ -8,8 +8,8 @@ on:
 env:
   # Enable local build caching and disable daemon
   GRADLE_OPTS: -Dorg.gradle.caching=true -Dorg.gradle.daemon=false
-  IS_PR: ${{ github.event_name == "pull_request" }}
-  IS_FORK_PR: ${{ github.event_name == "pull_request" && github.repository != 'fingo/xactus' }}
+  IS_PR: ${{ github.event_name == 'pull_request' }}
+  IS_FORK_PR: ${{ github.event_name == 'pull_request" && github.repository != 'fingo/xactus' }}
 
 jobs:
   validation:
