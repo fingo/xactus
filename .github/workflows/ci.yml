@@ -19,9 +19,8 @@ jobs:
     steps:
       - id: configuration
         run: |
-          echo 'trigger event: ${{ toJson(github.event) }}'
           echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
-          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
+          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}" >> $GITHUB_OUTPUT
 
   validation:
     name: Validate Gradle wrapper
