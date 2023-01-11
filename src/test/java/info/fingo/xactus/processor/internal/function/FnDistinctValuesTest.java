@@ -36,6 +36,6 @@ class FnDistinctValuesTest extends XPathExpressionTestBase {
             ComparisonType.TEXT);
 
         // then
-        assertThat(resultString).isEqualTo(expectedResult);
+        assertThat(resultString).isEqualTo(expectedResult).isNull();
     }
 }
