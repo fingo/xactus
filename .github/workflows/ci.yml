@@ -19,8 +19,7 @@ jobs:
     steps:
       - id: configuration
         run: |
-          echo "trigger event: ${{ github.event_name }}"
-          echo "trigger event repository: ${{ github.repository }}"
+          echo "trigger event: ${{ toJson(github.event) }}"
           echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
           echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
 
