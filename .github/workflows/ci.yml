@@ -116,7 +116,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     outputs:
-      sonatype_artifact_url: $ {{ steps.generate_sonatype_artifact_url.outputs.url }}
+      sonatype_artifact_url: ${{ steps.generate_sonatype_artifact_url.outputs.url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -142,7 +142,7 @@ jobs:
           echo "version=`./gradlew cV | sed -n -e 's/^Project version: \(.*\)/\1/p'`" >> $GITHUB_OUTPUT
       - name: Place publish version in the summary
         run: |
-          echo "${{ steps.get_publish_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Published version: ${{ steps.get_publish_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
       - name: Publish artifact
         uses: gradle/gradle-build-action@v2
         with:
@@ -157,7 +157,7 @@ jobs:
         run: echo "url=https://oss.sonatype.org/content/repositories/snapshots/info/fingo/xactus/xactus/${{ steps.get_publish_version.outputs.version }}" >> $GITHUB_OUTPUT
       - name: Place Sonatype artifact URL in the summary
         run: |
-          echo "${{ steps.generate_sonatype_artifact_url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Published artifact URL: ${{ steps.generate_sonatype_artifact_url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
 
   slack:
     name: Send out Slack notification
