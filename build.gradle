@@ -114,7 +114,11 @@ tasks.withType(Test).configureEach {
         it.excludeTestsMatching('*.disabled_*')
     }
 
+    it.outputs.cacheIf { false }
+    it.outputs.upToDateWhen { false }
+
     it.useJUnitPlatform()
+
     it.systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'concurrent'
