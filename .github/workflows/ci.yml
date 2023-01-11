@@ -158,10 +158,10 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.XPATH_SLACK_URL }}
-          SLACK_COLOR: "${{job.status}}"
-          SLACK_ICON: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-          SLACK_USERNAME: "Github"
-          SLACK_TITLE: "Summary"
+          SLACK_COLOR: ${{job.status}}
+          SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          SLACK_USERNAME: Github
+          SLACK_TITLE: Summary
           SLACK_MESSAGE: |
             *Commit message*
             ${{ github.event.head_commit.message }}
