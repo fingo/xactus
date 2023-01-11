@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ master, releases/** ]
+  pull_request:
+    branches: [ master, releases/** ]
 env:
   # Enable local build caching and disable daemon
   GRADLE_OPTS: -Dorg.gradle.caching=true -Dorg.gradle.daemon=false
