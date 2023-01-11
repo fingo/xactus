@@ -95,7 +95,7 @@ jobs:
     name: Publish HTML test report
     needs: test
     # don't run this job only if workflow was cancelled, or we're running on a fork PR
-    if: ${{ !IS_FORK_PR && (success() || failure()) }}
+    if: ${{ !$IS_FORK_PR && (success() || failure()) }}
     runs-on: ubuntu-latest
     outputs:
       test_report_url: ${{ steps.generate_report_url.outputs.test_report_url }}
@@ -126,7 +126,7 @@ jobs:
 
   publish:
     name: Publish artifacts to Sonatype
-    if: ${{ !IS_PR }}
+    if: ${{ !$IS_PR }}
     needs: test
     runs-on: ubuntu-latest
     outputs:
@@ -174,7 +174,7 @@ jobs:
           echo "Published artifact URL: ${{ steps.generate_sonatype_artifact_url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
 
   slack:
-    if: ${{ always() && !IS_FORK_PR }}
+    if: ${{ always() && !$IS_FORK_PR }}
     name: Send out Slack notification
     runs-on: ubuntu-latest
     needs: [ test, publish, publish_html_test_report ]
