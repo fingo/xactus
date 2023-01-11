@@ -14,8 +14,13 @@ jobs:
     name: Configure build
     runs-on: ubuntu-latest
     outputs:
-      is_pr: ${{ github.event_name == 'pull_request' }}
-      is_fork_pr: ${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}
+      is_pr: ${{ steps.configuration.outputs.is_pr }}
+      is_fork_pr: ${{ steps.configuration.outputs.is_fork_pr }}
+    steps:
+      - id: configuration
+        run: |
+          echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
+          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.repository != 'fingo/xactus' }}" >> $GITHUB_OUTPUT
 
   validation:
     name: Validate Gradle wrapper
