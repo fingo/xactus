@@ -47,9 +47,9 @@ jobs:
           echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') }}" >> $GITHUB_OUTPUT
       - name: Print summary
         run: |
-          [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && echo 'Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }}).  >> $GITHUB_STEP_SUMMARY
+          [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
           [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && exit 0
-          echo 'Publish version is ${{ steps.get_publish_version.outputs.version }} (${{ steps.configuration.outputs.is_release && 'RELEASE' || 'SNAPSHOT' }} version).' >> $GITHUB_STEP_SUMMARY
+          echo "Publish version is ${{ steps.get_publish_version.outputs.version }} (${{ steps.configuration.outputs.is_release && 'RELEASE' || 'SNAPSHOT' }} version)." >> $GITHUB_STEP_SUMMARY
 
   validation:
     name: Validate Gradle wrapper
