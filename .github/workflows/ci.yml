@@ -87,6 +87,7 @@ jobs:
     name: Publish test results overview
     # don't run this job only if workflow was cancelled
     if: success() || failure()
+    concurrency: gh-pages-test-results
     needs: test
     runs-on: ubuntu-latest
     steps:
