@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ master, releases/** ]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
     branches: [ master, releases/** ]
 env:
@@ -16,11 +18,38 @@ jobs:
     outputs:
       is_pr: ${{ steps.configuration.outputs.is_pr }}
       is_fork_pr: ${{ steps.configuration.outputs.is_fork_pr }}
+      is_release: ${{ steps.configuration.outputs.is_release }}
+      publish_version: ${{ steps.get_publish_version.outputs.version }}
     steps:
-      - id: configuration
+      - name: Checkout
+        uses: actions/checkout@v3
+        # we need to fetch tags in order for the Axion plugin to properly determine the current snapshot version
+      - name: Fetch all tags
+        run: git fetch --prune --unshallow --tags
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - id: get_publish_version
+        name: Extract publish version
         run: |
-          echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
-          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}" >> $GITHUB_OUTPUT
+          echo "version=`./gradlew cV | sed -n -e 's/^Project version: \(.*\)/\1/p'`" >> $GITHUB_OUTPUT
+      - id: configuration
+        name: Configure
+        run: |
+          echo "is_pr=${{ github.event_name == 'pull_request' || '' }}" >> $GITHUB_OUTPUT
+          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository || '' }}" >> $GITHUB_OUTPUT
+          echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') || '' }}" >> $GITHUB_OUTPUT
+      - name: Print summary
+        run: |
+          [[ '${{ steps.configuration.outputs.is_pr }}' ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
+          [[ '${{ steps.configuration.outputs.is_pr }}' ]] && exit 0
+          echo "Publish version is ${{ steps.get_publish_version.outputs.version }} (${{ steps.configuration.outputs.is_release && 'RELEASE' || 'SNAPSHOT' }} version)." >> $GITHUB_STEP_SUMMARY
 
   validation:
     name: Validate Gradle wrapper
@@ -70,14 +99,14 @@ jobs:
           arguments: test
       - name: Create JUnit HTML test report artifact
         # don't run this step only if workflow was cancelled
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: junit-html-test-report
           path: build/reports/tests/test
       - name: Create JUnit XML test report artifact
         # don't run this step only if workflow was cancelled
-        if: success() || failure()
+        if: ${{ success() || failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: junit-xml-test-report
@@ -86,7 +115,8 @@ jobs:
   publish_test_results_overview:
     name: Publish test results overview
     # don't run this job only if workflow was cancelled
-    if: success() || failure()
+    if: ${{ success() || failure() }}
+    concurrency: gh-pages-test-results
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -99,13 +129,13 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           junit_files: junit-xml-test-report/**/*.xml
-          check_name: Test results summary
+          check_name: Test results overview
 
   publish_html_test_report:
     name: Publish HTML test report
     needs: [ test, configuration ]
     # don't run this job only if workflow was cancelled, or we're running on a fork PR
-    if: ${{ needs.configuration.outputs.is_fork_pr == 'false' && (success() || failure()) }}
+    if: ${{ !needs.configuration.outputs.is_fork_pr && (success() || failure()) }}
     runs-on: ubuntu-latest
     outputs:
       test_report_url: ${{ steps.generate_report_url.outputs.test_report_url }}
@@ -117,10 +147,10 @@ jobs:
           path: junit-html-test-report
       - name: Generate report path
         id: generate_report_path
-        run: echo "test_report_path=test-results/${{ github.run_id }}/${{ github.run_attempt }}" >> $GITHUB_OUTPUT
+        run: echo 'test_report_path=test-results/${{ github.run_id }}/${{ github.run_attempt }}' >> $GITHUB_OUTPUT
       - name: Publish report to Github Pages
         uses: peaceiris/actions-gh-pages@v3
-        if: always()
+        if: ${{ always() }}
         with:
           external_repository: fingo/results-xactus
           deploy_key: ${{ secrets.XACTUS_RESULTS_TOKEN }}
@@ -129,24 +159,21 @@ jobs:
           keep_files: true
       - name: Generate report URL
         id: generate_report_url
-        run: echo "test_report_url=https://fingo.github.io/results-xactus/${{ steps.generate_report_path.outputs.test_report_path }}" >> $GITHUB_OUTPUT
+        run: echo 'test_report_url=https://fingo.github.io/results-xactus/${{ steps.generate_report_path.outputs.test_report_path }}' >> $GITHUB_OUTPUT
       - name: Place report URL in the summary
         run: |
-          echo "Link to the HTML test report: <${{ steps.generate_report_url.outputs.test_report_url }}>" >> $GITHUB_STEP_SUMMARY
+          echo 'Link to the HTML test report: <${{ steps.generate_report_url.outputs.test_report_url }}>' >> $GITHUB_STEP_SUMMARY
 
   publish:
-    name: Publish artifacts to Sonatype
+    name: Publish artifacts
     needs: [ test, configuration ]
-    if: ${{ needs.configuration.outputs.is_pr == 'false' }}
+    if: ${{ !needs.configuration.outputs.is_pr }}
     runs-on: ubuntu-latest
     outputs:
-      sonatype_artifact_url: ${{ steps.generate_sonatype_artifact_url.outputs.url }}
+      artifact_url: ${{ steps.publication_configuration.outputs.artifact_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        # we need to fetch tags in order for the Axion plugin to properly determine the current snapshot version
-      - name: Fetch all tags
-        run: git fetch --prune --unshallow --tags
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -154,39 +181,28 @@ jobs:
           java-package: jdk
           architecture: x64
           distribution: 'temurin'
-          server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: ORG_GRADLE_PROJECT_ossrhUserName # env variable for username in deploy
-          server-password: ORG_GRADLE_PROJECT_ossrhPassword # env variable for token in deploy
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-          gpg-passphrase: ORG_GRADLE_PROJECT_pgpSecretKeyPassword # env variable for GPG private key passphrase
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - id: get_publish_version
+      - name: Configure publication
+        id: publication_configuration
         run: |
-          echo "version=`./gradlew cV | sed -n -e 's/^Project version: \(.*\)/\1/p'`" >> $GITHUB_OUTPUT
-      - name: Place publish version in the summary
-        run: |
-          echo "Published version: ${{ steps.get_publish_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-      - name: Publish artifact
+          echo 'ORG_GRADLE_PROJECT_version=${{ needs.configuration.outputs.publish_version }}' >> $GITHUB_ENV
+          echo 'ORG_GRADLE_PROJECT_ossrhUserName=${{ secrets.OSSRH_USERNAME }}' >> $GITHUB_ENV
+          echo 'ORG_GRADLE_PROJECT_ossrhPassword=${{ secrets.OSSRH_TOKEN }}' >> $GITHUB_ENV
+          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }}' >> $GITHUB_ENV
+          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}' >> $GITHUB_ENV
+          echo 'arguments=${{ needs.configuration.outputs.is_release && 'publishToSonatype closeAndReleaseSonatypeStagingRepository' || 'publishToSonatype' }}' >> $GITHUB_OUTPUT
+          echo 'artifact_url=${{ format(needs.configuration.outputs.is_release && 'https://repo.maven.apache.org/maven2/info/fingo/xactus/xactus/{0}' || 'https://oss.sonatype.org/content/repositories/snapshots/info/fingo/xactus/xactus/{0}', needs.configuration.outputs.publish_version) }}' >> $GITHUB_OUTPUT
+      - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -i publishMavenJavaPublicationToOSSRHRepository
-        env:
-          ORG_GRADLE_PROJECT_ossrhUserName: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
-          ORG_GRADLE_PROJECT_pgpSecretKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          ORG_GRADLE_PROJECT_pgpSecretKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-      - name: Generate Sonatype artifact URL
-        id: generate_sonatype_artifact_url
-        run: echo "url=https://oss.sonatype.org/content/repositories/snapshots/info/fingo/xactus/xactus/${{ steps.get_publish_version.outputs.version }}" >> $GITHUB_OUTPUT
-      - name: Place Sonatype artifact URL in the summary
+          arguments: -i ${{ steps.publication_configuration.outputs.arguments }}
+      - name: Place artifact URL in the summary
         run: |
-          echo "Published artifact URL: ${{ steps.generate_sonatype_artifact_url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Published artifact URL: ${{ steps.publication_configuration.outputs.artifact_url }}" >> $GITHUB_STEP_SUMMARY
 
   slack:
     needs: [ test, publish, publish_html_test_report, configuration ]
     # don't run this job only if we're running on a fork PR
-    if: ${{ needs.configuration.outputs.is_fork_pr == 'false' && always() }}
+    if: ${{ !needs.configuration.outputs.is_fork_pr && always() }}
     name: Send out Slack notification
     runs-on: ubuntu-latest
     steps:
@@ -206,4 +222,4 @@ jobs:
             ${{ needs.publish_html_test_report.outputs.test_report_url }}
             
             *Artifact URL*
-            ${{ needs.publish.outputs.sonatype_artifact_url }}
+            ${{ needs.publish.outputs.artifact_url }}
