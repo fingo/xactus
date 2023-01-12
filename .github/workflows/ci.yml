@@ -47,8 +47,8 @@ jobs:
           echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') || '' }}" >> $GITHUB_OUTPUT
       - name: Print summary
         run: |
-          [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
-          [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && exit 0
+          [[ '${{ steps.configuration.outputs.is_pr }}' ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
+          [[ '${{ steps.configuration.outputs.is_pr }}' ]] && exit 0
           echo "Publish version is ${{ steps.get_publish_version.outputs.version }} (${{ steps.configuration.outputs.is_release && 'RELEASE' || 'SNAPSHOT' }} version)." >> $GITHUB_STEP_SUMMARY
 
   validation:
@@ -187,8 +187,8 @@ jobs:
           echo 'ORG_GRADLE_PROJECT_version=${{ needs.configuration.outputs.publish_version }}' >> $GITHUB_ENV
           echo 'ORG_GRADLE_PROJECT_ossrhUserName=${{ secrets.OSSRH_USERNAME }}' >> $GITHUB_ENV
           echo 'ORG_GRADLE_PROJECT_ossrhPassword=${{ secrets.OSSRH_TOKEN }}' >> $GITHUB_ENV
-          [[ ${{ needs.configuration.outputs.is_release }} == true ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }}' >> $GITHUB_ENV
-          [[ ${{ needs.configuration.outputs.is_release }} == true ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}' >> $GITHUB_ENV
+          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }}' >> $GITHUB_ENV
+          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}' >> $GITHUB_ENV
           echo 'artifact_url=${{ format(needs.configuration.outputs.is_release && 'https://repo.maven.apache.org/maven2/info/fingo/xactus/xactus/{0}' || 'https://oss.sonatype.org/content/repositories/snapshots/info/fingo/xactus/xactus/{0}', needs.configuration.outputs.publish_version) }}' >> $GITHUB_OUTPUT
       - name: Publish
         uses: gradle/gradle-build-action@v2
