@@ -2,9 +2,9 @@ name: 'Validate and publish'
 on:
   workflow_dispatch:
   push:
-    branches: [ master, releases/** ]
+    branches: [ $default-branch, releases/** ]
   pull_request:
-    branches: [ master, releases/** ]
+    branches: [ $default-branch, releases/** ]
 env:
   # Enable local build caching and disable daemon
   GRADLE_OPTS: -Dorg.gradle.caching=true -Dorg.gradle.daemon=false
