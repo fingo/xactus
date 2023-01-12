@@ -42,9 +42,9 @@ jobs:
       - id: configuration
         name: Configure
         run: |
-          echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
-          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}" >> $GITHUB_OUTPUT
-          echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') }}" >> $GITHUB_OUTPUT
+          echo "is_pr=${{ github.event_name == 'pull_request' || '' }}" >> $GITHUB_OUTPUT
+          echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository || '' }}" >> $GITHUB_OUTPUT
+          echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') || '' }}" >> $GITHUB_OUTPUT
       - name: Print summary
         run: |
           [[ ${{ steps.configuration.outputs.is_pr }} == true ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
