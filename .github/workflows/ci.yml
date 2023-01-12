@@ -192,8 +192,13 @@ jobs:
           echo 'ORG_GRADLE_PROJECT_version=${{ needs.configuration.outputs.publish_version }}' >> $GITHUB_ENV
           echo 'ORG_GRADLE_PROJECT_ossrhUserName=${{ secrets.OSSRH_USERNAME }}' >> $GITHUB_ENV
           echo 'ORG_GRADLE_PROJECT_ossrhPassword=${{ secrets.OSSRH_TOKEN }}' >> $GITHUB_ENV
-          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKey=${{ secrets.MAVEN_GPG_PRIVATE_KEY }}' >> $GITHUB_ENV
-          [[ '${{ needs.configuration.outputs.is_release }}' ]] && echo 'ORG_GRADLE_PROJECT_pgpSecretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}' >> $GITHUB_ENV
+          if [[ '${{ needs.configuration.outputs.is_release }}' ]]
+          then
+            echo 'ORG_GRADLE_PROJECT_pgpSecretKeyPassword=${{ secrets.MAVEN_GPG_PASSPHRASE }}' >> $GITHUB_ENV
+            echo 'ORG_GRADLE_PROJECT_pgpSecretKey<<EOF' >> $GITHUB_ENV
+            echo "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
+          fi
           echo 'arguments=${{ needs.configuration.outputs.is_release && 'publishToSonatype closeAndReleaseSonatypeStagingRepository' || 'publishToSonatype' }}' >> $GITHUB_OUTPUT
           echo 'artifact_url=${{ format(needs.configuration.outputs.is_release && 'https://repo.maven.apache.org/maven2/info/fingo/xactus/xactus/{0}' || 'https://oss.sonatype.org/content/repositories/snapshots/info/fingo/xactus/xactus/{0}', needs.configuration.outputs.publish_version) }}' >> $GITHUB_OUTPUT
       - name: Publish
