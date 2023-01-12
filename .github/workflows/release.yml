@@ -1,0 +1,30 @@
+name: Schedule release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string, e.g. 1.4.0'
+        required: true
+      commit_sha:
+        description: 'Commit SHA hash (default: latest commit on master)'
+        required: false
+
+jobs:
+  create-release-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.commit_sha || 'master' }}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          java-package: jdk
+          architecture: x64
+          distribution: 'temurin'
+      - name: Release
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: -Pversion=${{ github.event.inputs.version }} release
