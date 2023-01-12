@@ -39,15 +39,15 @@ Xactus is using [Axion Release Plugin](https://github.com/allegro/axion-release-
 There are a few publishing targets:
 * local folder ('build/repos/releases' and 'build/repos/snapshots'):
 
-      ./gradlew publishMavenJavaPublicationToLocalRepository
+      ./gradlew -Pversion=<publish version> publishToLocalRepository
 
 * M2 local cache:
 
-      ./gradlew publishToMavenLocal
+      ./gradlew -Pversion=<publish version> publishToMavenLocal
   
-* Maven Central (requires OSSRH credentials to be set - [see below](#publishing-to-maven-central)):
+* Maven Central/Sonatype (requires OSSRH credentials to be set - [see below](#publishing-to-maven-central)):
 
-      ./gradlew publishMavenJavaPublicationToOSSRHRepository
+      ./gradlew -Pversion=<publish version> publishToSonatype
 
 #### PGP configuration
 
@@ -64,7 +64,13 @@ When neither of the `pgpSecretKey` and `pgpSecretKeyPassword` parameters are sup
 
 Command to publish Xactus to Maven Central:
 
-      ./gradlew publishMavenJavaPublicationToOSSRHRepository
+      ./gradlew -Pversion=<publish version> publishToSonatype
+
+You can also automatically close and release the staging repository after the release (thanks to [Gradle Nexus Publish Plugin](https://github.com/gradle-nexus/publish-plugin)):
+
+      ./gradlew -Pversion=<publish version> publishToSonatype closeAndReleaseSonatypeStagingRepository
+
+This will publish Xactus to Maven Central automatically, without the need to use Sonatype Nexus UI.
 
 To publish an artifact to Maven Central [OSSRH](https://central.sonatype.org/publish/publish-guide/) credentials need to be supplied in addition to the [PGP configuration](#pgp-configuration):
 * `ossrhUserName` - OSSRH username to be used to deploy the artifact.
