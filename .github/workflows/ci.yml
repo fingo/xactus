@@ -36,14 +36,16 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - id: get_publish_version
+        name: Extract publish version
         run: |
           echo "version=`./gradlew cV | sed -n -e 's/^Project version: \(.*\)/\1/p'`" >> $GITHUB_OUTPUT
       - id: configuration
+        name: Configure
         run: |
           echo "is_pr=${{ github.event_name == 'pull_request' }}" >> $GITHUB_OUTPUT
           echo "is_fork_pr=${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}" >> $GITHUB_OUTPUT
           echo "is_release=${{ !endsWith(steps.get_publish_version.outputs.version, '-SNAPSHOT') }}" >> $GITHUB_OUTPUT
-      - id: Print summary
+      - name: Print summary
         run: |
           [[ ${{ steps.configuration.outputs.is_pr }} == 'true' ]] && echo 'Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }}).  >> $GITHUB_STEP_SUMMARY
           [[ ${{ steps.configuration.outputs.is_pr }} == 'true' ]] && exit 0
@@ -179,8 +181,8 @@ jobs:
           java-package: jdk
           architecture: x64
           distribution: 'temurin'
-      - name: Prepare publication parameters
-        id: publication_parameters
+      - name: Configure publication
+        id: publication_configuration
         run: |
           echo 'ORG_GRADLE_PROJECT_version=${{ needs.configuration.outputs.publish_version }}' >> $GITHUB_ENV
           echo 'ORG_GRADLE_PROJECT_ossrhUserName=${{ secrets.OSSRH_USERNAME }}' >> $GITHUB_ENV
@@ -191,10 +193,10 @@ jobs:
       - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -i ${{ steps.publication_parameters.outputs.arguments }}
-      - name: Place Sonatype artifact URL in the summary
+          arguments: -i ${{ steps.publication_configuration.outputs.arguments }}
+      - name: Place artifact URL in the summary
         run: |
-          echo "Published artifact URL: ${{ steps.publication_parameters.outputs.artifact_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Published artifact URL: ${{ steps.publication_configuration.outputs.artifact_url }}" >> $GITHUB_STEP_SUMMARY
 
   slack:
     needs: [ test, publish, publish_html_test_report, configuration ]
