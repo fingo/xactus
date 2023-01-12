@@ -50,7 +50,7 @@ jobs:
           [[ '${{ steps.configuration.outputs.is_pr }}' ]] && echo "Running on a pull-request (${{ steps.configuration.outputs.is_fork_pr && 'from a fork' || 'internal' }})."  >> $GITHUB_STEP_SUMMARY
           [[ '${{ steps.configuration.outputs.is_pr }}' ]] && exit 0
           echo "Publish version is ${{ steps.get_publish_version.outputs.version }} (${{ steps.configuration.outputs.is_release && 'RELEASE' || 'SNAPSHOT' }} version)." >> $GITHUB_STEP_SUMMARY
-      - name: Validate configuration consistency
+      - name: Fail build in case of configuration inconsistency
         if: ${{ steps.configuration.outputs.is_fork_pr && !steps.configuration.outputs.is_pr || steps.configuration.outputs.is_release && !startsWith(github.ref, 'refs/tags/v') }}
         run: |
           echo 'Failed to configure workflow.'
