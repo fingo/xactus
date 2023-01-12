@@ -170,7 +170,7 @@ jobs:
     if: ${{ !needs.configuration.outputs.is_pr }}
     runs-on: ubuntu-latest
     outputs:
-      artifact_url: ${{ steps.publication_parameters.outputs.artifact_url }}
+      artifact_url: ${{ steps.publication_configuration.outputs.artifact_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
