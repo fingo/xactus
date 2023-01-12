@@ -129,7 +129,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           junit_files: junit-xml-test-report/**/*.xml
-          check_name: Test results summary
+          check_name: Test results overview
 
   publish_html_test_report:
     name: Publish HTML test report
