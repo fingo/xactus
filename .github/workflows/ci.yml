@@ -231,4 +231,4 @@ jobs:
             *Artifact URL*
             ${{ needs.publish.outputs.artifact_url }}
             
-            _Usually artifacts and test results become available with a delay (up to a few minutes)._
+            _Usually artifacts and test results become available with a delay (usually up to a few minutes, but sometimes it may take longer)._
