@@ -44,7 +44,7 @@ Release versions are automatically published whenever a release tag shows up in 
 
     ./gradlew release
 
-*Successful test run is a prerequisite to all publications.*
+**Successful test run is a prerequisite to all publications. Also be advised that both snapshot and release publications might become available with a delay (from a few minutes to a few hours after publication).** 
 
 ## Manual publication
 
