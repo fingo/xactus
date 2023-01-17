@@ -1,13 +1,20 @@
+import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import com.gradle.scan.plugin.BuildScanExtension
+
+plugins {
+    id 'com.gradle.enterprise' version '3.12'
+}
+
 rootProject.name = 'xactus'
 
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.13.14')
+            plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.14.3')
+            plugin('nexus-publish', 'io.github.gradle-nexus.publish-plugin').version('1.1.0')
 
             library('xerces', 'xerces', 'xercesImpl').version('2.12.2')
             library('icu4j', 'com.ibm.icu', 'icu4j').version('71.1')
-            // Unfortunately newer JFlex versions make tests fail - to be investigated (XPTH-78)
             library('jflex', 'de.jflex', 'jflex').version('1.8.2')
             library('jcup', 'edu.princeton.cup', 'java-cup').version('10k')
             library('xalan-serializer', 'xalan', 'serializer').version('2.7.2')
@@ -27,6 +34,20 @@ dependencyResolutionManagement {
             version('assertj', '3.23.1')
             library('assertj-core', 'org.assertj', 'assertj-core').versionRef('assertj')
             bundle('assertj', ['assertj-core'])
+
+            version('mockito', '4.11.0')
+            library('mockito-core', 'org.mockito', 'mockito-core').versionRef('mockito')
+            bundle('mockito', ['mockito-core'])
+        }
+    }
+}
+
+extensions.configure(GradleEnterpriseExtension) { gradleEnterpriseExtension ->
+    if (System.getenv('CI') == 'true') {
+        gradleEnterpriseExtension.buildScan { BuildScanExtension buildScanExtension ->
+            buildScanExtension.publishAlways()
+            buildScanExtension.termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+            buildScanExtension.termsOfServiceAgree = 'yes'
         }
     }
 }

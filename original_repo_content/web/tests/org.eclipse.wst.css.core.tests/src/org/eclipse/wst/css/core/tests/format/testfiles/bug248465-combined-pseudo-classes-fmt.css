@@ -1,7 +1,0 @@
-a:focus:hover, div:focus:hover {
-	background: white;
-}
-
-div a:focus:hover {
-	background: blue;
-}

@@ -1,3 +1,7 @@
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
+import io.github.gradlenexus.publishplugin.NexusRepository
+import io.github.gradlenexus.publishplugin.NexusRepositoryContainer
+
 import java.util.regex.Pattern
 
 plugins {
@@ -5,14 +9,23 @@ plugins {
     id 'signing'
     id 'maven-publish'
     alias(libs.plugins.axion)
+    alias(libs.plugins.nexus.publish)
 }
 
 repositories {
     mavenCentral()
 }
 
+extensions.configure(NexusPublishExtension) { NexusPublishExtension extension ->
+    extension.repositories { NexusRepositoryContainer container ->
+        container.sonatype { NexusRepository sonatypeRepository ->
+            sonatypeRepository.username.set project.findProperty(Constants.OSSRH_USER_NAME_PROPERTY_KEY_PREFIX).toString()
+            sonatypeRepository.password.set project.findProperty(Constants.OSSRH_PASSWORD_PROPERTY_KEY_PREFIX).toString()
+        }
+    }
+}
+
 project.group = 'info.fingo.xactus'
-project.version = deploymentVersion
 
 extensions.configure(JavaPluginExtension) { javaPluginExtension ->
     javaPluginExtension.toolchain { javaToolchainSec ->
@@ -31,8 +44,6 @@ interface Constants {
     def OSSRH_USER_NAME_PROPERTY_KEY_PREFIX = "ossrhUserName"
     def OSSRH_PASSWORD_PROPERTY_KEY_PREFIX = "ossrhPassword"
     def PUBLICATION_NAME = 'mavenJava'
-    def OSSRH_RELEASES_REPO_URL = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-    def OSSRH_SNAPSHOT_REPO_URL = 'https://oss.sonatype.org/content/repositories/snapshots/'
 }
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
@@ -46,6 +57,7 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 
         jFlexExec.inputs.file(inputFile)
         jFlexExec.outputs.dir("$outputDirectory")
+        jFlexExec.outputs.cacheIf { true }
 
         jFlexExec.workingDir = classesDestinationDirectory
 
@@ -72,6 +84,7 @@ def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
 
         jCupExec.inputs.file(inputFile)
         jCupExec.outputs.dir("$outputDirectory")
+        jCupExec.outputs.cacheIf { true }
 
         jCupExec.args '-symbols', 'XpathSym', '-parser', 'XPathCup', inputFile.absolutePath
 
@@ -112,7 +125,11 @@ tasks.withType(Test).configureEach {
         it.excludeTestsMatching('*.disabled_*')
     }
 
+    it.outputs.cacheIf { false }
+    it.outputs.upToDateWhen { false }
+
     it.useJUnitPlatform()
+
     it.systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.default', 'same_thread'
     it.systemProperty 'junit.jupiter.execution.parallel.mode.classes.default', 'concurrent'
@@ -130,22 +147,13 @@ extensions.configure(PublishingExtension) { publishingExtension ->
         repo.url = uri(isSnapshot() ? "$buildDir/repos/snapshots" : "$buildDir/repos/releases")
     }
 
-    publishingExtension.repositories.maven { MavenArtifactRepository repo ->
-        repo.name = 'OSSRH'
-        repo.url = uri(isSnapshot() ? Constants.OSSRH_SNAPSHOT_REPO_URL : Constants.OSSRH_RELEASES_REPO_URL)
-        repo.credentials {
-            it.username = project.findProperty(Constants.OSSRH_USER_NAME_PROPERTY_KEY_PREFIX).toString()
-            it.password = project.findProperty(Constants.OSSRH_PASSWORD_PROPERTY_KEY_PREFIX).toString()
-        }
-    }
-
     publishingExtension.publications.register(Constants.PUBLICATION_NAME, MavenPublication) {
         mavenPublication ->
             mavenPublication.from(project.components.getByName('java'))
             mavenPublication.pom { mavenPom ->
                 mavenPom.name = 'Xactus'
                 mavenPom.url = 'https://github.com/fingo/xactus'
-                mavenPom.description = 'Open-source XPath 2.0 processing library based on Eclipse\'s XPath 2.0 implementation from the Eclipse Web Tools Platform Project.'
+                mavenPom.description = 'Open-source XPath 2.0 processing library based on Eclipse\'s implementation from the Eclipse Web Tools Platform project.'
                 mavenPom.developers { mavenPomDeveloperSpec ->
                     mavenPomDeveloperSpec.developer { mavenPomDeveloper ->
                         mavenPomDeveloper.name = 'Janusz Wiśniowski'
@@ -166,20 +174,22 @@ extensions.configure(PublishingExtension) { publishingExtension ->
     }
 }
 
-extensions.configure(SigningExtension) {
-    if (project.hasProperty(Constants.PGP_SECRET_KEY_PROPERTY_KEY) &&
-            project.hasProperty(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY)) {
-        def pgpSecretKey = project.property(Constants.PGP_SECRET_KEY_PROPERTY_KEY).toString()
-        def pgpKeyPassword = project.property(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY).toString()
+if (!isSnapshot()) {
+    extensions.configure(SigningExtension) {
+        if (project.hasProperty(Constants.PGP_SECRET_KEY_PROPERTY_KEY) &&
+                project.hasProperty(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY)) {
+            def pgpSecretKey = project.property(Constants.PGP_SECRET_KEY_PROPERTY_KEY).toString()
+            def pgpKeyPassword = project.property(Constants.PGP_SECRET_KEY_PASSWORD_PROPERTY_KEY).toString()
 
-        if (project.hasProperty(Constants.PGP_KEY_ID_PROPERTY_KEY)) {
-            it.useInMemoryPgpKeys(project.property(Constants.PGP_KEY_ID_PROPERTY_KEY).toString(), pgpSecretKey, pgpKeyPassword)
-        } else {
-            it.useInMemoryPgpKeys(pgpSecretKey, pgpKeyPassword)
+            if (project.hasProperty(Constants.PGP_KEY_ID_PROPERTY_KEY)) {
+                it.useInMemoryPgpKeys(project.property(Constants.PGP_KEY_ID_PROPERTY_KEY).toString(), pgpSecretKey, pgpKeyPassword)
+            } else {
+                it.useInMemoryPgpKeys(pgpSecretKey, pgpKeyPassword)
+            }
         }
-    }
 
-    it.sign(extensions.findByType(PublishingExtension).publications.getByName(Constants.PUBLICATION_NAME))
+        it.sign(extensions.findByType(PublishingExtension).publications.getByName(Constants.PUBLICATION_NAME))
+    }
 }
 
 tasks.named('javadoc', Javadoc).configure {
@@ -203,6 +213,7 @@ dependencies {
 
     testImplementation testLibs.bundles.jupiter
     testImplementation testLibs.bundles.xmlunit
+    testImplementation testLibs.bundles.mockito
 
     testImplementation testLibs.bundles.assertj
     // LSSerializerImpl used to serialize ResultSequence to XML - see AbstractPsychoPathTest#buildXMLResultString
