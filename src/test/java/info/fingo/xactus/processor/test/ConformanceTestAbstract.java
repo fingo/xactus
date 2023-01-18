@@ -22,11 +22,11 @@ import info.fingo.xactus.processor.testutil.bundle.Platform;
 import info.fingo.xactus.processor.util.DynamicContextBuilder;
 import info.fingo.xactus.processor.util.StaticContextBuilder;
 
-public abstract class ConformanceTestAbstarct {
+public abstract class ConformanceTestAbstract {
 	
 	private final Bundle bundle;
 	
-	public ConformanceTestAbstarct() {
+	public ConformanceTestAbstract() {
 		bundle = Platform
 				.getBundle("org.w3c.xqts.testsuite");
 	}

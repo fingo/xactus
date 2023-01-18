@@ -16,7 +16,7 @@ import info.fingo.xactus.api.ResultSequence;
  * @author wojciech.diakowski
  *
  */
-public class ConformanceNodeTest extends ConformanceTestAbstarct {
+public class ConformanceNodeTest extends ConformanceTestAbstract {
 
 	@ParameterizedTest
 	@ValueSource(ints = { 0, 1, 2 })
