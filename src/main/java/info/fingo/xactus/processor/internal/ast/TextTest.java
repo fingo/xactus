@@ -25,28 +25,34 @@ import info.fingo.xactus.processor.internal.types.TextType;
  * Class to match any text node.
  */
 public class TextTest extends KindTest {
+
+	@Override
+	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
+		return null;
+	}
+
+	@Override
+	public QName name() {
+		return null;
+	}
+
+	@Override
+	public boolean isWild() {
+		return false;
+	}
+	
 	/**
 	 * Support for Visitor interface.
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
 
-	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
-		return null;
-	}
-
-	public QName name() {
-		return null;
-	}
-
-	public boolean isWild() {
-		return false;
-	}
-
-	public Class getXDMClassType() {
+	@Override
+	public Class<TextType> getXDMClassType() {
 		return TextType.class;
 	}
 

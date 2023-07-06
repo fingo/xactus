@@ -42,11 +42,13 @@ public class CommentTest extends KindTest {
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<CommentType> getXDMClassType() {
 		return CommentType.class;
 	}
 

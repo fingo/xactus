@@ -35,35 +35,40 @@ public class SchemaElemTest extends KindTest {
 	}
 
 	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
-
-	/**
 	 * Support for QName interface.
 	 *
 	 * @return Result of QName operation.
 	 */
+	@Override
 	public QName name() {
 		return _arg;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
-		// TODO Auto-generated method stub
+		// TODO review
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
-		// TODO Auto-generated method stub
+	@Override
+	public Class<AnyType> getXDMClassType() {
+		// TODO review
 		return null;
+	}
+
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
 	}
 
 }

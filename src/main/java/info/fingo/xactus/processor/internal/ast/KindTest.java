@@ -30,6 +30,6 @@ public abstract class KindTest extends NodeTest {
 
 	abstract public boolean isWild();
 
-	abstract public Class getXDMClassType();
+	abstract public Class<? extends AnyType> getXDMClassType();
 
 }

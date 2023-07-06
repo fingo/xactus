@@ -69,15 +69,7 @@ public class AttributeTest extends AttrElemTest {
 		super();
 	}
 
-	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
-
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
 		if (name() == null && !wild()) {
 			return new AttrType();
@@ -133,12 +125,24 @@ public class AttributeTest extends AttrElemTest {
 		return anyType;
 	}
 
+	@Override
 	public boolean isWild() {
 		return wild();
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<AttrType> getXDMClassType() {
 		return AttrType.class;
+	}
+
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
 	}
 
 }

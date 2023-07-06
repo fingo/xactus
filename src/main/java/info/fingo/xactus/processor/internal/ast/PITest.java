@@ -45,15 +45,6 @@ public class PITest extends KindTest {
 	}
 
 	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
-
-	/**
 	 * Support for String arguments.
 	 *
 	 * @return Result of String operation.
@@ -62,22 +53,36 @@ public class PITest extends KindTest {
 		return _arg;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
-		// TODO Auto-generated method stub
+		// TODO review
 		return null;
 	}
 
+	@Override
 	public QName name() {
-		// TODO Auto-generated method stub
+		// TODO review
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<PIType> getXDMClassType() {
 		return PIType.class;
+	}
+
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
 	}
 
 }

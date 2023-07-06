@@ -91,15 +91,6 @@ public class ElementTest extends AttrElemTest {
 	}
 
 	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
-
-	/**
 	 * Set nilled property.
 	 *
 	 * @return Result of operation.
@@ -108,6 +99,7 @@ public class ElementTest extends AttrElemTest {
 		return _qmark;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
 
 		if (name() == null && !wild()) {
@@ -168,20 +160,35 @@ public class ElementTest extends AttrElemTest {
 		return anyType;
 	}
 
+	@Override
 	public boolean isWild() {
 		return wild();
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<ElementType> getXDMClassType() {
 		return ElementType.class;
 	}
 
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
+	}
+
 	private static class SingleItemNodeListImpl implements NodeList {
-		private Node node;
+		
+		private final Node node;
+
 		public SingleItemNodeListImpl(Node node) {
 			this.node = node;
 		}
 
+		@Override
 		public Node item(int index) {
 			return node;
 		}
