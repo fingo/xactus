@@ -38,7 +38,7 @@ jobs:
       - id: get_publish_version
         name: Extract publish version
         run: |
-          echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
+          echo "version='Z-SNAPSHOT'" >> $GITHUB_OUTPUT
       - id: configuration
         name: Configure
         run: |
