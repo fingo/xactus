@@ -38,6 +38,7 @@ jobs:
       - id: get_publish_version
         name: Extract publish version
         run: |
+          echo "./gradlew cV" >> $GITHUB_OUTPUT
           echo "version=`0.1.0-SNAPSHOT`" >> $GITHUB_OUTPUT
       - id: configuration
         name: Configure
