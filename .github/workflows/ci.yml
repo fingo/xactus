@@ -38,7 +38,7 @@ jobs:
       - id: get_publish_version
         name: Extract publish version
         run: |
-          echo "0.1.0-SNAPSHOT" >> $GITHUB_OUTPUT
+          echo 'no version' >> $GITHUB_OUTPUT
       - id: configuration
         name: Configure
         run: |
