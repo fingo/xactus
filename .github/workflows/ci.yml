@@ -38,9 +38,12 @@ jobs:
       - id: get_publish_version
         name: Extract publish version
         run: |
-          ./gradlew cV -q -Prelease.quiet | tr -d '\n'
-          echo "./gradlew cV -q -Prelease.quiet | tr -d '\n'" >> $GITHUB_OUTPUT
-          echo "version=`./gradlew cV -q -Prelease.quiet | tr -d '\n'`" >> $GITHUB_OUTPUT
+          echo 'run gradle'
+          ./gradlew
+          echo 'check version'
+          ./gradlew cV -q -Prelease.quiet
+          echo 'set version'
+          echo "version=`./gradlew cV -q -Prelease.quiet`" >> $GITHUB_OUTPUT
       - id: configuration
         name: Configure
         run: |
