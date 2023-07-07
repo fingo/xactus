@@ -38,6 +38,9 @@ jobs:
       - id: get_publish_version
         name: Extract publish version
         run: |
+          echo 'run gradle warmup'
+          ./gradlew
+          echo 'set version'
           echo "version=`./gradlew cV -q -Prelease.quiet`" >> $GITHUB_OUTPUT
       - id: configuration
         name: Configure
