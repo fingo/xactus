@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ComparableTypePromoterTest {
 
-    @SuppressWarnings("unused")
     static Stream<Arguments> params() {
         return Stream.of(
                 arguments(dateSeq("2010-01-01"), XSDate.class, "xs:date(2010-01-01) gives: xs:date"),
@@ -40,41 +39,42 @@ class ComparableTypePromoterTest {
     }
 
     private static ResultSequence dateSeq(String... dates) {
+    	
         ResultBuffer buffer = new ResultBuffer();
-
         for (String string : dates) {
-            buffer.append(XSDate.parse_date(string));
+            buffer.add(XSDate.parse_date(string));
         }
         return buffer.getSequence();
     }
 
     private static ResultSequence dateTimeSeq(String... dates) {
+    	
         ResultBuffer buffer = new ResultBuffer();
-
         for (String string : dates) {
-            buffer.append(XSDateTime.parseDateTime(string));
+            buffer.add(XSDateTime.parseDateTime(string));
         }
         return buffer.getSequence();
     }
 
     private static ResultSequence intSeq(String... values) {
+    	
         ResultBuffer buffer = new ResultBuffer();
-
         for (String string : values) {
-            buffer.append(new XSInteger(string));
+            buffer.add(new XSInteger(string));
         }
         return buffer.getSequence();
-
     }
 
     @SuppressWarnings("unused")
     @ParameterizedTest(name = "{2}")
     @MethodSource("params")
-    void test(final ResultSequence sequenceToConsider, final Class targetType, final String desc) {
+    void test(final ResultSequence sequenceToConsider, final Class<?> targetType, final String desc) {
+    	
         ComparableTypePromoter promoter = new ComparableTypePromoter();
         promoter.considerSequence(sequenceToConsider);
-        Class newTargetType = promoter.getTargetType();
+        Class<?> newTargetType = promoter.getTargetType();
 
         Assertions.assertEquals(newTargetType, targetType);
     }
+    
 }
