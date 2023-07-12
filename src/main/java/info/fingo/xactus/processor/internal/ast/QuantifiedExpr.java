@@ -20,7 +20,8 @@ import java.util.*;
 /**
  * Support for Quantified expressions.
  */
-public class QuantifiedExpr extends Expr {
+public class QuantifiedExpr extends Expr implements Iterable<VarExprPair> {
+	
 	/**
 	 * Set internal value for SOME.
 	 */
@@ -30,9 +31,9 @@ public class QuantifiedExpr extends Expr {
 	 */
 	public static final int ALL = 1;
 
-	private Collection _var_expr_pairs;
-	private Expr _return;
-	private int _type;
+	private int type;
+	private Collection<VarExprPair> var_expr_pairs;
+	private Expr return_exp;
 
 	/**
 	 * Constructor for QuantifiedExpr.
@@ -44,10 +45,11 @@ public class QuantifiedExpr extends Expr {
 	 * @param ret
 	 *            Returned expression.
 	 */
-	public QuantifiedExpr(int type, Collection varexp, Expr ret) {
-		_type = type;
-		_var_expr_pairs = varexp;
-		_return = ret;
+	public QuantifiedExpr(int type, Collection<VarExprPair> varexp, Expr ret) {
+		
+		this.type = type;
+		this.var_expr_pairs = varexp;
+		this.return_exp = ret;
 	}
 
 	/**
@@ -55,6 +57,7 @@ public class QuantifiedExpr extends Expr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -65,7 +68,7 @@ public class QuantifiedExpr extends Expr {
 	 * @return Result of Int operation.
 	 */
 	public int type() {
-		return _type;
+		return type;
 	}
 
 	/**
@@ -73,8 +76,9 @@ public class QuantifiedExpr extends Expr {
 	 *
 	 * @return Result of Iterator operation.
 	 */
-	public Iterator iterator() {
-		return _var_expr_pairs.iterator();
+	@Override
+	public Iterator<VarExprPair> iterator() {
+		return var_expr_pairs.iterator();
 	}
 
 	/**
@@ -83,7 +87,7 @@ public class QuantifiedExpr extends Expr {
 	 * @return Result of Expr operation.
 	 */
 	public Expr expr() {
-		return _return;
+		return return_exp;
 	}
 
 	/**
@@ -93,7 +97,7 @@ public class QuantifiedExpr extends Expr {
 	 *            Expression.
 	 */
 	public void set_expr(Expr e) {
-		_return = e;
+		return_exp = e;
 	}
 
 	// used for normalization... basically just keep a "simple for"... no
@@ -104,7 +108,7 @@ public class QuantifiedExpr extends Expr {
 	public void truncate_pairs() {
 		boolean first = true;
 
-		for (Iterator i = _var_expr_pairs.iterator(); i.hasNext();) {
+		for (Iterator<VarExprPair> i = var_expr_pairs.iterator(); i.hasNext();) {
 			i.next();
 			if (!first)
 				i.remove();
@@ -118,7 +122,8 @@ public class QuantifiedExpr extends Expr {
 	 *
 	 * @return Expression pairs.
 	 */
-	public Collection ve_pairs() {
-		return _var_expr_pairs;
+	public Collection<VarExprPair> ve_pairs() {
+		return var_expr_pairs;
 	}
+	
 }

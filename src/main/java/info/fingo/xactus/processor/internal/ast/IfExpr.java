@@ -19,10 +19,11 @@ import java.util.*;
 /**
  * Support for IF expressions.
  */
-public class IfExpr extends Expr {
-	private Collection _exprs;
-	private Expr _then;
-	private Expr _else;
+public class IfExpr extends Expr implements Iterable<Expr> {
+	
+	private final Collection<Expr> exprs;
+	private final Expr then_exp;
+	private final Expr else_exp;
 
 	/**
 	 * Constructor for IfExpr.
@@ -34,10 +35,11 @@ public class IfExpr extends Expr {
 	 * @param e
 	 *            If false/else expressions.
 	 */
-	public IfExpr(Collection exps, Expr t, Expr e) {
-		_exprs = exps;
-		_then = t;
-		_else = e;
+	public IfExpr(Collection<Expr> exps, Expr t, Expr e) {
+		
+		this.exprs = exps;
+		this.then_exp = t;
+		this.else_exp = e;
 	}
 
 	/**
@@ -45,6 +47,7 @@ public class IfExpr extends Expr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -54,8 +57,9 @@ public class IfExpr extends Expr {
 	 *
 	 * @return Result of Iterator operation.
 	 */
-	public Iterator iterator() {
-		return _exprs.iterator();
+	@Override
+	public Iterator<Expr> iterator() {
+		return exprs.iterator();
 	}
 
 	/**
@@ -64,7 +68,7 @@ public class IfExpr extends Expr {
 	 * @return Result of Expr operation.
 	 */
 	public Expr then_clause() {
-		return _then;
+		return then_exp;
 	}
 
 	/**
@@ -73,6 +77,7 @@ public class IfExpr extends Expr {
 	 * @return Result of Expr operation.
 	 */
 	public Expr else_clause() {
-		return _else;
+		return else_exp;
 	}
+	
 }

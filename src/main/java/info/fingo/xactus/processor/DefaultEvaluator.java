@@ -334,16 +334,14 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	}
 
 	// basically the comma operator...
-	private ResultSequence do_expr(Iterator i) {
+	private ResultSequence do_expr(Iterable<Expr> exps) {
 
 		ResultSequence rs = null;
 		ResultBuffer buffer = null;
 
-		while (i.hasNext()) {
-			Expr e = (Expr) i.next();
+		for (Expr e : exps) {
 
 			ResultSequence result = (ResultSequence) e.accept(this);
-
 			if (rs == null && buffer == null)
 				rs = result;
 			else {
@@ -371,8 +369,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return result sequence.
 	 */
 	public Object visit(XPath xp) {
-		ResultSequence rs = do_expr(xp.iterator());
-
+		ResultSequence rs = do_expr(xp);
 		return rs;
 	}
 
@@ -418,7 +415,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	// type: 0 = for [return == "correct"]
 	// 1 = for all [return false, return empty on true]
 	// 2 = there exists [return true, return empty on false]
-	private XSBoolean do_for_all(ListIterator iter,
+	private XSBoolean do_for_all(ListIterator<VarExprPair> iter,
 			Expr finalexpr) {
 
 		// we have more vars to bind...
@@ -458,7 +455,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	}
 
-	private XSBoolean do_exists(ListIterator iter,
+	private XSBoolean do_exists(ListIterator<VarExprPair> iter,
 			Expr finalexpr) {
 
 		// we have more vars to bind...
@@ -509,7 +506,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 */
 	public Object visit(ForExpr fex) {
 		// XXX
-		List pairs = new ArrayList(fex.ve_pairs());
+		List<VarExprPair> pairs = new ArrayList<>(fex.ve_pairs());
 		ResultBuffer rb = new ResultBuffer();
 		do_for_each(pairs.listIterator(), fex.expr(), rb);
 		return rb.getSequence();
@@ -523,7 +520,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function or null.
 	 */
 	public Object visit(QuantifiedExpr qex) {
-		List pairs = new ArrayList(qex.ve_pairs());
+		
+		List<VarExprPair> pairs = new ArrayList<>(qex.ve_pairs());
 
 		switch (qex.type()) {
 		case QuantifiedExpr.SOME:
@@ -545,8 +543,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a ifex.then_clause().accept(this).
 	 */
 	public Object visit(IfExpr ifex) {
-		ResultSequence test_res = do_expr(ifex.iterator());
-
+		
+		ResultSequence test_res = do_expr(ifex);
 		XSBoolean res = effective_boolean_value(test_res);
 
 		if (res.value())
@@ -1552,7 +1550,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function
 	 */
 	public Object visit(ParExpr e) {
-		return do_expr(e.iterator());
+		return do_expr(e);
 	}
 
 	/**
@@ -1581,10 +1579,10 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function or null
 	 */
 	public Object visit(FunctionCall e) {
-		ArrayList args = new ArrayList();
 
-		for (Iterator i = e.iterator(); i.hasNext();) {
-			Expr arg = (Expr) i.next();
+		List<ResultSequence> args = new ArrayList<>();
+
+		for (Expr arg : e) {
 			// each argument will produce a result sequence
 			args.add((ResultSequence)arg.accept(this));
 		}
@@ -2017,7 +2015,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	}
 
 	// do the predicate for all items in focus
-	private ResultSequence do_predicate(Collection exprs) {
+	private ResultSequence do_predicate(Collection<Expr> exprs) {
 		ResultBuffer rs = new ResultBuffer();
 
 		Focus focus = focus();
@@ -2026,12 +2024,15 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		// optimization
 		// check if predicate is single numeric constant
 		if (exprs.size() == 1) {
-			Expr expr = (Expr) exprs.iterator().next();
-
+			
+			Expr expr = exprs.iterator().next();
 			if (expr instanceof XPathExpr) {
+				
 				XPathExpr xpe = (XPathExpr) expr;
-				if (xpe.next() == null && xpe.slashes() == 0
+				if (xpe.next() == null 
+						&& xpe.slashes() == 0
 						&& xpe.expr() instanceof FilterExpr) {
+					
 					FilterExpr fex = (FilterExpr) xpe.expr();
 					if (fex.primary() instanceof IntegerLiteral) {
 						int pos = (((IntegerLiteral) fex.primary()).value()
@@ -2053,7 +2054,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// do the predicate
 			// XXX saxon doesn't allow for predicates to have
 			// commas... but XPath 2.0 spec seems to do
-			ResultSequence res = do_expr(exprs.iterator());
+			ResultSequence res = do_expr(exprs);
 
 			// if predicate is true, the context item is definitely
 			// in the sequence
@@ -2079,8 +2080,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a result sequence
 	 */
 	public Object visit(AxisStep e) {
-		ResultSequence rs = (ResultSequence) e.step().accept(this);
 
+		ResultSequence rs = (ResultSequence) e.step().accept(this);
 		if (e.predicate_count() == 0)
 			return rs;
 
@@ -2088,14 +2089,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Focus original_focus = focus();
 
 		// go through all predicates
-		for (Iterator i = e.iterator(); i.hasNext();) {
+		for (Collection<Expr> coll : e) {
 			// empty results... get out of here ? XXX
 			if (rs.size() == 0)
 				break;
 
 			set_focus(new Focus(rs));
-			rs = do_predicate((Collection) i.next());
-
+			rs = do_predicate(coll);
 		}
 
 		// restore focus [context switching ;D ]
@@ -2122,13 +2122,12 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Focus original_focus = focus();
 
 		// go through all predicates
-		for (Iterator i = e.iterator(); i.hasNext();) {
+		for (Collection<Expr> i : e) {
 			if (rs.size() == 0)
 				break;
 
 			set_focus(new Focus(rs));
-			rs = do_predicate((Collection) i.next());
-
+			rs = do_predicate(i);
 		}
 
 		// restore focus [context switching ;D ]

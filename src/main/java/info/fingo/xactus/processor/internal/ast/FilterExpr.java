@@ -28,8 +28,9 @@ import java.util.*;
  * position in the result sequence. The first context position is 1.
  */
 public class FilterExpr extends StepExpr {
-	private PrimaryExpr _pexpr;
-	private Collection _exprs;
+	
+	private PrimaryExpr pexpr;
+	private final Collection<Collection<Expr>> exprs;
 
 	/**
 	 * Constructor of FilterExpr.
@@ -39,9 +40,10 @@ public class FilterExpr extends StepExpr {
 	 * @param exprs
 	 *            is copied to _exprs.
 	 */
-	public FilterExpr(PrimaryExpr pexpr, Collection exprs) {
-		_pexpr = pexpr;
-		_exprs = exprs;
+	public FilterExpr(PrimaryExpr pexpr, Collection<Collection<Expr>> exprs) {
+		
+		this.pexpr = pexpr;
+		this.exprs = exprs;
 	}
 
 	/**
@@ -49,6 +51,7 @@ public class FilterExpr extends StepExpr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -59,7 +62,7 @@ public class FilterExpr extends StepExpr {
 	 * @return The primary expression.
 	 */
 	public PrimaryExpr primary() {
-		return _pexpr;
+		return pexpr;
 	}
 
 	/**
@@ -67,8 +70,9 @@ public class FilterExpr extends StepExpr {
 	 *
 	 * @return The next predicate.
 	 */
-	public Iterator iterator() {
-		return _exprs.iterator();
+	@Override
+	public Iterator<Collection<Expr>> iterator() {
+		return exprs.iterator();
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class FilterExpr extends StepExpr {
 	 *            is set as the new primary expression.
 	 */
 	public void set_primary(PrimaryExpr e) {
-		_pexpr = e;
+		pexpr = e;
 	}
 
 	/**
@@ -87,6 +91,7 @@ public class FilterExpr extends StepExpr {
 	 * @return The size of the collection of predicates.
 	 */
 	public int predicate_count() {
-		return _exprs.size();
+		return exprs.size();
 	}
+	
 }

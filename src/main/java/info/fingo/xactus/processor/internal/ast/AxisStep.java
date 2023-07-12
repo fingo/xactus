@@ -22,8 +22,9 @@ import java.util.*;
  * Reverse Step.
  */
 public class AxisStep extends StepExpr {
-	private Step _step;
-	private Collection _exprs;
+	
+	private Step step;
+	private final Collection<Collection<Expr>> exprs;
 
 	/**
 	 * Constructor for AxisStep.
@@ -33,9 +34,9 @@ public class AxisStep extends StepExpr {
 	 * @param exprs
 	 *            Collection of xpath expressions.
 	 */
-	public AxisStep(Step step, Collection exprs) {
-		_step = step;
-		_exprs = exprs;
+	public AxisStep(Step step, Collection<Collection<Expr>> exprs) {
+		this.step = step;
+		this.exprs = exprs;
 	}
 
 	/**
@@ -43,6 +44,7 @@ public class AxisStep extends StepExpr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -53,14 +55,14 @@ public class AxisStep extends StepExpr {
 	 * @return Previous step.
 	 */
 	public Step step() {
-		return _step;
+		return step;
 	}
 
 	/**
 	 * Set the step direction.
 	 */
 	public void set_step(Step s) {
-		_step = s;
+		step = s;
 	}
 
 	/**
@@ -68,8 +70,9 @@ public class AxisStep extends StepExpr {
 	 *
 	 * @return Iterated expressions.
 	 */
-	public Iterator iterator() {
-		return _exprs.iterator();
+	@Override
+	public Iterator<Collection<Expr>> iterator() {
+		return exprs.iterator();
 	}
 
 	/**
@@ -78,6 +81,7 @@ public class AxisStep extends StepExpr {
 	 * @return Size of expressions.
 	 */
 	public int predicate_count() {
-		return _exprs.size();
+		return exprs.size();
 	}
+	
 }

@@ -16,7 +16,8 @@ package info.fingo.xactus.processor.internal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
+//import java.util.Iterator;
 
 import info.fingo.xactus.processor.StaticContext;
 import info.fingo.xactus.processor.ast.XPath;
@@ -89,111 +90,50 @@ import info.fingo.xactus.processor.internal.types.QName;
 // XXX currently not supported anymore!
 public class Normalizer implements XPathVisitor {
 
-	private StaticContext _sc;
+	private final StaticContext sc;
 
 	/**
 	 * Static Context is set to sc
 	 *
-	 * @param sc
-	 *            is the StaticContext.
+	 * @param sc is the StaticContext.
 	 */
 	public Normalizer(StaticContext sc) {
-		_sc = sc;
+		this.sc = sc;
 	}
 
 	/**
 	 * Returns the normalized tree
 	 *
-	 * @param xp
-	 *            is the xpath expression.
+	 * @param xp is the xpath expression.
 	 * @return the xpath expressions.
 	 */
+	@Override
 	public Object visit(XPath xp) {
-		Collection exprs = new ArrayList();
 
-		for (Iterator i = xp.iterator(); i.hasNext();) {
-			Expr e = (Expr) i.next();
-
+		Collection<Expr> exprs = new ArrayList<>();
+		for (Expr e : xp) {
 			Expr n = (Expr) e.accept(this);
-
 			exprs.add(n);
 		}
-
 		return new XPath(exprs);
-	}
-
-	private void printVarExprPairs(Iterator i) {
-		while (i.hasNext()) {
-			VarExprPair pair = (VarExprPair) i.next();
-
-			QName var = pair.varname();
-			Expr e = pair.expr();
-
-			e.accept(this);
-		}
-	}
-
-	// does a for and a quantified expression
-	// takes the iterator for var expr paris
-	private void doForExpr(Iterator iter, Expr expr) {
-		Collection vars = new ArrayList();
-
-		// go through expression and cache variables
-		while (iter.hasNext()) {
-			VarExprPair pair = (VarExprPair) iter.next();
-
-			QName var = pair.varname();
-			Expr e = pair.expr();
-
-			// XXX this is wrong!
-			// need to define new scope, and reference "inner scope"
-			// [shadow outer vars]
-			/*
-			 * if(_sc.variable_exists(var)) report_error(new
-			 * StaticNameError("Variable " + var.string() +
-			 * " already defined"));
-			 */
-			// ok we can cheat here cuz we only care about variable
-			// "presence" not its specific instance / value so we
-			// can fakely shadow without creating explicit scopes
-			// if variable already exists.... then leave it there...
-			// [we do not need to create a new instance and delete
-			// it at the end]
-			// we only need to if variable does not exist
-			// XXX: i fink this is all wrong
-			vars.add(var);
-
-			e.accept(this);
-		}
-
-		// add variables to scope
-		for (Iterator i = vars.iterator(); i.hasNext();) {
-			QName var = (QName) i.next();
-		}
-
-		// do the bounded expression
-		expr.accept(this);
-
-		// remove variables
 	}
 
 	/**
 	 *
-	 * @param fex
-	 *            is the For expression.
+	 * @param fex is the For expression.
 	 * @return fex expression.
 	 */
+	@Override
 	public Object visit(ForExpr fex) {
 		ForExpr last = fex;
 		Expr ret = fex.expr();
 		int depth = 0;
 
-		for (Iterator i = fex.iterator(); i.hasNext();) {
-			VarExprPair ve = (VarExprPair) i.next();
+		for (VarExprPair ve : fex) {
 
 			// ok we got nested fors...
 			if (depth > 0) {
-				Collection pairs = new ArrayList();
+				Collection<VarExprPair> pairs = new ArrayList<>();
 				pairs.add(ve);
 
 				ForExpr fe = new ForExpr(pairs, ret);
@@ -217,22 +157,20 @@ public class Normalizer implements XPathVisitor {
 
 	/**
 	 *
-	 * @param qex
-	 *            is the Quantified expression.
+	 * @param qex is the Quantified expression.
 	 * @return qex expression.
 	 */
 	// XXX: code duplication
+	@Override
 	public Object visit(QuantifiedExpr qex) {
 		QuantifiedExpr last = qex;
 		Expr ret = qex.expr();
 		int depth = 0;
 
-		for (Iterator i = qex.iterator(); i.hasNext();) {
-			VarExprPair ve = (VarExprPair) i.next();
-
+		for (VarExprPair ve : qex) {
 			// ok we got nested fors...
 			if (depth > 0) {
-				Collection pairs = new ArrayList();
+				Collection<VarExprPair> pairs = new ArrayList<>();
 				pairs.add(ve);
 
 				QuantifiedExpr qe = new QuantifiedExpr(qex.type(), pairs, ret);
@@ -255,36 +193,29 @@ public class Normalizer implements XPathVisitor {
 
 	}
 
-	private void printExprs(Iterator i) {
-		while (i.hasNext()) {
-			Expr e = (Expr) i.next();
-
+	private void printExprs(Iterable<Expr> i) {
+		for (Expr e : i) {
 			e.accept(this);
 		}
 	}
 
 	/**
 	 *
-	 * @param ifex
-	 *            is the 'if' expression.
+	 * @param ifex is the 'if' expression.
 	 * @return ifex expression.
 	 */
+	@Override
 	public Object visit(IfExpr ifex) {
 
-		printExprs(ifex.iterator());
-
+		printExprs(ifex);
 		ifex.then_clause().accept(this);
-
 		ifex.else_clause().accept(this);
-
 		return ifex;
 	}
 
 	/**
-	 * @param name
-	 *            of binary expression.
-	 * @param e
-	 *            is the binary expression.
+	 * @param name of binary expression.
+	 * @param e    is the binary expression.
 	 */
 	public void printBinExpr(String name, BinExpr e) {
 		e.left().accept(this);
@@ -292,102 +223,91 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	private BinExpr make_logic_expr(BinExpr e) {
-		Collection normalized = normalize_bin_args(e);
 
-		XPathNode nor_arr[] = new XPathNode[2];
+		Collection<Expr> normalized = normalize_bin_args(e);
+		Expr nor_arr[] = new Expr[2];
 		int j = 0;
 
-		for (Iterator i = normalized.iterator(); i.hasNext();) {
-			nor_arr[j] = (XPathNode) i.next();
+		for (Expr i : normalized) {
+			nor_arr[j] = i;
 			j++;
 		}
 
-		Collection args = new ArrayList();
+		Collection<Expr> args = new ArrayList<Expr>();
 		args.add(nor_arr[0]);
-		e.set_left(make_function(new QName("fn", "boolean",
-				FnFunctionLibrary.XPATH_FUNCTIONS_NS), args));
+		e.set_left(make_function(new QName("fn", "boolean", FnFunctionLibrary.XPATH_FUNCTIONS_NS), args));
 
 		args.clear();
 		args.add(nor_arr[1]);
-		e.set_right(make_function(new QName("fn", "boolean",
-				FnFunctionLibrary.XPATH_FUNCTIONS_NS), args));
+		e.set_right(make_function(new QName("fn", "boolean", FnFunctionLibrary.XPATH_FUNCTIONS_NS), args));
 
 		return e;
 	}
 
 	/**
-	 * @param orex
-	 *            is the 'or' expression.
+	 * @param orex is the 'or' expression.
 	 * @return make logic expr(orex).
 	 */
+	@Override
 	public Object visit(OrExpr orex) {
 		return make_logic_expr(orex);
 	}
 
 	/**
-	 * @param andex
-	 *            is the 'and' expression.
+	 * @param andex is the 'and' expression.
 	 * @return make logic expr(andex).
 	 */
+	@Override
 	public Object visit(AndExpr andex) {
 		return make_logic_expr(andex);
 	}
 
 	/**
-	 * @param cmpex
-	 *            is the compare expression.
+	 * @param cmpex is the compare expression.
 	 * @return cmpex.
 	 */
+	@Override
 	public Object visit(CmpExpr cmpex) {
 		switch (cmpex.type()) {
 		case CmpExpr.EQ:
-			return make_CmpOp(cmpex, new QName("fs", "eq",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "eq", OpFunctionLibrary.XPATH_OP_NS));
 
 		case CmpExpr.NE:
-			return make_CmpOp(cmpex, new QName("fs", "ne",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "ne", OpFunctionLibrary.XPATH_OP_NS));
 
 		case CmpExpr.LT:
-			return make_CmpOp(cmpex, new QName("fs", "lt",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "lt", OpFunctionLibrary.XPATH_OP_NS));
 
 		case CmpExpr.GT:
-			return make_CmpOp(cmpex, new QName("fs", "gt",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "gt", OpFunctionLibrary.XPATH_OP_NS));
 
 		case CmpExpr.LE:
-			return make_CmpOp(cmpex, new QName("fs", "le",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "le", OpFunctionLibrary.XPATH_OP_NS));
 
 		case CmpExpr.GE:
-			return make_CmpOp(cmpex, new QName("fs", "ge",
-					OpFunctionLibrary.XPATH_OP_NS));
+			return make_CmpOp(cmpex, new QName("fs", "ge", OpFunctionLibrary.XPATH_OP_NS));
 
-			// XXX don't have functs!
+		// XXX don't have functs!
 		case CmpExpr.IS:
-			return make_function(new QName("op", "node-equal"),
-					normalize_bin_args(cmpex));
+			return make_function(new QName("op", "node-equal"), normalize_bin_args(cmpex));
 
 		case CmpExpr.LESS_LESS:
-			return make_function(new QName("op", "node-before"),
-					normalize_bin_args(cmpex));
+			return make_function(new QName("op", "node-before"), normalize_bin_args(cmpex));
 
 		case CmpExpr.GREATER_GREATER:
-			return make_function(new QName("op", "node-after"),
-					normalize_bin_args(cmpex));
+			return make_function(new QName("op", "node-after"), normalize_bin_args(cmpex));
 		}
 
 		printBinExpr("CMP" + cmpex.type(), cmpex);
 		return cmpex;
 	}
 
-	private Collection normalize_bin_args(BinExpr e) {
-		Collection args = new ArrayList();
+	private Collection<Expr> normalize_bin_args(BinExpr e) {
 
-		XPathNode left = (XPathNode) e.left().accept(this);
-		XPathNode right = (XPathNode) e.right().accept(this);
+		Expr left = (Expr) e.left().accept(this);
+		Expr right = (Expr) e.right().accept(this);
 
+		Collection<Expr> args = new ArrayList<>();
 		args.add(left);
 		args.add(right);
 
@@ -395,18 +315,17 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param rex
-	 *            is the range expression.
+	 * @param rex is the range expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(RangeExpr rex) {
-		Collection args = normalize_bin_args(rex);
-		return make_function(new QName("op", "to",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		Collection<Expr> args = normalize_bin_args(rex);
+		return make_function(new QName("op", "to", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	private XPathExpr make_xpathexpr(PrimaryExpr pex) {
-		FilterExpr fe = new FilterExpr(pex, new ArrayList());
+		FilterExpr fe = new FilterExpr(pex, Collections.emptyList());
 		return new XPathExpr(0, fe);
 	}
 
@@ -421,12 +340,12 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	private XPathExpr make_convert_operand(XPathExpr arg1, XPathExpr arg2) {
-		Collection args = new ArrayList();
+
+		Collection<Expr> args = new ArrayList<>();
 		args.add(arg1);
 		args.add(arg2);
 
-		return make_function(new QName("fs", "convert-operand",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		return make_function(new QName("fs", "convert-operand", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	private XPathExpr make_double_lit(double d) {
@@ -437,18 +356,18 @@ public class Normalizer implements XPathVisitor {
 	// fs:fname( fs:convert-operand( fn:data(ARG1), 1.0E0 ),
 	// fs:convert-operand( fn:data(ARG2), 1.0E0 )
 	// )
-	private XPathExpr make_convert_binop(BinExpr e, XPathExpr convarg,
-			QName name) {
-		Collection args = normalize_bin_args(e);
+	private XPathExpr make_convert_binop(BinExpr e, XPathExpr convarg, QName name) {
+
+		Collection<Expr> args = normalize_bin_args(e);
 		XPathExpr args_arr[] = new XPathExpr[2];
 		int j = 0;
 
-		for (Iterator i = args.iterator(); i.hasNext();) {
-			args_arr[j] = (XPathExpr) i.next();
+		for (XPathNode i : args) {
+			args_arr[j] = (XPathExpr) i;
 			j++;
 		}
 
-		Collection argsfname = new ArrayList();
+		Collection<Expr> argsfname = new ArrayList<>();
 		for (j = 0; j < 2; j++) {
 			XPathExpr arg = make_convert_operand(args_arr[j], convarg);
 			argsfname.add(arg);
@@ -468,156 +387,144 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param addex
-	 *            is the add expression.
+	 * @param addex is the add expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(AddExpr addex) {
-		return make_ArithOp(addex, new QName("fs", "plus",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(addex, new QName("fs", "plus", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param subex
-	 *            is the sub expression.
+	 * @param subex is the sub expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(SubExpr subex) {
-		return make_ArithOp(subex, new QName("fs", "minus",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(subex, new QName("fs", "minus", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param mulex
-	 *            is the multiply expression.
+	 * @param mulex is the multiply expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(MulExpr mulex) {
-		return make_ArithOp(mulex, new QName("fs", "times",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(mulex, new QName("fs", "times", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param mulex
-	 *            is the division expression.
+	 * @param mulex is the division expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(DivExpr mulex) {
-		return make_ArithOp(mulex, new QName("fs", "div",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(mulex, new QName("fs", "div", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param mulex
-	 *            is the integer division expression that always returns an
-	 *            integer.
+	 * @param mulex is the integer division expression that always returns an
+	 *              integer.
 	 * @return a new function.
 	 */
 	// XXX: integer cast!
+	@Override
 	public Object visit(IDivExpr mulex) {
-		return make_ArithOp(mulex, new QName("fs", "idiv",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(mulex, new QName("fs", "idiv", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param mulex
-	 *            is the mod expression.
+	 * @param mulex is the mod expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(ModExpr mulex) {
-		return make_ArithOp(mulex, new QName("fs", "mod",
-				OpFunctionLibrary.XPATH_OP_NS));
+		return make_ArithOp(mulex, new QName("fs", "mod", OpFunctionLibrary.XPATH_OP_NS));
 	}
 
 	/**
-	 * @param unex
-	 *            is the union expression.
+	 * @param unex is the union expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(UnionExpr unex) {
-		Collection args = normalize_bin_args(unex);
-		return make_function(new QName("op", "union",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		Collection<Expr> args = normalize_bin_args(unex);
+		return make_function(new QName("op", "union", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	/**
-	 * @param pipex
-	 *            is the pipe expression.
+	 * @param pipex is the pipe expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(PipeExpr pipex) {
-		Collection args = normalize_bin_args(pipex);
-		return make_function(new QName("op", "union",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		Collection<Expr> args = normalize_bin_args(pipex);
+		return make_function(new QName("op", "union", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	/**
-	 * @param iexpr
-	 *            is the intersect expression.
+	 * @param iexpr is the intersect expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(IntersectExpr iexpr) {
-		Collection args = normalize_bin_args(iexpr);
-		return make_function(new QName("op", "intersect",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		Collection<Expr> args = normalize_bin_args(iexpr);
+		return make_function(new QName("op", "intersect", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	/**
-	 * @param eexpr
-	 *            is the except expression.
+	 * @param eexpr is the except expression.
 	 * @return a new function.
 	 */
+	@Override
 	public Object visit(ExceptExpr eexpr) {
-		Collection args = normalize_bin_args(eexpr);
-		return make_function(new QName("op", "except",
-				OpFunctionLibrary.XPATH_OP_NS), args);
+		Collection<Expr> args = normalize_bin_args(eexpr);
+		return make_function(new QName("op", "except", OpFunctionLibrary.XPATH_OP_NS), args);
 	}
 
 	/**
-	 * @param ioexp
-	 *            is the instance of expression.
+	 * @param ioexp is the instance of expression.
 	 * @return a ioexp.
 	 */
+	@Override
 	public Object visit(InstOfExpr ioexp) {
 		printBinExpr("INSTANCEOF", ioexp);
 		return ioexp;
 	}
 
 	/**
-	 * @param taexp
-	 *            is the treat as expression.
+	 * @param taexp is the treat as expression.
 	 * @return a taexp.
 	 */
+	@Override
 	public Object visit(TreatAsExpr taexp) {
 		printBinExpr("TREATAS", taexp);
 		return taexp;
 	}
 
 	/**
-	 * @param cexp
-	 *            is the castable expression.
+	 * @param cexp is the castable expression.
 	 * @return cexp.
 	 */
+	@Override
 	public Object visit(CastableExpr cexp) {
 		printBinExpr("CASTABLE", cexp);
 		return cexp;
 	}
 
 	/**
-	 * @param cexp
-	 *            is the cast expression.
+	 * @param cexp is the cast expression.
 	 * @return cexp.
 	 */
+	@Override
 	public Object visit(CastExpr cexp) {
 		printBinExpr("CAST", cexp);
 		return cexp;
 	}
 
 	/**
-	 * @param name
-	 *            is the name.
-	 * @param e
-	 *            is the Un Expression.
+	 * @param name is the name.
+	 * @param e    is the Un Expression.
 	 */
 	public void printUnExpr(String name, UnExpr e) {
 		e.arg().accept(this);
@@ -625,64 +532,63 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the minus expression.
+	 * @param e is the minus expression.
 	 * @return new sub expression
 	 */
+	@Override
 	public Object visit(MinusExpr e) {
+
 		SubExpr se = new SubExpr(make_int_lit(0), e.arg());
 		return se.accept(this);
 	}
 
 	/**
-	 * @param e
-	 *            is the plus expression.
+	 * @param e is the plus expression.
 	 * @return new add expression
 	 */
+	@Override
 	public Object visit(PlusExpr e) {
+		
 		AddExpr ae = new AddExpr(make_int_lit(0), e.arg());
-
 		return ae.accept(this);
 	}
 
-	private XPathExpr make_function(QName name, Collection args) {
+	private XPathExpr make_function(QName name, Collection<Expr> args) {
 
 		FunctionCall fc = new FunctionCall(name, args);
-		FilterExpr fe = new FilterExpr(fc, new ArrayList());
+		FilterExpr fe = new FilterExpr(fc, Collections.emptyList());
 		return new XPathExpr(0, fe);
-
 	}
 
 	private XPathExpr make_root_self_node() {
 
 		// self::node()
 		Step self_node = new ForwardStep(ForwardStep.SELF, new AnyKindTest());
-		StepExpr self_node_expr = new AxisStep(self_node, new ArrayList());
+		StepExpr self_node_expr = new AxisStep(self_node, Collections.emptyList());
 		XPathExpr self_node_xpath = new XPathExpr(0, self_node_expr);
 
 		// fn:root(self::node())
-		Collection args = new ArrayList();
+		Collection<Expr> args = new ArrayList<>();
 		args.add(self_node_xpath);
-		XPathExpr xpe = make_function(new QName("fn", "root",
-				FnFunctionLibrary.XPATH_FUNCTIONS_NS), args);
+		XPathExpr xpe = make_function(new QName("fn", "root", FnFunctionLibrary.XPATH_FUNCTIONS_NS), args);
 
 		return xpe;
 	}
 
 	private XPathExpr make_descendant_or_self() {
-		Step desc_self_node = new ForwardStep(ForwardStep.DESCENDANT_OR_SELF,
-				new AnyKindTest());
-		StepExpr se = new AxisStep(desc_self_node, new ArrayList());
 
+		Step desc_self_node = new ForwardStep(ForwardStep.DESCENDANT_OR_SELF, new AnyKindTest());
+		StepExpr se = new AxisStep(desc_self_node, Collections.emptyList());
 		return new XPathExpr(0, se);
 	}
 
 	/**
-	 * @param e
-	 *            is the xpath expression.
+	 * @param e is the xpath expression.
 	 * @return result.
 	 */
+	@Override
 	public Object visit(XPathExpr e) {
+		
 		XPathExpr xp = e;
 		int depth = 0; // indicates how many / we traversed
 		XPathExpr result = e;
@@ -746,12 +652,13 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the forward step.
+	 * @param e is the forward step.
 	 * @return e
 	 */
 	// XXX: normalzie!
+	@Override
 	public Object visit(ForwardStep e) {
+		
 		int axis = e.axis();
 
 		switch (axis) {
@@ -771,10 +678,10 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the reverse step.
+	 * @param e is the reverse step.
 	 * @return e
 	 */
+	@Override
 	public Object visit(ReverseStep e) {
 
 		if (e.axis() == ReverseStep.DOTDOT) {
@@ -792,10 +699,10 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the Name test.
+	 * @param e is the Name test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(NameTest e) {
 
 		String prefix = e.name().prefix();
@@ -809,95 +716,95 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the veriable reference.
+	 * @param e is the veriable reference.
 	 * @return e
 	 */
+	@Override
 	public Object visit(VarRef e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the string literal.
+	 * @param e is the string literal.
 	 * @return e
 	 */
+	@Override
 	public Object visit(StringLiteral e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the integer literal.
+	 * @param e is the integer literal.
 	 * @return e
 	 */
+	@Override
 	public Object visit(IntegerLiteral e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the double literal.
+	 * @param e is the double literal.
 	 * @return e
 	 */
+	@Override
 	public Object visit(DoubleLiteral e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the decimal literal.
+	 * @param e is the decimal literal.
 	 * @return e
 	 */
+	@Override
 	public Object visit(DecimalLiteral e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the par expression.
+	 * @param e is the par expression.
 	 * @return e
 	 */
+	@Override
 	public Object visit(ParExpr e) {
-		printExprs(e.iterator());
+		printExprs(e);
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the Cntx Item Expression.
+	 * @param e is the Cntx Item Expression.
 	 * @return new function
 	 */
+	@Override
 	public Object visit(CntxItemExpr e) {
 		return new VarRef(new QName("fs", "dot"));
 	}
 
 	/**
-	 * @param e
-	 *            is the fucntion call.
+	 * @param e is the fucntion call.
 	 * @return e
 	 */
 	// XXX: how do we normalize ?
+	@Override
 	public Object visit(FunctionCall e) {
 
-		printExprs(e.iterator());
+		printExprs(e);
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the single type.
+	 * @param e is the single type.
 	 * @return e
 	 */
+	@Override
 	public Object visit(SingleType e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the sequence type.
+	 * @param e is the sequence type.
 	 * @return e
 	 */
+	@Override
 	public Object visit(SequenceType e) {
 		ItemType it = e.item_type();
 
@@ -908,10 +815,10 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the item type.
+	 * @param e is the item type.
 	 * @return e
 	 */
+	@Override
 	public Object visit(ItemType e) {
 
 		switch (e.type()) {
@@ -929,19 +836,19 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the any kind test.
+	 * @param e is the any kind test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(AnyKindTest e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the document test.
+	 * @param e is the document test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(DocumentTest e) {
 
 		switch (e.type()) {
@@ -957,28 +864,28 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the text test.
+	 * @param e is the text test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(TextTest e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the common test.
+	 * @param e is the common test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(CommentTest e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the PI test.
+	 * @param e is the PI test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(PITest e) {
 		String arg = e.arg();
 		if (arg == null)
@@ -988,77 +895,76 @@ public class Normalizer implements XPathVisitor {
 	}
 
 	/**
-	 * @param e
-	 *            is the attribute test.
+	 * @param e is the attribute test.
 	 * @return e
 	 */
 	// XXX NO CHECK ?
+	@Override
 	public Object visit(AttributeTest e) {
 
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the schema attribute test.
+	 * @param e is the schema attribute test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(SchemaAttrTest e) {
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the element test.
+	 * @param e is the element test.
 	 * @return e
 	 */
 	// XXX NO SEMANTIC CHECK?!
+	@Override
 	public Object visit(ElementTest e) {
 
 		return e;
 	}
 
 	/**
-	 * @param e
-	 *            is the schema element test.
+	 * @param e is the schema element test.
 	 * @return e
 	 */
+	@Override
 	public Object visit(SchemaElemTest e) {
 		return e;
 	}
 
-	private void printCollExprs(Iterator i) {
-		while (i.hasNext()) {
-			Collection exprs = (Collection) i.next();
+	private void printCollExprs(Iterable<Collection<Expr>> i) {
 
-			printExprs(exprs.iterator());
+		for (Collection<Expr> coll : i) {
+			printExprs(coll);
 		}
 	}
 
 	/**
-	 * @param e
-	 *            is the axis step.
+	 * @param as is the axis step.
 	 * @return e
 	 */
-	public Object visit(AxisStep e) {
+	@Override
+	public Object visit(AxisStep as) {
 
-		Step s = (Step) e.step().accept(this);
-		e.set_step(s);
-
-		printCollExprs(e.iterator());
-		return e;
+		Step s = (Step) as.step().accept(this);
+		as.set_step(s);
+		printCollExprs(as);
+		return as;
 	}
 
 	/**
-	 * @param e
-	 *            is the filter expression.
+	 * @param fe is the filter expression.
 	 * @return e
 	 */
-	public Object visit(FilterExpr e) {
-		PrimaryExpr pe = (PrimaryExpr) e.primary().accept(this);
-		e.set_primary(pe);
+	@Override
+	public Object visit(FilterExpr fe) {
 
-		printCollExprs(e.iterator());
-		return e;
+		PrimaryExpr pe = (PrimaryExpr) fe.primary().accept(this);
+		fe.set_primary(pe);
+		printCollExprs(fe);
+		return fe;
 	}
+
 }
