@@ -75,15 +75,6 @@ public class DocumentTest extends KindTest {
 	}
 
 	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
-
-	/**
 	 * Get test type.
 	 *
 	 * @return Type of test.
@@ -110,22 +101,36 @@ public class DocumentTest extends KindTest {
 		return _schema_etest;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public QName name() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<DocType> getXDMClassType() {
 		return DocType.class;
+	}
+
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
 	}
 
 }

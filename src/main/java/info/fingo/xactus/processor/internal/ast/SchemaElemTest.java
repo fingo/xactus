@@ -22,7 +22,8 @@ import info.fingo.xactus.processor.internal.types.*;
  * Support for Schema Element Test.
  */
 public class SchemaElemTest extends KindTest {
-	private QName _arg;
+	
+	private final QName arg;
 
 	/**
 	 * Constructor for SchemaElemTest.
@@ -31,16 +32,7 @@ public class SchemaElemTest extends KindTest {
 	 *            QName argument.
 	 */
 	public SchemaElemTest(QName arg) {
-		_arg = arg;
-	}
-
-	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
+		this.arg = arg;
 	}
 
 	/**
@@ -48,22 +40,36 @@ public class SchemaElemTest extends KindTest {
 	 *
 	 * @return Result of QName operation.
 	 */
+	@Override
 	public QName name() {
-		return _arg;
+		return arg;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
-		// TODO Auto-generated method stub
+		// TODO review
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
-		// TODO Auto-generated method stub
+	@Override
+	public Class<AnyType> getXDMClassType() {
+		// TODO review
 		return null;
+	}
+
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
 	}
 
 }

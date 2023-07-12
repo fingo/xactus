@@ -25,32 +25,34 @@ import info.fingo.xactus.processor.internal.types.QName;
  */
 public class AnyKindTest extends KindTest {
 
+	@Override
+	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
+		return null;
+	}
+
+	@Override
+	public QName name() {
+		return null;
+	}
+
+	@Override
+	public boolean isWild() {
+		return false;
+	}
+
+	@Override
+	public Class<NodeType> getXDMClassType() {
+		return NodeType.class;
+	}
+	
 	/**
 	 * Support for Visitor interface.
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
-
-	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
-		return null;
-	}
-
-	public QName name() {
-		return null;
-	}
-
-	public boolean isWild() {
-		return false;
-	}
-
-	public Class getXDMClassType() {
-		return NodeType.class;
-	}
-
-
-
 
 }
