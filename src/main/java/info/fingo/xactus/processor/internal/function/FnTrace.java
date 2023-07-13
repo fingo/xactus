@@ -67,7 +67,7 @@ public class FnTrace extends Function {
 		if (args.size() != 2)
 			DynamicError.throw_type_error();
 
-		Iterator argsi = args.iterator();
+		Iterator<Item> argsi = args.iterator();
 
 		ResultSequence arg1 = (ResultSequence) argsi.next();
 		ResultSequence arg2 = (ResultSequence) argsi.next();
@@ -83,8 +83,8 @@ public class FnTrace extends Function {
 
 		int index = 1;
 
-		for (Iterator i = arg1.iterator(); i.hasNext(); index++) {
-			at = (AnyType) i.next();
+		for (Iterator<Item> i = arg1.iterator(); i.hasNext(); index++) {
+			at = i.next();
 
 			System.out.println(label.value() + " [" + index + "] "
 					+ ((AnyType)at).string_type() + ":" + at.getStringValue());

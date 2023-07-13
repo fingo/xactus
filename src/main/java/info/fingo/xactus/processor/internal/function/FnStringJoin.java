@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
 import info.fingo.xactus.processor.internal.SeqType;
@@ -79,6 +80,7 @@ public class FnStringJoin extends Function {
 	 */
 	public static ResultSequence string_join(Collection args)
 			throws DynamicError {
+		
 		Collection cargs = Function.convert_arguments(args, expected_args());
 
 		Iterator argi = cargs.iterator();
@@ -89,7 +91,7 @@ public class FnStringJoin extends Function {
 		String separator = ((XSString) arg2.first()).value();
 
 		StringBuffer buf = new StringBuffer();
-		for (Iterator i = arg1.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = arg1.iterator(); i.hasNext();) {
 			XSString item = (XSString) i.next();
 			buf.append(item.value());
 

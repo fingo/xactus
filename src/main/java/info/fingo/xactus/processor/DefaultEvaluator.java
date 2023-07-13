@@ -373,12 +373,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		return rs;
 	}
 
-	private void do_for_each(ListIterator iter,
-			Expr finalexpr, ResultBuffer destination) {
+	private void do_for_each(ListIterator<VarExprPair> iter, Expr finalexpr, ResultBuffer destination) {
 
 		// we have more vars to bind...
 		if (iter.hasNext()) {
-			VarExprPair ve = (VarExprPair) iter.next();
+			VarExprPair ve = iter.next();
 
 			// evaluate binding sequence
 			ResultSequence rs = (ResultSequence) ve.expr().accept(this);
@@ -395,7 +394,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and do the expression, concatenating the
 			// result
 
-			for (Iterator i = rs.iterator(); i.hasNext();) {
+			for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 				AnyType item = (AnyType) i.next();
 
 				pushScope(varname, item);
@@ -431,7 +430,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and check the predicate
 
 			try {
-				for (Iterator i = rs.iterator(); i.hasNext();) {
+				for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
 
 					pushScope(varname, item);
@@ -471,7 +470,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and check the expression
 
 			try {
-				for (Iterator i = rs.iterator(); i.hasNext();) {
+				for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
 
 					pushScope(varname, item);
@@ -1126,7 +1125,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		boolean node_types = false;
 
 		// check the results
-		for (Iterator i = results.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = results.iterator(); i.hasNext();) {
 			ResultSequence result = (ResultSequence) i.next();
 
 			// make sure results are of same type, and add them in
@@ -1192,7 +1191,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Axis axis = new DescendantOrSelfAxis();
 
 		// for all nodes, get descendant or self nodes
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType item = (NodeType) i.next();
 
 			axis.iterate(item, res, _dc.getLimitNode());
@@ -1229,8 +1228,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 					// make sure result of previous step are
 					// nodes!
-					for (Iterator i = rs.iterator(); i.hasNext();) {
-						AnyType item = (AnyType) i.next();
+					for (Item next : rs) {
+						AnyType item = (AnyType)next;
 
 						if (!(item instanceof NodeType)) {
 							report_error(TypeError.step_conatins_atoms(null));
@@ -1458,7 +1457,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		ResultBuffer rb = new ResultBuffer();
 
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType nt = (NodeType) i.next();
 
 			// check if node passes name test
@@ -1666,7 +1665,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	private ResultSequence item_test(ResultSequence rs, QName qname) {
 		ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			AnyType item = (AnyType) i.next();
 
 			if (item instanceof NodeType) {
@@ -1688,12 +1687,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		return rb.getSequence();
 	}
 
-    private ResultSequence kind_test(ResultSequence rs, Class kind) {
+    private ResultSequence kind_test(ResultSequence rs, Class<?> kind) {
+    	
     	ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
-			Item item = (Item) i.next();
-			if (kind.isInstance(item))
+		for (Item item : rs) {
+			if (kind.isInstance(item)) {
 				rb.add(item);
+			}
 		}
 		return rb.getSequence();
 	}
@@ -1730,7 +1730,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// for all docs, find the ones with exactly one element, and do
 		// the element test
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			DocType doc = (DocType) i.next();
 			int elem_count = 0;
 			ElementType elem = null;
@@ -1824,7 +1824,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			return kind_test(arg, PIType.class);
 
     	ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = arg.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = arg.iterator(); i.hasNext();) {
 			AnyType item = (AnyType) i.next();
 
 			// match PI
@@ -1858,7 +1858,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		QName name = e.name();
 		QName type = e.type();
 
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 			// match the name if it's not a wild card
 			if (name != null && !e.wild()) {
@@ -1891,7 +1891,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// match the name
 		QName name = e.arg();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			if (!name_test((NodeType) i.next(), name, "attribute"))
 
 				i.remove();
@@ -1899,7 +1899,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// check the type
 		TypeDefinition et = _sc.getTypeModel().lookupAttributeDeclaration(name.namespace(), name.local());
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (! derivesFrom(node, et))
@@ -1926,7 +1926,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		ResultBuffer rb = new ResultBuffer();
 		QName nameTest = e.name();
 		QName typeTest = e.type();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (nameTest != null && !e.wild()) {
@@ -1964,15 +1964,15 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		// match the name
 		// XXX substitution groups
 		QName name = e.name();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
-			if (!name_test((ElementType) i.next(), name, "element"))
-
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
+			if (!name_test((ElementType) i.next(), name, "element")) {
 				i.remove();
+			}
 		}
 
 		// check the type
 		TypeDefinition et = _sc.getTypeModel().lookupElementDeclaration(name.namespace(), name.local());
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (! derivesFrom(node, et)) {

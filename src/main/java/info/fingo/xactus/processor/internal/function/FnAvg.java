@@ -23,8 +23,8 @@ package info.fingo.xactus.processor.internal.function;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Iterator;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.api.typesystem.TypeDefinition;
@@ -43,6 +43,7 @@ import info.fingo.xactus.processor.internal.utils.TypePromoter;
  * sum of the values divided by the number of values.
  */
 public class FnAvg extends Function {
+	
 	/**
 	 * Constructor for FnAvg.
 	 */
@@ -75,9 +76,9 @@ public class FnAvg extends Function {
 	public static ResultSequence avg(Collection args) throws DynamicError {
 
 		ResultSequence arg = (ResultSequence)args.iterator().next();
-
-		if (arg.empty())
+		if (arg.empty()) {
 			return ResultBuffer.EMPTY;
+		}
 
 		int elems = 0;
 
@@ -86,9 +87,10 @@ public class FnAvg extends Function {
 		TypePromoter tp = new ScalarTypePromoter();
 		tp.considerSequence(arg);
 
-		for (Iterator i = arg.iterator(); i.hasNext();) {
+		for (Item next : arg) {
+
 			++elems;
-			AnyAtomicType conv = tp.promote((AnyType) i.next());
+			AnyAtomicType conv = tp.promote((AnyType) next);
 			if( conv != null ){
 
 				if (conv instanceof XSDouble && ((XSDouble)conv).nan() || conv instanceof XSFloat && ((XSFloat)conv).nan()) {

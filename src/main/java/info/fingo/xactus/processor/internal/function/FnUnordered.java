@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
-import info.fingo.xactus.processor.internal.types.AnyType;
 import info.fingo.xactus.processor.internal.types.QName;
 
 /**
@@ -70,16 +71,19 @@ public class FnUnordered extends Function {
 			return ResultBuffer.EMPTY;
 
 		// XXX lame
-		ArrayList tmp = new ArrayList();
-		for (Iterator i = arg.iterator(); i.hasNext();)
-			tmp.add(i.next());
+		List<Item> tmp = new ArrayList<>();
+		for (Item next : arg) {
+			tmp.add(next);
+		}
 
 		Collections.shuffle(tmp);
 
 		ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = tmp.iterator(); i.hasNext();)
-			rb.add((AnyType) i.next());
+		for (Item next : tmp) {
+			rb.add(next);
+		}
 
 		return rb.getSequence();
 	}
+	
 }

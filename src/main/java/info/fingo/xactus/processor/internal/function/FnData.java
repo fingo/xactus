@@ -18,7 +18,6 @@
 package info.fingo.xactus.processor.internal.function;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import info.fingo.xactus.api.EvaluationContext;
 import info.fingo.xactus.api.Item;
@@ -72,9 +71,9 @@ public class FnData extends Function {
 
 		ResultBuffer rs = new ResultBuffer();
 
-		for (Iterator i = arg.iterator(); i.hasNext();) {
-			AnyType at = (AnyType) i.next();
+		for (Item next : arg) {
 
+			AnyType at = (AnyType) next;
 			if (at instanceof AnyAtomicType) {
 				rs.add(at);
 			}

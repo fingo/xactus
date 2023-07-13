@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.apache.xerces.xs.XSConstants;
+
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.api.typesystem.ComplexTypeDefinition;
@@ -158,7 +160,7 @@ public abstract class NodeType extends AnyType {
 	{
 		ResultBuffer res = new ResultBuffer();
 
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 			boolean added = false;
 

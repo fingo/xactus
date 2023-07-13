@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
 import info.fingo.xactus.processor.internal.SeqType;
@@ -81,6 +82,7 @@ public class FnCodepointsToString extends Function {
 	 */
 	public static ResultSequence codepoints_to_string(Collection args)
 			throws DynamicError {
+		
 		Collection cargs = Function.convert_arguments(args, expected_args());
 
 		ResultSequence arg1 = (ResultSequence) cargs.iterator().next();
@@ -90,8 +92,8 @@ public class FnCodepointsToString extends Function {
 
 		int[] codePointArray = new int[arg1.size()];
 		int codePointIndex = 0;
-		for (Iterator i = arg1.iterator(); i.hasNext();) {
-			XSInteger code = (XSInteger) i.next();
+		for (Item i : arg1) {
+			XSInteger code = (XSInteger) i;
 
 			int codepoint = code.int_value().intValue();
 			if (codepoint < MIN_LEGAL_CODEPOINT || codepoint > MAX_LEGAL_CODEPOINT) {

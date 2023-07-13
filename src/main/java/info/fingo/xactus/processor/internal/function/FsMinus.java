@@ -77,7 +77,7 @@ public class FsMinus extends Function {
 		// make sure we got only one arg
 		if (args.size() != 1)
 			DynamicError.throw_type_error();
-		ResultSequence arg = (info.fingo.xactus.api.ResultSequence) args.iterator().next();
+		ResultSequence arg = (ResultSequence) args.iterator().next();
 
 		// make sure we got only one numeric atom
 		if (arg.size() != 1)

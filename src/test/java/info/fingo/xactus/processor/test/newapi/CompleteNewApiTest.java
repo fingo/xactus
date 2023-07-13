@@ -33,6 +33,7 @@ import org.apache.xerces.xs.ElementPSVI;
 import org.apache.xerces.xs.XSModel;
 import info.fingo.xactus.processor.testutil.bundle.Platform;
 import info.fingo.xactus.api.DynamicContext;
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.api.StaticContext;
 import info.fingo.xactus.api.XPath2Expression;
@@ -102,8 +103,9 @@ public class CompleteNewApiTest extends TestCase {
 	}
 
 	protected String buildResultString(ResultSequence rs) {
+		
 		String actual = new String();
-		Iterator iterator = rs.iterator();
+		Iterator<Item> iterator = rs.iterator();
 		while (iterator.hasNext()) {
 			AnyType anyType = (AnyType)iterator.next();
 			actual = actual + anyType.getStringValue() + " ";
@@ -112,7 +114,8 @@ public class CompleteNewApiTest extends TestCase {
 		return actual.trim();
 	}
 
-	protected Object evaluateSimpleXPath(String xpath, StaticContext sc, Document doc, Class resultClass) {
+	protected Object evaluateSimpleXPath(String xpath, StaticContext sc, Document doc, Class<?> resultClass) {
+		
 		XPath2Expression path = new Engine().parseExpression(xpath, sc);
 
 		DynamicContext dynamicContext = new DynamicContextBuilder(sc);

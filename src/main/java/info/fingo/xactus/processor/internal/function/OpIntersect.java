@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
@@ -76,13 +77,13 @@ public class OpIntersect extends Function {
 		ResultSequence two = (ResultSequence) iter.next();
 
 		// XXX lame
-		for (Iterator i = one.iterator(); i.hasNext();) {
-			NodeType node = (NodeType) i.next();
+		for (Item oneItem : one) {
+			NodeType node = (NodeType) oneItem;
 			boolean found = false;
 
 			// death
-			for (Iterator j = two.iterator(); j.hasNext();) {
-				NodeType node2 = (NodeType) j.next();
+			for (Item twoNode : two) {
+				NodeType node2 = (NodeType) twoNode;
 
 				if (node.node_value() == node2.node_value()) {
 					found = true;

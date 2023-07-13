@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import info.fingo.xactus.api.DynamicContext;
 import info.fingo.xactus.api.EvaluationContext;
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
 import info.fingo.xactus.processor.internal.types.AnyAtomicType;
@@ -107,14 +108,15 @@ public class FnDeepEqual extends AbstractCollationEqualFunction {
 	 * @return Result of fn:deep-equal operation.
 	 */
 	public static boolean deep_equal(ResultSequence one, ResultSequence two, EvaluationContext context, String collationURI) {
+		
 		if (one.empty() && two.empty())
 			return true;
 
 		if (one.size() != two.size())
 			return false;
 
-		Iterator onei = one.iterator();
-		Iterator twoi = two.iterator();
+		Iterator<Item> onei = one.iterator();
+		Iterator<Item> twoi = two.iterator();
 
 		while (onei.hasNext()) {
 			AnyType a = (AnyType) onei.next();

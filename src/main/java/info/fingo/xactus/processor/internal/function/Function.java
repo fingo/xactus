@@ -230,8 +230,8 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 			info.fingo.xactus.api.ResultSequence rs = FnData.atomize(arg);
 
 			// cast untyped to expected type
-			for (Iterator i = rs.iterator(); i.hasNext();) {
-				AnyType item = (AnyType) i.next();
+			for (Item i : rs) {
+				AnyType item = (AnyType) i;
 
 				if (item instanceof XSUntypedAtomic) {
 					// create a new item of the expected

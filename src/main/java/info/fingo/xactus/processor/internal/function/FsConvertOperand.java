@@ -88,8 +88,8 @@ public class FsConvertOperand extends Function {
 			return result.getSequence();
 
 		// convert sequence
-		for (Iterator i = actual.iterator(); i.hasNext();) {
-			AnyType item = (AnyType) i.next();
+		for (Item i : actual) {
+			AnyType item = (AnyType) i;
 
 			// 2
 			if (item instanceof XSUntypedAtomic) {

@@ -14,8 +14,6 @@
 
 package info.fingo.xactus.api;
 
-import java.util.Iterator;
-
 import info.fingo.xactus.api.typesystem.ItemType;
 
 /**
@@ -23,10 +21,11 @@ import info.fingo.xactus.api.typesystem.ItemType;
  *
  * @since 2.0
  */
-public interface ResultSequence {
+public interface ResultSequence extends Iterable<Item> {
+
 	/**
-	 * Return the size of the result set. Only call this if you need it, since it may require that the entire result
-	 * is fetched.
+	 * Return the size of the result set. Only call this if you need it, since it
+	 * may require that the entire result is fetched.
 	 *
 	 * @return Count of items.
 	 */
@@ -71,13 +70,6 @@ public interface ResultSequence {
 	boolean empty();
 
 	/**
-	 * Iterator of Item elements
-	 *
-	 * @return
-	 */
-	Iterator<Item> iterator();
-
-	/**
 	 *
 	 *
 	 * @return
@@ -90,4 +82,5 @@ public interface ResultSequence {
 	 * @return Item type definition.
 	 */
 	ItemType sequenceType();
+
 }

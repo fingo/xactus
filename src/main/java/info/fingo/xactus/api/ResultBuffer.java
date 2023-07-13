@@ -29,7 +29,7 @@ import info.fingo.xactus.processor.internal.types.builtin.SingleItemSequence;
  */
 public class ResultBuffer {
 
-	private ArrayList<Item> values = new ArrayList<Item>();
+	private ArrayList<Item> values = new ArrayList<>();
 
 	public ResultSequence getSequence() {
 		if (values.size() == 0) return EMPTY;
@@ -47,14 +47,45 @@ public class ResultBuffer {
 		return this;
 	}
 
-	public ResultBuffer append(Item at) {
-		values.add(at);
-		return this;
-	}
-
 	public ResultBuffer concat(ResultSequence rs) {
 		values.addAll(collectionWrapper(rs));
 		return this;
+	}
+
+	public int size() {
+		return values.size();
+	}
+
+	public ListIterator<Item> iterator() {
+		return values.listIterator();
+	}
+
+	public void prepend(ResultSequence rs) {
+		values.addAll(0, collectionWrapper(rs));
+	}
+
+	public Collection<Item> getCollection() {
+		return this.values;
+	}
+
+	public ResultBuffer concat(Collection<Item> others) {
+		this.values.addAll(others);
+		return this;
+	}
+
+	public static ResultSequence wrap(Item item) {
+		if (item instanceof SingleItemSequence)
+			return (SingleItemSequence)item;
+
+		return new SingleResultSequence(item);
+	}
+
+	public Item item(int index) {
+		return values.get(index);
+	}
+
+	public void addAt(int pos, Item element) {
+		values.add(pos, element);
 	}
 
 	public static final class SingleResultSequence implements ResultSequence {
@@ -112,15 +143,16 @@ public class ResultBuffer {
 		/* (non-Javadoc)
 		 * @see info.fingo.xactus.api.ResultSequence#iterator()
 		 */
-		public Iterator iterator() {
-			return new Iterator() {
+		public Iterator<Item> iterator() {
+			
+			return new Iterator<Item>() {
 				boolean seenIt = false;
 
 				public final void remove() {
 					throw new UnsupportedOperationException("ResultSequences are immutable");
 				}
 
-				public final Object next() {
+				public final Item next() {
 					if (! seenIt) {
 						seenIt = true;
 						return value;
@@ -134,13 +166,16 @@ public class ResultBuffer {
 			};
 		}
 
+		@Override
 		public ItemType itemType(int index) {
 			return item(index).getItemType();
 		}
 
+		@Override
 		public ItemType sequenceType() {
 			return value.getItemType();
 		}
+		
 	}
 
 	public static final class ArrayResultSequence implements ResultSequence {
@@ -190,15 +225,16 @@ public class ResultBuffer {
 		/* (non-Javadoc)
 		 * @see info.fingo.xactus.api.ResultSequence#iterator()
 		 */
-		public Iterator iterator() {
-			return new Iterator() {
+		public Iterator<Item> iterator() {
+			
+			return new Iterator<Item>() {
 				int nextIndex = 0;
 
 				public final void remove() {
 					throw new UnsupportedOperationException("ResultSequences are immutable");
 				}
 
-				public final Object next() {
+				public final Item next() {
 					if (nextIndex < results.length) {
 						return results[nextIndex++];
 					}
@@ -223,67 +259,69 @@ public class ResultBuffer {
 		public Object value(int index) {
 			return item(index).getNativeValue();
 		}
-	}
-
-	public int size() {
-		return values.size();
-	}
-
-	public ListIterator iterator() {
-		return values.listIterator();
-	}
-
-	public void prepend(ResultSequence rs) {
-		values.addAll(0, collectionWrapper(rs));
+		
 	}
 
 	private Collection<Item> collectionWrapper(final ResultSequence rs) {
+		
 		// This is a dummy collections, solely exists for faster inserts into our array
 		return new Collection<Item>() {
 
+			@Override
 			public boolean add(Item arg0) {
 				return false;
 			}
 
-			public boolean addAll(Collection arg0) {
+			@Override
+			public boolean addAll(Collection<? extends Item> arg0) {
 				return false;
 			}
 
+			@Override
 			public void clear() {
 			}
 
+			@Override
 			public boolean contains(Object arg0) {
 				return false;
 			}
-
-			public boolean containsAll(Collection arg0) {
+			
+			@Override
+			public boolean containsAll(Collection<?> arg0) {
 				return false;
 			}
 
+			@Override
 			public boolean isEmpty() {
 				return rs.empty();
 			}
 
-			public Iterator/*<Item>*/ iterator() {
+			@Override
+			public Iterator<Item> iterator() {
 				return rs.iterator();
 			}
 
+			@Override
 			public boolean remove(Object arg0) {
 				return false;
 			}
 
-			public boolean removeAll(Collection arg0) {
+			@Override
+			public boolean removeAll(Collection<?> arg0) {
 				return false;
 			}
 
-			public boolean retainAll(Collection arg0) {
+			@Override
+			public boolean retainAll(Collection<?> arg0) {
 				return false;
 			}
 
+			@Override
 			public int size() {
 				return rs.size();
 			}
 
+			@Override
 			public Object[] toArray() {
 				return toArray(new Item[size()]);
 			}
@@ -296,82 +334,74 @@ public class ResultBuffer {
 				}
 				return arg0;
 			}
+			
 		};
 	}
 
 	public final static ResultSequence EMPTY = new ResultSequence() {
 
+		@Override
 		public int size() {
 			return 0;
 		}
 
+		@Override
 		public Item item(int index) {
 			throw new IndexOutOfBoundsException("Sequence is empty!");
 		}
 
+		@Override
 		public boolean empty() {
 			return true;
 		}
 
+		@Override
 		public ItemType itemType(int index) {
 			throw new IndexOutOfBoundsException("Sequence is empty!");
 		}
 
+		@Override
 		public ItemType sequenceType() {
 			return new SimpleAtomicItemTypeImpl(BuiltinTypeLibrary.XS_ANYTYPE, ItemType.OCCURRENCE_ONE_OR_MANY);
 		}
 
+		@Override
 		public Object value(int index) {
 			throw new IndexOutOfBoundsException("Sequence is empty!");
 		}
 
+		@Override
 		public Object firstValue() {
 			throw new IndexOutOfBoundsException("Sequence is empty!");
 		}
 
+		@Override
 		public Item first() {
 			throw new IndexOutOfBoundsException("Sequence is empty!");
 		}
 
-		public Iterator iterator() {
-			return new Iterator() {
+		public Iterator<Item> iterator() {
+			
+			return new Iterator<Item>() {
 
-				public void remove() {
-					throw new UnsupportedOperationException("ResultSequences are immutable");
-				}
-
-				public Object next() {
+				@Override
+				public Item next() {
 					throw new IllegalStateException("This ResultSequence is empty");
 				}
 
+				@Override
 				public boolean hasNext() {
 					return false;
 				}
+				
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("ResultSequences are immutable");
+				}
+				
 			};
 		}
+		
 	};
-
-	public Collection<Item> getCollection() {
-		return this.values;
-	}
-
-	public ResultBuffer concat(Collection/*<Item>*/ others) {
-		this.values.addAll(others);
-		return this;
-	}
-
-	public static ResultSequence wrap(Item item) {
-		if (item instanceof SingleItemSequence)
-			return (SingleItemSequence)item;
-
-		return new SingleResultSequence(item);
-	}
-
-	public Item item(int index) {
-		return values.get(index);
-	}
-
-	public void addAt(int pos, Item element) {
-		values.add(pos, element);
-	}
+	
 }
