@@ -30,7 +30,6 @@ import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.api.typesystem.TypeDefinition;
 import info.fingo.xactus.processor.DynamicError;
-import info.fingo.xactus.processor.ResultSequenceFactory;
 import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 
 /**
@@ -39,6 +38,7 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 public class XSInteger extends XSDecimal {
 
 	private static final String XS_INTEGER = "xs:integer";
+	
 	private BigInteger _value;
 
 	/**
@@ -120,6 +120,7 @@ public class XSInteger extends XSDecimal {
 	 * @return New ResultSequence consisting of the integer supplied
 	 * @throws DynamicError
 	 */
+	@Override
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
 		if (arg.empty())
 			return ResultBuffer.EMPTY;
@@ -137,7 +138,6 @@ public class XSInteger extends XSDecimal {
 		if (!isCastable(aat)) {
 			throw DynamicError.cant_cast(null);
 		}
-
 
 		try {
 			BigInteger bigInt = castInteger(aat);
@@ -229,9 +229,9 @@ public class XSInteger extends XSDecimal {
 		return createResult( result );
 	}
 
-
-	private ResultSequence convertResultSequence(ResultSequence arg)
+	protected ResultSequence convertResultSequence(ResultSequence arg)
 			throws DynamicError {
+		
 		ResultSequence carg = arg;
 		Iterator it = carg.iterator();
 		while (it.hasNext()) {
@@ -436,4 +436,5 @@ public class XSInteger extends XSDecimal {
 		}
 		return new XSDecimal( result );
 	}
+	
 }

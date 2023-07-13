@@ -13,6 +13,8 @@
 
 package info.fingo.xactus.processor.internal.types;
 
+import java.util.Iterator;
+
 import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
@@ -98,6 +100,23 @@ MathPlus, MathMinus, MathTimes, MathDiv, MathIDiv, MathMod {
 		return rs.first();
 	}
 
+	protected ResultSequence convertResultSequence(ResultSequence arg)
+			throws DynamicError {
+		
+		ResultSequence carg = arg;
+		Iterator it = carg.iterator();
+		while (it.hasNext()) {
+			AnyType type = (AnyType) it.next();
+			if (type.string_type().equals("xs:untypedAtomic") ||
+				type.string_type().equals("xs:string")) {
+				throw DynamicError.throw_type_error();
+			}
+		}
+
+		carg = constructor(carg);
+		return carg;
+	}
+
 	/***
 	 * Check whether the supplied node is of the supplied type
 	 *
@@ -119,7 +138,8 @@ MathPlus, MathMinus, MathTimes, MathDiv, MathIDiv, MathMod {
 	}
 
 	public static Item get_single_type(AnyType at, Class type)
-	throws DynamicError {
+			throws DynamicError {
+		
 		return get_single_type((Item)at, type);
 	}
 
@@ -137,14 +157,17 @@ MathPlus, MathMinus, MathTimes, MathDiv, MathIDiv, MathMod {
 	 */
 	public static AnyType get_single_type(ResultSequence rs, Class type)
 			throws DynamicError {
-		if (rs.size() != 1)
+		
+		if (rs.size() != 1) {
 			DynamicError.throw_type_error();
+		}
 
 		Item at = rs.first();
-
-		if (!type.isInstance(at))
+		if (!type.isInstance(at)) {
 			DynamicError.throw_type_error();
+		}
 
 		return (AnyType) at;
 	}
+	
 }

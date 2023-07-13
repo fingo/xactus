@@ -24,7 +24,6 @@ package info.fingo.xactus.processor.internal.types;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Iterator;
 
 import info.fingo.xactus.api.DynamicContext;
 import info.fingo.xactus.api.Item;
@@ -40,6 +39,7 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 public class XSDecimal extends NumericType {
 
 	private static final String XS_DECIMAL = "xs:decimal";
+	
 	private BigDecimal _value;
 
 	/**
@@ -117,9 +117,12 @@ public class XSDecimal extends NumericType {
 	 * @throws DynamicError
 	 * @return A new result sequence consisting of the decimal number supplied.
 	 */
+	@Override
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
-		if (arg.empty())
+	
+		if (arg.empty()) {
 			return ResultBuffer.EMPTY;
+		}
 
 		Item aat = arg.first();
 
@@ -311,21 +314,6 @@ public class XSDecimal extends NumericType {
 		return new XSDecimal( _value.add( dt.getValue() ) );
 	}
 
-	private ResultSequence convertResultSequence(ResultSequence arg)
-			throws DynamicError {
-		ResultSequence carg = arg;
-		Iterator it = carg.iterator();
-		while (it.hasNext()) {
-			AnyType type = (AnyType) it.next();
-			if (type.string_type().equals("xs:untypedAtomic") ||
-				type.string_type().equals("xs:string")) {
-				throw DynamicError.invalidType();
-			}
-		}
-		carg = constructor(carg);
-		return carg;
-	}
-
 	/**
 	 * Mathematical subtraction operator between this XSDecimal and the supplied
 	 * ResultSequence.
@@ -504,11 +492,13 @@ public class XSDecimal extends NumericType {
 	 * @param precision An integer precision
 	 * @return A XSDecimal representing the closest long of the number stored.
 	 */
+	@Override
 	public NumericType round_half_to_even(int precision) {
 		BigDecimal round = _value.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
 		return new XSDecimal(round);
 	}
 
+	@Override
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_DECIMAL;
 	}
