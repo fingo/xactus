@@ -13,8 +13,15 @@
 
 package info.fingo.xactus.processor.internal.ast;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * Support for Step expressions.
  */
-public abstract class StepExpr extends Expr {
+public abstract class StepExpr extends Expr implements Iterable<Collection<Expr>> {
+	
+	@Override
+	public abstract Iterator<Collection<Expr>> iterator();
+	
 }

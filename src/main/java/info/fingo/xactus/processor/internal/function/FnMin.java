@@ -19,10 +19,10 @@
 package info.fingo.xactus.processor.internal.function;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import info.fingo.xactus.api.DynamicContext;
 import info.fingo.xactus.api.EvaluationContext;
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
@@ -75,16 +75,17 @@ public class FnMin extends Function {
 	public static ResultSequence min(Collection args, DynamicContext context) throws DynamicError {
 
 		ResultSequence arg = FnMax.get_arg(args, CmpLt.class);
-		if (arg.empty())
+		if (arg.empty()) {
 			return ResultBuffer.EMPTY;
+		}
 
 		CmpLt max = null;
 
 		TypePromoter tp = new ComparableTypePromoter();
 		tp.considerSequence(arg);
 
-		for (Iterator i = arg.iterator(); i.hasNext();) {
-			AnyAtomicType conv = tp.promote((AnyType) i.next());
+		for (Item next : arg) {
+			AnyAtomicType conv = tp.promote((AnyType) next);
 
 			if( conv != null ){
 

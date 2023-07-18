@@ -33,7 +33,8 @@ import org.w3c.dom.NodeList;
  * Class for Element testing.
  */
 public class ElementTest extends AttrElemTest {
-	private boolean _qmark = false;
+	
+	private final boolean qmark;
 
 	private AnyType anyType = null;
 
@@ -52,7 +53,7 @@ public class ElementTest extends AttrElemTest {
 	 */
 	public ElementTest(QName name, boolean wild, QName type, boolean qmark) {
 		super(name, wild, type);
-		_qmark = qmark;
+		this.qmark = qmark;
 	}
 
 	/**
@@ -68,6 +69,7 @@ public class ElementTest extends AttrElemTest {
 	 */
 	public ElementTest(QName name, boolean wild, QName type) {
 		super(name, wild, type);
+		this.qmark = false;
 	}
 
 	/**
@@ -81,6 +83,7 @@ public class ElementTest extends AttrElemTest {
 	 */
 	public ElementTest(QName name, boolean wild) {
 		super(name, wild);
+		this.qmark = false;
 	}
 
 	/**
@@ -88,15 +91,7 @@ public class ElementTest extends AttrElemTest {
 	 */
 	public ElementTest() {
 		super();
-	}
-
-	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
+		this.qmark = false;
 	}
 
 	/**
@@ -105,17 +100,17 @@ public class ElementTest extends AttrElemTest {
 	 * @return Result of operation.
 	 */
 	public boolean qmark() {
-		return _qmark;
+		return qmark;
 	}
 
+	@Override
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
 
 		if (name() == null && !wild()) {
 			return new ElementType();
 		}
 
-		Item at = rs.first();
-
+		final Item at = rs.first();
 		if (!(at instanceof NodeType)) {
 			return new ElementType();
 		}
@@ -124,6 +119,7 @@ public class ElementTest extends AttrElemTest {
 	}
 
 	private AnyType createElementType(Item at, StaticContext sc) {
+		
 		anyType = new ElementType();
 		NodeType nodeType = (NodeType) at;
 		Node node = nodeType.node_value();
@@ -168,20 +164,35 @@ public class ElementTest extends AttrElemTest {
 		return anyType;
 	}
 
+	@Override
 	public boolean isWild() {
 		return wild();
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<ElementType> getXDMClassType() {
 		return ElementType.class;
 	}
 
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
+	}
+
 	private static class SingleItemNodeListImpl implements NodeList {
-		private Node node;
+		
+		private final Node node;
+
 		public SingleItemNodeListImpl(Node node) {
 			this.node = node;
 		}
 
+		@Override
 		public Node item(int index) {
 			return node;
 		}

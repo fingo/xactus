@@ -19,21 +19,21 @@ import java.util.*;
 /**
  * Class for the For expression.
  */
-public class ForExpr extends Expr {
-	private Collection _var_expr_pairs;
-	private Expr _return;
+public class ForExpr extends Expr implements Iterable<VarExprPair> {
+
+	private final Collection<VarExprPair> var_expr_pairs;
+	private Expr return_expr;
 
 	/**
 	 * Constructor for ForExpr.
 	 *
-	 * @param varexp
-	 *            Expressions.
-	 * @param ret
-	 *            Return expression.
+	 * @param varexp Expressions.
+	 * @param ret    Return expression.
 	 */
-	public ForExpr(Collection varexp, Expr ret) {
-		_var_expr_pairs = varexp;
-		_return = ret;
+	public ForExpr(Collection<VarExprPair> varexp, Expr ret) {
+
+		this.var_expr_pairs = varexp;
+		this.return_expr = ret;
 	}
 
 	/**
@@ -41,6 +41,7 @@ public class ForExpr extends Expr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -50,8 +51,9 @@ public class ForExpr extends Expr {
 	 *
 	 * @return Result of Iterator operation.
 	 */
-	public Iterator iterator() {
-		return _var_expr_pairs.iterator();
+	@Override
+	public Iterator<VarExprPair> iterator() {
+		return var_expr_pairs.iterator();
 	}
 
 	/**
@@ -60,17 +62,16 @@ public class ForExpr extends Expr {
 	 * @return Result of Expr operation.
 	 */
 	public Expr expr() {
-		return _return;
+		return return_expr;
 	}
 
 	/**
 	 * Set Expression.
 	 *
-	 * @param e
-	 *            Expression.
+	 * @param e Expression.
 	 */
 	public void set_expr(Expr e) {
-		_return = e;
+		return_expr = e;
 	}
 
 	// used for normalization... basically just keep a "simple for"... no
@@ -81,10 +82,11 @@ public class ForExpr extends Expr {
 	public void truncate_pairs() {
 		boolean first = true;
 
-		for (Iterator i = _var_expr_pairs.iterator(); i.hasNext();) {
+		for (Iterator<VarExprPair> i = var_expr_pairs.iterator(); i.hasNext();) {
 			i.next();
-			if (!first)
+			if (!first) {
 				i.remove();
+			}
 
 			first = false;
 		}
@@ -95,7 +97,8 @@ public class ForExpr extends Expr {
 	 *
 	 * @return Expression pairs.
 	 */
-	public Collection ve_pairs() {
-		return _var_expr_pairs;
+	public Collection<VarExprPair> ve_pairs() {
+		return var_expr_pairs;
 	}
+
 }

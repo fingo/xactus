@@ -97,8 +97,8 @@ public class FnRemove extends Function {
 
 		int curpos = 1;
 
-		for (Iterator i = target.iterator(); i.hasNext();) {
-			at = (AnyType) i.next();
+		for (Item i : target) {
+			at = (AnyType) i;
 
 			if (curpos != position)
 				rs.add(at);

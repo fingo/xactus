@@ -129,8 +129,8 @@ public class FnSubsequence extends Function {
 		int pos = 1; // index running parallel to the iterator
 		int addedItems = 0;
 		if (effectiveNoItems > 0) {
-			for (Iterator seqIter = seq.iterator(); seqIter.hasNext();) {
-				at = (AnyType) seqIter.next();
+			for (Item next : seq) {
+				at = (AnyType) next;
 				if (start <= pos && addedItems < effectiveNoItems) {
 					rs.add(at);
 					addedItems++;

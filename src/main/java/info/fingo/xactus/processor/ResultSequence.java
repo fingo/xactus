@@ -13,7 +13,6 @@
 
 package info.fingo.xactus.processor;
 
-import java.util.Iterator;
 import java.util.ListIterator;
 
 import info.fingo.xactus.api.Item;
@@ -106,8 +105,8 @@ public abstract class ResultSequence implements info.fingo.xactus.api.ResultSequ
 		int num = 1;
 
 		StringBuffer buf = new StringBuffer();
-		for (Iterator i = iterator(); i.hasNext();) {
-			AnyType elem = (AnyType) i.next();
+		for (Item next: this) {
+			AnyType elem = (AnyType) next;
 
 			buf.append(num + ") ");
 

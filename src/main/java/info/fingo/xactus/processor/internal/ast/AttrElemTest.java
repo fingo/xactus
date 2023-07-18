@@ -20,9 +20,10 @@ import info.fingo.xactus.api.typesystem.TypeDefinition;
  * Common base class for Attribute and Element tests.
  */
 public abstract class AttrElemTest extends KindTest {
-	private QName _name;
-	private QName _type; // may be null
-	private boolean _wild; // use wild qname ?
+	
+	private final QName name;
+	private final QName type; // may be null
+	private final boolean wild; // use wild qname ?
 
 	/**
 	 * Constructor for Attribute and Element tests. This takes in 3 inputs,
@@ -36,9 +37,9 @@ public abstract class AttrElemTest extends KindTest {
 	 *            QName type.
 	 */
 	public AttrElemTest(QName name, boolean wild, QName type) {
-		_name = name;
-		_wild = wild;
-		_type = type;
+		this.name = name;
+		this.wild = wild;
+		this.type = type;
 	}
 
 	/**
@@ -68,7 +69,7 @@ public abstract class AttrElemTest extends KindTest {
 	 * @return Result of wildcard test.
 	 */
 	public boolean wild() {
-		return _wild;
+		return wild;
 	}
 
 	/**
@@ -76,8 +77,9 @@ public abstract class AttrElemTest extends KindTest {
 	 *
 	 * @return Result of name test.
 	 */
+	@Override
 	public QName name() {
-		return _name;
+		return name;
 	}
 
 	/**
@@ -86,12 +88,14 @@ public abstract class AttrElemTest extends KindTest {
 	 * @return Result of type test.
 	 */
 	public QName type() {
-		return _type;
+		return type;
 	}
 
 	protected short getDerviationTypes() {
-		return TypeDefinition.DERIVATION_LIST | TypeDefinition.DERIVATION_EXTENSION
+		return TypeDefinition.DERIVATION_LIST 
+				| TypeDefinition.DERIVATION_EXTENSION
 				| TypeDefinition.DERIVATION_RESTRICTION
 				| TypeDefinition.DERIVATION_SUBSTITUTION;
 	}
+	
 }

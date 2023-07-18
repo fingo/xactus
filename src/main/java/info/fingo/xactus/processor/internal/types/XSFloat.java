@@ -21,7 +21,6 @@
 package info.fingo.xactus.processor.internal.types;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 
 import info.fingo.xactus.api.DynamicContext;
 import info.fingo.xactus.api.Item;
@@ -29,7 +28,6 @@ import info.fingo.xactus.api.ResultBuffer;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.api.typesystem.TypeDefinition;
 import info.fingo.xactus.processor.DynamicError;
-import info.fingo.xactus.processor.ResultSequenceFactory;
 import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 
 /**
@@ -38,6 +36,7 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 public class XSFloat extends NumericType implements NaNable {
 
 	private static final String XS_FLOAT = "xs:float";
+	
 	private Float _value;
 
 	/**
@@ -161,9 +160,12 @@ public class XSFloat extends NumericType implements NaNable {
 	 * @return New ResultSequence consisting of the float supplied
 	 * @throws DynamicError
 	 */
+	@Override
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
-		if (arg.empty())
+		
+		if (arg.empty()) {
 			return ResultBuffer.EMPTY;
+		}
 
 		AnyType aat = (AnyType) arg.first();
 
@@ -452,27 +454,14 @@ public class XSFloat extends NumericType implements NaNable {
 		return carg;
 	}
 
-	private ResultSequence convertResultSequence(ResultSequence arg)
-			throws DynamicError {
-		ResultSequence carg = arg;
-		Iterator it = carg.iterator();
-		while (it.hasNext()) {
-			AnyType type = (AnyType) it.next();
-			if (type.string_type().equals("xs:untypedAtomic") ||
-				type.string_type().equals("xs:string")) {
-				throw DynamicError.throw_type_error();
-			}
-		}
-
-		carg = constructor(carg);
-		return carg;
-	}
-
+	@Override
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_FLOAT;
 	}
 
+	@Override
 	public Object getNativeValue() {
 		return float_value();
 	}
+	
 }

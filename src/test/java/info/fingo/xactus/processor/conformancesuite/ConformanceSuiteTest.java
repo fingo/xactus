@@ -16,8 +16,10 @@ import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xerces.xs.XSModel;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;
+
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
 import info.fingo.xactus.processor.StaticError;
@@ -45,7 +47,8 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 class ConformanceSuiteTest {
-    private static final Representation REPRESENTATION = new StandardRepresentation() {
+    
+	private static final Representation REPRESENTATION = new StandardRepresentation() {
         @Override
         public String toStringOf(Object object) {
             if (object instanceof ResultSequence) {
@@ -157,9 +160,10 @@ class ConformanceSuiteTest {
             assertThat(error).isIn(expectedErrors);
             return;
         }
-
-        assertThat(actual)
+        
+        AssertionsForClassTypes.assertThat(actual)
             .withRepresentation(REPRESENTATION)
-            .is(matchesAnyOfExpected(expectedOutputFiles, contentProvider, psychopathTestContext));
+            .is( matchesAnyOfExpected(expectedOutputFiles, contentProvider, psychopathTestContext));
     }
+    
 }

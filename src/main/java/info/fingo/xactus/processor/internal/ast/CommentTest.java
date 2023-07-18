@@ -25,14 +25,6 @@ import info.fingo.xactus.processor.internal.types.QName;
  * Class for Comment testing.
  */
 public class CommentTest extends KindTest {
-	/**
-	 * Support for Visitor interface.
-	 *
-	 * @return Result of Visitor operation.
-	 */
-	public Object accept(XPathVisitor v) {
-		return v.visit(this);
-	}
 
 	public AnyType createTestType(ResultSequence rs, StaticContext sc) {
 		return null;
@@ -42,12 +34,24 @@ public class CommentTest extends KindTest {
 		return null;
 	}
 
+	@Override
 	public boolean isWild() {
 		return false;
 	}
 
-	public Class getXDMClassType() {
+	@Override
+	public Class<CommentType> getXDMClassType() {
 		return CommentType.class;
 	}
 
+	/**
+	 * Support for Visitor interface.
+	 *
+	 * @return Result of Visitor operation.
+	 */
+	@Override
+	public Object accept(XPathVisitor v) {
+		return v.visit(this);
+	}
+	
 }

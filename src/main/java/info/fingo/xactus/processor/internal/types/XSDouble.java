@@ -21,8 +21,6 @@
 package info.fingo.xactus.processor.internal.types;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
-
 import info.fingo.xactus.api.DynamicContext;
 import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultBuffer;
@@ -37,7 +35,8 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
 public class XSDouble extends NumericType implements NaNable {
 
 	private static final String XS_DOUBLE = "xs:double";
-	private Double _value;
+	
+	private final Double _value;
 
 	/**
 	 * Initialises a representation of the supplied number
@@ -108,10 +107,12 @@ public class XSDouble extends NumericType implements NaNable {
 	 * @throws DynamicError
 	 * @return A new result sequence consisting of the double number supplied.
 	 */
+	@Override
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
 
-		if (arg.empty())
+		if (arg.empty()) {
 			return ResultBuffer.EMPTY;
+		}
 
 		Item aat = arg.first();
 
@@ -332,22 +333,6 @@ public class XSDouble extends NumericType implements NaNable {
 		XSDouble val = (XSDouble) at;
 
 		return new XSDouble( double_value() + val.double_value() );
-	}
-
-	private ResultSequence convertResultSequence(ResultSequence arg)
-			throws DynamicError {
-		ResultSequence carg = arg;
-		Iterator it = carg.iterator();
-		while (it.hasNext()) {
-			AnyType type = (AnyType) it.next();
-			if (type.string_type().equals("xs:untypedAtomic") ||
-				type.string_type().equals("xs:string")) {
-				throw DynamicError.throw_type_error();
-			}
-		}
-
-		carg = constructor(carg);
-		return carg;
 	}
 
 	/**

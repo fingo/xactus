@@ -31,10 +31,13 @@ import info.fingo.xactus.processor.internal.types.builtin.BuiltinTypeLibrary;
  * A representation of a true or a false value.
  */
 public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
+	
 	private static final String XS_BOOLEAN = "xs:boolean";
+	
 	public static final XSBoolean TRUE = new XSBoolean(true);
 	public static final XSBoolean FALSE = new XSBoolean(false);
-	private boolean _value;
+	
+	private final boolean _value;
 
 	/**
 	 * Initiates the new representation to the boolean supplied
@@ -42,8 +45,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * @param x
 	 *       Initializes this datatype to represent this boolean
 	 */
-	private XSBoolean( boolean x )
-	{
+	private XSBoolean(boolean x) {
 		_value = x;
 	}
 
@@ -51,7 +53,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * Initiates to a default representation of false.
 	 */
 	public XSBoolean() {
-	  this(false);
+		this(false);
 	}
 
 	/**
@@ -59,6 +61,7 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 *
 	 * @return "xs:boolean", the full datatype pathname
 	 */
+	@Override
 	public String string_type() {
 		return XS_BOOLEAN;
 	}
@@ -104,9 +107,12 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * @throws DynamicError
 	 * @return A new result sequence consisting of the boolean value supplied.
 	 */
+	@Override
 	public ResultSequence constructor(ResultSequence arg) throws DynamicError {
-		if (arg.empty())
+		
+		if (arg.empty()) {
 		  return ResultBuffer.EMPTY;
+		}
 
 		Item anyType = arg.first();
 
@@ -193,9 +199,10 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 	 * @return New XSBoolean representation of true/false result of the
 	 *         comparison
 	 */
+	@Override
 	public boolean lt(AnyType arg, DynamicContext context) throws DynamicError {
-		XSBoolean barg = (XSBoolean) NumericType.get_single_type((Item)arg,
-				XSBoolean.class);
+
+		XSBoolean barg = (XSBoolean) NumericType.get_single_type((Item)arg, XSBoolean.class);
 
 		boolean result = false;
 
@@ -204,12 +211,12 @@ public class XSBoolean extends CtrType implements CmpEq, CmpGt, CmpLt {
 		return result;
 	}
 
+	@Override
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_BOOLEAN;
 	}
 
-	public static info.fingo.xactus.api.ResultSequence valueOf(
-			boolean answer) {
+	public static ResultSequence valueOf(boolean answer) {
 		return answer ? TRUE : FALSE;
 	}
 

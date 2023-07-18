@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Iterator;
 
+import info.fingo.xactus.api.Item;
 import info.fingo.xactus.api.ResultSequence;
 import info.fingo.xactus.processor.DynamicError;
 import info.fingo.xactus.processor.internal.TypeError;
@@ -61,8 +62,10 @@ public class FnSum extends Function {
 	 * @return Result of evaluation.
 	 */
 	public ResultSequence evaluate(Collection args, info.fingo.xactus.api.EvaluationContext ec) throws DynamicError {
+		
 		Iterator argIterator = args.iterator();
 		ResultSequence argSequence = (ResultSequence)argIterator.next();
+		
 		AnyAtomicType zero = ZERO;
 		if (argIterator.hasNext()) {
 			ResultSequence zeroSequence = (ResultSequence)argIterator.next();
@@ -86,17 +89,17 @@ public class FnSum extends Function {
 	 */
 	public static ResultSequence sum(ResultSequence arg, AnyAtomicType zero) throws DynamicError {
 
-
-		if (arg.empty())
+		if (arg.empty()) {
 			return zero;
+		}
 
 		MathPlus total = null;
 
 		TypePromoter tp = new ScalarTypePromoter();
 		tp.considerSequence(arg);
 
-		for (Iterator i = arg.iterator(); i.hasNext();) {
-			AnyAtomicType conv = tp.promote((AnyType) i.next());
+		for (Item next : arg) {
+			AnyAtomicType conv = tp.promote((AnyType) next);
 
 			if(conv == null){
 				conv = zero;

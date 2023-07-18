@@ -334,16 +334,14 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	}
 
 	// basically the comma operator...
-	private ResultSequence do_expr(Iterator i) {
+	private ResultSequence do_expr(Iterable<Expr> exps) {
 
 		ResultSequence rs = null;
 		ResultBuffer buffer = null;
 
-		while (i.hasNext()) {
-			Expr e = (Expr) i.next();
+		for (Expr e : exps) {
 
 			ResultSequence result = (ResultSequence) e.accept(this);
-
 			if (rs == null && buffer == null)
 				rs = result;
 			else {
@@ -371,17 +369,15 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return result sequence.
 	 */
 	public Object visit(XPath xp) {
-		ResultSequence rs = do_expr(xp.iterator());
-
+		ResultSequence rs = do_expr(xp);
 		return rs;
 	}
 
-	private void do_for_each(ListIterator iter,
-			Expr finalexpr, ResultBuffer destination) {
+	private void do_for_each(ListIterator<VarExprPair> iter, Expr finalexpr, ResultBuffer destination) {
 
 		// we have more vars to bind...
 		if (iter.hasNext()) {
-			VarExprPair ve = (VarExprPair) iter.next();
+			VarExprPair ve = iter.next();
 
 			// evaluate binding sequence
 			ResultSequence rs = (ResultSequence) ve.expr().accept(this);
@@ -398,7 +394,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and do the expression, concatenating the
 			// result
 
-			for (Iterator i = rs.iterator(); i.hasNext();) {
+			for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 				AnyType item = (AnyType) i.next();
 
 				pushScope(varname, item);
@@ -418,7 +414,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	// type: 0 = for [return == "correct"]
 	// 1 = for all [return false, return empty on true]
 	// 2 = there exists [return true, return empty on false]
-	private XSBoolean do_for_all(ListIterator iter,
+	private XSBoolean do_for_all(ListIterator<VarExprPair> iter,
 			Expr finalexpr) {
 
 		// we have more vars to bind...
@@ -434,7 +430,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and check the predicate
 
 			try {
-				for (Iterator i = rs.iterator(); i.hasNext();) {
+				for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
 
 					pushScope(varname, item);
@@ -458,7 +454,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	}
 
-	private XSBoolean do_exists(ListIterator iter,
+	private XSBoolean do_exists(ListIterator<VarExprPair> iter,
 			Expr finalexpr) {
 
 		// we have more vars to bind...
@@ -474,7 +470,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// variable and check the expression
 
 			try {
-				for (Iterator i = rs.iterator(); i.hasNext();) {
+				for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 					AnyType item = (AnyType) i.next();
 
 					pushScope(varname, item);
@@ -509,7 +505,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 */
 	public Object visit(ForExpr fex) {
 		// XXX
-		List pairs = new ArrayList(fex.ve_pairs());
+		List<VarExprPair> pairs = new ArrayList<>(fex.ve_pairs());
 		ResultBuffer rb = new ResultBuffer();
 		do_for_each(pairs.listIterator(), fex.expr(), rb);
 		return rb.getSequence();
@@ -523,7 +519,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function or null.
 	 */
 	public Object visit(QuantifiedExpr qex) {
-		List pairs = new ArrayList(qex.ve_pairs());
+		
+		List<VarExprPair> pairs = new ArrayList<>(qex.ve_pairs());
 
 		switch (qex.type()) {
 		case QuantifiedExpr.SOME:
@@ -545,8 +542,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a ifex.then_clause().accept(this).
 	 */
 	public Object visit(IfExpr ifex) {
-		ResultSequence test_res = do_expr(ifex.iterator());
-
+		
+		ResultSequence test_res = do_expr(ifex);
 		XSBoolean res = effective_boolean_value(test_res);
 
 		if (res.value())
@@ -1128,7 +1125,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		boolean node_types = false;
 
 		// check the results
-		for (Iterator i = results.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = results.iterator(); i.hasNext();) {
 			ResultSequence result = (ResultSequence) i.next();
 
 			// make sure results are of same type, and add them in
@@ -1194,7 +1191,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Axis axis = new DescendantOrSelfAxis();
 
 		// for all nodes, get descendant or self nodes
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType item = (NodeType) i.next();
 
 			axis.iterate(item, res, _dc.getLimitNode());
@@ -1231,8 +1228,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 					// make sure result of previous step are
 					// nodes!
-					for (Iterator i = rs.iterator(); i.hasNext();) {
-						AnyType item = (AnyType) i.next();
+					for (Item next : rs) {
+						AnyType item = (AnyType)next;
 
 						if (!(item instanceof NodeType)) {
 							report_error(TypeError.step_conatins_atoms(null));
@@ -1460,7 +1457,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		ResultBuffer rb = new ResultBuffer();
 
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType nt = (NodeType) i.next();
 
 			// check if node passes name test
@@ -1552,7 +1549,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function
 	 */
 	public Object visit(ParExpr e) {
-		return do_expr(e.iterator());
+		return do_expr(e);
 	}
 
 	/**
@@ -1581,10 +1578,10 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a new function or null
 	 */
 	public Object visit(FunctionCall e) {
-		ArrayList args = new ArrayList();
 
-		for (Iterator i = e.iterator(); i.hasNext();) {
-			Expr arg = (Expr) i.next();
+		List<ResultSequence> args = new ArrayList<>();
+
+		for (Expr arg : e) {
 			// each argument will produce a result sequence
 			args.add((ResultSequence)arg.accept(this));
 		}
@@ -1668,7 +1665,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	private ResultSequence item_test(ResultSequence rs, QName qname) {
 		ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			AnyType item = (AnyType) i.next();
 
 			if (item instanceof NodeType) {
@@ -1690,12 +1687,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		return rb.getSequence();
 	}
 
-    private ResultSequence kind_test(ResultSequence rs, Class kind) {
+    private ResultSequence kind_test(ResultSequence rs, Class<?> kind) {
+    	
     	ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
-			Item item = (Item) i.next();
-			if (kind.isInstance(item))
+		for (Item item : rs) {
+			if (kind.isInstance(item)) {
 				rb.add(item);
+			}
 		}
 		return rb.getSequence();
 	}
@@ -1732,7 +1730,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// for all docs, find the ones with exactly one element, and do
 		// the element test
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			DocType doc = (DocType) i.next();
 			int elem_count = 0;
 			ElementType elem = null;
@@ -1826,7 +1824,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			return kind_test(arg, PIType.class);
 
     	ResultBuffer rb = new ResultBuffer();
-		for (Iterator i = arg.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = arg.iterator(); i.hasNext();) {
 			AnyType item = (AnyType) i.next();
 
 			// match PI
@@ -1860,7 +1858,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		QName name = e.name();
 		QName type = e.type();
 
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 			// match the name if it's not a wild card
 			if (name != null && !e.wild()) {
@@ -1893,7 +1891,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// match the name
 		QName name = e.arg();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			if (!name_test((NodeType) i.next(), name, "attribute"))
 
 				i.remove();
@@ -1901,7 +1899,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// check the type
 		TypeDefinition et = _sc.getTypeModel().lookupAttributeDeclaration(name.namespace(), name.local());
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (! derivesFrom(node, et))
@@ -1928,7 +1926,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		ResultBuffer rb = new ResultBuffer();
 		QName nameTest = e.name();
 		QName typeTest = e.type();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (nameTest != null && !e.wild()) {
@@ -1966,15 +1964,15 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		// match the name
 		// XXX substitution groups
 		QName name = e.name();
-		for (Iterator i = rs.iterator(); i.hasNext();) {
-			if (!name_test((ElementType) i.next(), name, "element"))
-
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
+			if (!name_test((ElementType) i.next(), name, "element")) {
 				i.remove();
+			}
 		}
 
 		// check the type
 		TypeDefinition et = _sc.getTypeModel().lookupElementDeclaration(name.namespace(), name.local());
-		for (Iterator i = rs.iterator(); i.hasNext();) {
+		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType node = (NodeType) i.next();
 
 			if (! derivesFrom(node, et)) {
@@ -2017,7 +2015,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	}
 
 	// do the predicate for all items in focus
-	private ResultSequence do_predicate(Collection exprs) {
+	private ResultSequence do_predicate(Collection<Expr> exprs) {
 		ResultBuffer rs = new ResultBuffer();
 
 		Focus focus = focus();
@@ -2026,12 +2024,15 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		// optimization
 		// check if predicate is single numeric constant
 		if (exprs.size() == 1) {
-			Expr expr = (Expr) exprs.iterator().next();
-
+			
+			Expr expr = exprs.iterator().next();
 			if (expr instanceof XPathExpr) {
+				
 				XPathExpr xpe = (XPathExpr) expr;
-				if (xpe.next() == null && xpe.slashes() == 0
+				if (xpe.next() == null 
+						&& xpe.slashes() == 0
 						&& xpe.expr() instanceof FilterExpr) {
+					
 					FilterExpr fex = (FilterExpr) xpe.expr();
 					if (fex.primary() instanceof IntegerLiteral) {
 						int pos = (((IntegerLiteral) fex.primary()).value()
@@ -2053,7 +2054,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 			// do the predicate
 			// XXX saxon doesn't allow for predicates to have
 			// commas... but XPath 2.0 spec seems to do
-			ResultSequence res = do_expr(exprs.iterator());
+			ResultSequence res = do_expr(exprs);
 
 			// if predicate is true, the context item is definitely
 			// in the sequence
@@ -2079,8 +2080,8 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 * @return a result sequence
 	 */
 	public Object visit(AxisStep e) {
-		ResultSequence rs = (ResultSequence) e.step().accept(this);
 
+		ResultSequence rs = (ResultSequence) e.step().accept(this);
 		if (e.predicate_count() == 0)
 			return rs;
 
@@ -2088,14 +2089,13 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Focus original_focus = focus();
 
 		// go through all predicates
-		for (Iterator i = e.iterator(); i.hasNext();) {
+		for (Collection<Expr> coll : e) {
 			// empty results... get out of here ? XXX
 			if (rs.size() == 0)
 				break;
 
 			set_focus(new Focus(rs));
-			rs = do_predicate((Collection) i.next());
-
+			rs = do_predicate(coll);
 		}
 
 		// restore focus [context switching ;D ]
@@ -2122,13 +2122,12 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		Focus original_focus = focus();
 
 		// go through all predicates
-		for (Iterator i = e.iterator(); i.hasNext();) {
+		for (Collection<Expr> i : e) {
 			if (rs.size() == 0)
 				break;
 
 			set_focus(new Focus(rs));
-			rs = do_predicate((Collection) i.next());
-
+			rs = do_predicate(i);
 		}
 
 		// restore focus [context switching ;D ]

@@ -22,10 +22,12 @@ import info.fingo.xactus.processor.internal.types.*;
 /**
  * Class for Function Call support.
  */
-public class FunctionCall extends PrimaryExpr {
-	private QName _name;
-	private Collection _args;
-	private Function _function;
+public class FunctionCall extends PrimaryExpr implements Iterable<Expr> {
+	
+	private final QName name;
+	private final Collection<Expr> args;
+	
+	private Function function;
 
 	/**
 	 * Constructor for FunctionCall.
@@ -35,17 +37,18 @@ public class FunctionCall extends PrimaryExpr {
 	 * @param args
 	 *            Collection of arguments.
 	 */
-	public FunctionCall(QName name, Collection args) {
-		_name = name;
-		_args = args;
+	public FunctionCall(QName name, Collection<Expr> args) {
+		
+		this.name = name;
+		this.args = args;
 	}
 
 	public Function function() {
-		return _function;
+		return function;
 	}
 
-	public void set_function(Function _function) {
-		this._function = _function;
+	public void set_function(Function function) {
+		this.function = function;
 	}
 
 	/**
@@ -53,6 +56,7 @@ public class FunctionCall extends PrimaryExpr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -63,7 +67,7 @@ public class FunctionCall extends PrimaryExpr {
 	 * @return Result of QName operation.
 	 */
 	public QName name() {
-		return _name;
+		return name;
 	}
 
 	/**
@@ -71,8 +75,9 @@ public class FunctionCall extends PrimaryExpr {
 	 *
 	 * @return Result of Iterator operation.
 	 */
-	public Iterator iterator() {
-		return _args.iterator();
+	@Override
+	public Iterator<Expr> iterator() {
+		return args.iterator();
 	}
 
 	/**
@@ -81,6 +86,7 @@ public class FunctionCall extends PrimaryExpr {
 	 * @return Result of Arity operation.
 	 */
 	public int arity() {
-		return _args.size();
+		return args.size();
 	}
+	
 }

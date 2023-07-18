@@ -59,16 +59,16 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 		}
 	}
 
-	protected QName _name;
+	protected final QName name;
 	/**
 	 * if negative, need to have "at least"
 	 */
-	protected int _min_arity;
+	protected final int min_arity;
 
 	/**
 	 * If "at least", this speci, unlimited if -1
 	 */
-	protected int _max_arity;
+	protected final int max_arity;
 
 	/**
 	 * Constructor for Function.
@@ -79,12 +79,13 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 *            the arity of a specific function.
 	 */
 	public Function(QName name, int arity) {
-		_name = name;
+		
+		this.name = name;
 		if (arity < 0) {
 			throw new RuntimeException("We want to avoid this!");
 		}
-		_min_arity = arity;
-		_max_arity = arity;
+		this.min_arity = arity;
+		this.max_arity = arity;
 	}
 
 	/**
@@ -96,12 +97,13 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 *            the arity of a specific function.
 	 */
 	public Function(QName name, int min_arity, int max_arity) {
-		_name = name;
+		
+		this.name = name;
 		if (min_arity < 0 || max_arity < 0 || max_arity < min_arity) {
 			throw new RuntimeException("We want to avoid this!");
 		}
-		_min_arity = min_arity;
-		_max_arity = max_arity;
+		this.min_arity = min_arity;
+		this.max_arity = max_arity;
 	}
 
 	/**
@@ -110,7 +112,7 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 * @return Result of QName operation.
 	 */
 	public QName name() {
-		return _name;
+		return name;
 	}
 
 	/**
@@ -119,7 +121,7 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 * @return The smallest number of erguments possible
 	 */
 	public int min_arity() {
-		return _min_arity;
+		return min_arity;
 	}
 
 	/**
@@ -128,7 +130,7 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 * @return The highest number of erguments possible
 	 */
 	public int max_arity() {
-		return _max_arity;
+		return max_arity;
 	}
 
 	/**
@@ -228,8 +230,8 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 			info.fingo.xactus.api.ResultSequence rs = FnData.atomize(arg);
 
 			// cast untyped to expected type
-			for (Iterator i = rs.iterator(); i.hasNext();) {
-				AnyType item = (AnyType) i.next();
+			for (Item i : rs) {
+				AnyType item = (AnyType) i;
 
 				if (item instanceof XSUntypedAtomic) {
 					// create a new item of the expected
@@ -284,8 +286,8 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	 *             Dynamic error.
 	 * @return Converted arguments.
 	 */
-	public static Collection convert_arguments(Collection args,
-			Collection expected) throws DynamicError {
+	public static Collection convert_arguments(Collection args, Collection expected) throws DynamicError {
+		
 		Collection result = new ArrayList();
 
 		assert args.size() <= expected.size();
@@ -304,6 +306,7 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 
 	protected static info.fingo.xactus.api.ResultSequence getResultSetForArityZero(EvaluationContext ec )
 			throws DynamicError {
+		
 		Item contextItem = ec.getContextItem();
 		if (contextItem != null) {
 		  // if context item is defined, then that is the default argument
@@ -315,47 +318,55 @@ public abstract class Function implements info.fingo.xactus.api.Function {
 	}
 
 	public boolean is_vararg() {
-		return _min_arity != _max_arity;
+		return min_arity != max_arity;
 	}
 
+	@Override
 	public String getName() {
 		return name().local();
 	}
 
+	@Override
 	public int getMinArity() {
 		return min_arity();
 	}
 
+	@Override
 	public int getMaxArity() {
 		return max_arity();
 	}
 
+	@Override
 	public boolean isVariableArgument() {
-		return this.is_vararg();
+		return is_vararg();
 	}
 
+	@Override
 	public boolean canMatchArity(int actualArity) {
 		return matches_arity(actualArity);
 	}
 
+	@Override
 	public TypeDefinition getResultType() {
 		return BuiltinTypeLibrary.XS_UNTYPED;
 	}
 
+	@Override
 	public TypeDefinition getArgumentType(int index) {
 		return BuiltinTypeLibrary.XS_UNTYPED;
 	}
 
+	@Override
 	public String getArgumentNameHint(int index) {
 		return "argument_"  + index;
 	}
 
-	public TypeDefinition computeReturnType(Collection args,
-			info.fingo.xactus.api.StaticContext sc) {
+	public TypeDefinition computeReturnType(Collection args, info.fingo.xactus.api.StaticContext sc) {
 		return BuiltinTypeLibrary.XS_UNTYPED;
 	}
 
-	public info.fingo.xactus.api.ResultSequence evaluate(Collection/*<ResultSequence>*/ args,
+	@Override
+	public info.fingo.xactus.api.ResultSequence evaluate(Collection<ResultSequence> args,
                                                          EvaluationContext evaluationContext) {
 
 		ResultSequence result = evaluate( args );

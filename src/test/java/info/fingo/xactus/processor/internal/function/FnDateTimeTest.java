@@ -7,6 +7,8 @@ import info.fingo.xactus.processor.internal.XPathExpressionTestBase;
 import info.fingo.xactus.processor.internal.types.XSDateTime;
 import info.fingo.xactus.processor.testutil.bundle.Platform;
 import java.net.URL;
+
+import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -44,10 +46,11 @@ class FnDateTimeTest extends XPathExpressionTestBase {
 
         // then
         assertThat(result)
-            .satisfies(r -> assertThat(r.size()).isOne())
+            .satisfies(r -> assertThat(IterableUtil.sizeOf(r)).isOne())
             .isInstanceOfSatisfying(
                 XSDateTime.class,
                 xsDateTime -> assertThat(xsDateTime.getStringValue())
                     .isEqualTo(expectedXSDateTimeStringValue));
     }
+    
 }
