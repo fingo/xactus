@@ -81,10 +81,8 @@ public class ReverseStep extends Step {
 	/**
 	 * Constructor for ReverseStep.
 	 *
-	 * @param axis
-	 *            Axis number.
-	 * @param node_test
-	 *            Node test.
+	 * @param axis      Axis number.
+	 * @param node_test Node test.
 	 */
 	public ReverseStep(int axis, NodeTest node_test) {
 		super(node_test);
@@ -98,6 +96,7 @@ public class ReverseStep extends Step {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -119,4 +118,5 @@ public class ReverseStep extends Step {
 	public ReverseAxis iterator() {
 		return _iterator;
 	}
+
 }

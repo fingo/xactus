@@ -21,20 +21,18 @@ import info.fingo.xactus.processor.internal.types.*;
  */
 public class SingleType extends XPathNode {
 
-	private QName _type;
-	private boolean _qmark;
+	private final QName type;
+	private final boolean qmark;
 
 	/**
 	 * Constructor for SingleType.
 	 *
-	 * @param type
-	 *            QName type.
-	 * @param qmark
-	 *            optional type? (true/false).
+	 * @param type  QName type.
+	 * @param qmark optional type? (true/false).
 	 */
 	public SingleType(QName type, boolean qmark) {
-		_type = type;
-		_qmark = qmark;
+		this.type = type;
+		this.qmark = qmark;
 	}
 
 	/**
@@ -49,6 +47,7 @@ public class SingleType extends XPathNode {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -59,7 +58,7 @@ public class SingleType extends XPathNode {
 	 * @return optional type value.
 	 */
 	public boolean qmark() {
-		return _qmark;
+		return qmark;
 	}
 
 	/**
@@ -68,6 +67,7 @@ public class SingleType extends XPathNode {
 	 * @return Result of QName operation.
 	 */
 	public QName type() {
-		return _type;
+		return type;
 	}
+
 }

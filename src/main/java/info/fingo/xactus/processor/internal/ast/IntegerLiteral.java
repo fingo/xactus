@@ -25,16 +25,16 @@ import info.fingo.xactus.processor.internal.types.XSInteger;
  *
  */
 public class IntegerLiteral extends NumericLiteral {
-	private XSInteger _value;
+
+	private final XSInteger value;
 
 	/**
 	 * Constructor for IntegerLiteral
 	 *
-	 * @param i
-	 *            integer value
+	 * @param i integer value
 	 */
 	public IntegerLiteral(BigInteger i) {
-		_value = new XSInteger(i);
+		value = new XSInteger(i);
 	}
 
 	/**
@@ -42,6 +42,7 @@ public class IntegerLiteral extends NumericLiteral {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -50,6 +51,7 @@ public class IntegerLiteral extends NumericLiteral {
 	 * @return xs:integer value
 	 */
 	public XSInteger value() {
-		return _value;
+		return value;
 	}
+
 }
