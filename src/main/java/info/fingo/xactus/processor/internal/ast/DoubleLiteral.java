@@ -17,21 +17,21 @@ package info.fingo.xactus.processor.internal.ast;
 import info.fingo.xactus.processor.internal.types.*;
 
 /**
- *The value of a numeric literal containing an e or E character is an atomic
+ * The value of a numeric literal containing an e or E character is an atomic
  * value of type xs:double
  *
  */
 public class DoubleLiteral extends NumericLiteral {
-	private XSDouble _value;
+
+	private final XSDouble value;
 
 	/**
 	 * Constructor for Doubleiteral
 	 *
-	 * @param value
-	 *            double value
+	 * @param value double value
 	 */
 	public DoubleLiteral(double value) {
-		_value = new XSDouble(value);
+		this.value = new XSDouble(value);
 	}
 
 	/**
@@ -39,6 +39,7 @@ public class DoubleLiteral extends NumericLiteral {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -47,7 +48,7 @@ public class DoubleLiteral extends NumericLiteral {
 	 * @return xs:double value
 	 */
 	public XSDouble value() {
-		return _value;
+		return value;
 	}
 
 }

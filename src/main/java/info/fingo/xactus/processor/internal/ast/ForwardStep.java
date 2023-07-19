@@ -28,6 +28,7 @@ import info.fingo.xactus.processor.internal.SelfAxis;
  * Class for Forward stepping support for Step operations.
  */
 public class ForwardStep extends Step {
+
 	/**
 	 * Set internal value for NONE.
 	 */
@@ -125,10 +126,8 @@ public class ForwardStep extends Step {
 	/**
 	 * Constructor for ForwardStep.
 	 *
-	 * @param axis
-	 *            Axis number.
-	 * @param node_test
-	 *            Node test.
+	 * @param axis      Axis number.
+	 * @param node_test Node test.
 	 */
 	public ForwardStep(int axis, NodeTest node_test) {
 		super(node_test);
@@ -143,6 +142,7 @@ public class ForwardStep extends Step {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -159,8 +159,7 @@ public class ForwardStep extends Step {
 	/**
 	 * Set Axis to current.
 	 *
-	 * @param axis
-	 *            Axis to set.
+	 * @param axis Axis to set.
 	 */
 	public void set_axis(int axis) {
 		_axis = axis;
@@ -175,4 +174,5 @@ public class ForwardStep extends Step {
 	public ForwardAxis iterator() {
 		return _iterator;
 	}
+	
 }

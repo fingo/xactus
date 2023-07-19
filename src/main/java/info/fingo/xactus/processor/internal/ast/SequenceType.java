@@ -19,6 +19,7 @@ package info.fingo.xactus.processor.internal.ast;
  * Support for Sequence type.
  */
 public class SequenceType extends XPathNode {
+
 	/**
 	 * Set internal value for EMPTY.
 	 */
@@ -40,16 +41,14 @@ public class SequenceType extends XPathNode {
 	 */
 	public static final int PLUS = 4;
 
-	private int _occ;
-	private ItemType _it;
+	private final int _occ;
+	private final ItemType _it;
 
 	/**
 	 * Constructor for SequenceType.
 	 *
-	 * @param occ
-	 *            Occurence.
-	 * @param it
-	 *            Item type.
+	 * @param occ Occurence.
+	 * @param it  Item type.
 	 */
 	public SequenceType(int occ, ItemType it) {
 		_occ = occ;
@@ -61,6 +60,7 @@ public class SequenceType extends XPathNode {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -85,14 +85,20 @@ public class SequenceType extends XPathNode {
 
 	public boolean isLengthValid(int length) {
 		switch (occurrence()) {
-		case EMPTY: return length == 0;
-		case NONE: return length == 1;
-		case QUESTION: return length <= 1;
-		case STAR: return true;
-		case PLUS: return length >= 1;
+		case EMPTY:
+			return length == 0;
+		case NONE:
+			return length == 1;
+		case QUESTION:
+			return length <= 1;
+		case STAR:
+			return true;
+		case PLUS:
+			return length >= 1;
 		default:
 			assert false;
 			return false;
 		}
 	}
+
 }

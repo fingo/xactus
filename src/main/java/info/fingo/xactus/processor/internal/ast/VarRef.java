@@ -21,16 +21,16 @@ import info.fingo.xactus.processor.internal.types.*;
  * reference.
  */
 public class VarRef extends PrimaryExpr {
-	private QName _varname;
+
+	private final QName varname;
 
 	/**
 	 * Constructor for VarRef.
 	 *
-	 * @param name
-	 *            QName.
+	 * @param name QName.
 	 */
 	public VarRef(QName name) {
-		_varname = name;
+		varname = name;
 	}
 
 	/**
@@ -38,6 +38,7 @@ public class VarRef extends PrimaryExpr {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -48,6 +49,7 @@ public class VarRef extends PrimaryExpr {
 	 * @return Result of QName operation.
 	 */
 	public QName name() {
-		return _varname;
+		return varname;
 	}
+
 }

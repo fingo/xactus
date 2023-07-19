@@ -18,12 +18,15 @@ package info.fingo.xactus.processor.internal.ast;
  * Class for Context Item Expresions.
  */
 public class CntxItemExpr extends PrimaryExpr {
+	
 	/**
 	 * Support for Visitor interface.
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
+	
 }

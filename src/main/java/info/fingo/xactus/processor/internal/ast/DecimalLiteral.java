@@ -19,21 +19,21 @@ import java.math.BigDecimal;
 import info.fingo.xactus.processor.internal.types.*;
 
 /**
- *The value of a numeric literal containing "." but no e or E character is an
+ * The value of a numeric literal containing "." but no e or E character is an
  * atomic value of type xs:decimal
  *
  */
 public class DecimalLiteral extends NumericLiteral {
-	private XSDecimal _value;
+
+	private final XSDecimal value;
 
 	/**
 	 * Constructor for DecimalLiteral
 	 *
-	 * @param value
-	 *            double value
+	 * @param value double value
 	 */
 	public DecimalLiteral(BigDecimal value) {
-		_value = new XSDecimal(value);
+		this.value = new XSDecimal(value);
 	}
 
 	/**
@@ -41,6 +41,7 @@ public class DecimalLiteral extends NumericLiteral {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -49,6 +50,7 @@ public class DecimalLiteral extends NumericLiteral {
 	 * @return xs:decimal value
 	 */
 	public XSDecimal value() {
-		return _value;
+		return value;
 	}
+
 }

@@ -27,16 +27,16 @@ import info.fingo.xactus.processor.internal.types.*;
  *
  */
 public class StringLiteral extends Literal {
-	private XSString _value;
+
+	private final XSString value;
 
 	/**
 	 * Constructor for StringLiteral
 	 *
-	 * @param value
-	 *            string value
+	 * @param value string value
 	 */
 	public StringLiteral(String value) {
-		_value = new XSString(value);
+		this.value = new XSString(value);
 	}
 
 	/**
@@ -44,6 +44,7 @@ public class StringLiteral extends Literal {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -52,13 +53,14 @@ public class StringLiteral extends Literal {
 	 * @return string value
 	 */
 	public String string() {
-		return _value.value();
+		return value.value();
 	}
 
 	/**
 	 * @return xs:string value
 	 */
 	public XSString value() {
-		return _value;
+		return value;
 	}
+
 }

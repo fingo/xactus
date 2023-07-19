@@ -32,33 +32,35 @@ public class ItemType extends XPathNode {
 	 * Set internal value for KINDTEST.
 	 */
 	public static final int KINDTEST = 2;
-	private int _type;
 
-	private QName _qname;
-	private KindTest _ktest;
+	private final int _type;
+
+	private final QName _qname;
+	private final KindTest _ktest;
 
 	// XXX: polymorphism
 	/**
 	 * Constructor for ItemType.
 	 *
-	 * @param type
-	 *            Type.
-	 * @param value
-	 *            Object value.
+	 * @param type  Type.
+	 * @param value Object value.
 	 */
 	public ItemType(int type, Object value) {
-		_qname = null;
-		_ktest = null;
 
 		_type = type;
 
 		switch (type) {
 		case QNAME:
+			_ktest = null;
 			_qname = (QName) value;
 			break;
 		case KINDTEST:
 			_ktest = (KindTest) value;
+			_qname = null;
 			break;
+		default:
+			_ktest = null;
+			_qname = null;
 		}
 	}
 
@@ -67,6 +69,7 @@ public class ItemType extends XPathNode {
 	 *
 	 * @return Result of Visitor operation.
 	 */
+	@Override
 	public Object accept(XPathVisitor v) {
 		return v.visit(this);
 	}
@@ -97,4 +100,5 @@ public class ItemType extends XPathNode {
 	public KindTest kind_test() {
 		return _ktest;
 	}
+
 }
