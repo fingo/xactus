@@ -27,8 +27,11 @@ package info.fingo.xactus.processor;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -566,12 +569,9 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 	private boolean[] do_logic_exp(BinExpr e) {
 
-		Collection args = do_bin_args(e);
-
-		Iterator argiter = args.iterator();
-
-		ResultSequence one = (ResultSequence) argiter.next();
-		ResultSequence two = (ResultSequence) argiter.next();
+		List<ResultSequence> args = do_bin_args(e);
+		ResultSequence one = args.get(0);
+		ResultSequence two = args.get(1);
 
 		boolean oneb = effective_boolean_value(one).value();
 		boolean twob = effective_boolean_value(two).value();
@@ -606,13 +606,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		return XSBoolean.valueOf((res[0] && res[1]));
 	}
 
-	private ResultSequence node_cmp(int type, Collection args) {
+	private ResultSequence node_cmp(int type, List<ResultSequence> args) {
+		
 		assert args.size() == 2;
-
-		Iterator argsiter = args.iterator();
-
-		ResultSequence one = (ResultSequence) argsiter.next();
-		ResultSequence two = (ResultSequence) argsiter.next();
+		ResultSequence one = args.get(0);
+		ResultSequence two = args.get(1);
 
 		int size_one = one.size();
 		int size_two = two.size();
@@ -665,7 +663,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(CmpExpr cmpex) {
 		try {
-			Collection args = do_bin_args(cmpex);
+			List<ResultSequence> args = do_bin_args(cmpex);
 
 			switch (cmpex.type()) {
 			case CmpExpr.EQ:
@@ -729,12 +727,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		
 		ResultSequence one = (ResultSequence) rex.left().accept(this);
 		ResultSequence two = (ResultSequence) rex.right().accept(this);
-		if (one.empty() || two.empty())
+		if (one.empty() || two.empty()) {
 			return ResultBuffer.EMPTY;
-		Collection args = new ArrayList();
-		args.add(one);
-		args.add(two);
-
+		}
+		
+		List<ResultSequence> args = Arrays.asList(one, two);
 		try {
 			return OpTo.op_to(args);
 		} catch (DynamicError err) {
@@ -761,7 +758,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(AddExpr addex) {
 		try {
-			Collection args = do_bin_args(addex);
+			List<ResultSequence> args = do_bin_args(addex);
 			return FsPlus.fs_plus(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -778,7 +775,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(SubExpr subex) {
 		try {
-			Collection args = do_bin_args(subex);
+			List<ResultSequence> args = do_bin_args(subex);
 			return FsMinus.fs_minus(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -795,7 +792,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(MulExpr mulex) {
 		try {
-			Collection args = do_bin_args(mulex);
+			List<ResultSequence> args = do_bin_args(mulex);
 			return FsTimes.fs_times(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -812,7 +809,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(DivExpr mulex) {
 		try {
-			Collection args = do_bin_args(mulex);
+			List<ResultSequence> args = do_bin_args(mulex);
 			return FsDiv.fs_div(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -829,7 +826,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(IDivExpr mulex) {
 		try {
-			Collection args = do_bin_args(mulex);
+			List<ResultSequence> args = do_bin_args(mulex);
 			return FsIDiv.fs_idiv(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -846,23 +843,12 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(ModExpr mulex) {
 		try {
-			Collection args = do_bin_args(mulex);
+			List<ResultSequence> args = do_bin_args(mulex);
 			return FsMod.fs_mod(args);
 		} catch (DynamicError err) {
 			report_error(err);
 			return null; // unreach
 		}
-	}
-
-	private Collection do_bin_args(BinExpr e) {
-		ResultSequence one = (ResultSequence) e.left().accept(this);
-		ResultSequence two = (ResultSequence) e.right().accept(this);
-
-		Collection args = new ArrayList();
-		args.add(one);
-		args.add(two);
-
-		return args;
 	}
 
 	/**
@@ -874,7 +860,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(UnionExpr unex) {
 		try {
-			Collection args = do_bin_args(unex);
+			List<ResultSequence> args = do_bin_args(unex);
 			return OpUnion.op_union(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -892,7 +878,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(PipeExpr pipex) {
 		try {
-			Collection args = do_bin_args(pipex);
+			List<ResultSequence> args = do_bin_args(pipex);
 			return OpUnion.op_union(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -909,7 +895,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(IntersectExpr iexpr) {
 		try {
-			Collection args = do_bin_args(iexpr);
+			List<ResultSequence> args = do_bin_args(iexpr);
 			return OpIntersect.op_intersect(args);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -926,12 +912,19 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	@Override
 	public ResultSequence visit(ExceptExpr eexpr) {
 		try {
-			Collection args = do_bin_args(eexpr);
+			List<ResultSequence> args = do_bin_args(eexpr);
 			return OpExcept.op_except(args);
 		} catch (DynamicError err) {
 			report_error(err);
 			return null; // unreach
 		}
+	}
+	
+	private List<ResultSequence> do_bin_args(BinExpr e) {
+		
+		ResultSequence one = (ResultSequence) e.left().accept(this);
+		ResultSequence two = (ResultSequence) e.right().accept(this);
+		return Arrays.asList(one, two);
 	}
 
 	/**
@@ -1046,17 +1039,17 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		QName type = st.type();
 
 		// prepare args from function
-		Collection args = new ArrayList();
-		args.add(aat);
-
+		List<ResultSequence> args = Arrays.asList(aat);
 		try {
 			Function function = cexp.function();
 			if (function == null) {
 				function = _sc.resolveFunction(type.asQName(), args.size());
 				cexp.set_function(function);
 			}
-			if (function == null)
+			if (function == null) {
 				report_error(TypeError.invalid_type(null));
+			}
+			
 			return function.evaluate(args, _ec);
 		} catch (DynamicError err) {
 			report_error(err);
@@ -1072,11 +1065,9 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 */
 	@Override
 	public ResultSequence visit(MinusExpr e) {
+		
 		ResultSequence rs = (ResultSequence) e.arg().accept(this);
-
-		Collection args = new ArrayList();
-		args.add(rs);
-
+		List<ResultSequence> args = Arrays.asList(rs);
 		try {
 			return FsMinus.fs_minus_unary(args);
 		} catch (DynamicError err) {
@@ -1093,11 +1084,9 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	 */
 	@Override
 	public ResultSequence visit(PlusExpr e) {
+
 		ResultSequence rs = (ResultSequence) e.arg().accept(this);
-
-		Collection args = new ArrayList();
-		args.add(rs);
-
+		List<ResultSequence> args = Arrays.asList(rs);
 		try {
 			return FsPlus.fs_plus_unary(args);
 		} catch (DynamicError err) {
@@ -1114,7 +1103,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	private ResultSequence do_step(StepExpr se) {
 
 		ResultBuffer rs = new ResultBuffer();
-		ArrayList results = new ArrayList();
+		List<ResultSequence> results = new LinkedList<>();
 		int type = 0; // 0: don't know yet
 		// 1: atomic
 		// 2: node
@@ -1124,7 +1113,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		// execute step for all items in focus
 		while (true) {
-			results.add(se.accept(this));
+			results.add((ResultSequence)se.accept(this));
 
 			// go to next
 			if (!focus.advance_cp())
@@ -1137,12 +1126,11 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		boolean node_types = false;
 
 		// check the results
-		for (Iterator<Item> i = results.iterator(); i.hasNext();) {
-			ResultSequence result = (ResultSequence) i.next();
+		for (ResultSequence result : results) {
 
 			// make sure results are of same type, and add them in
-			for (Iterator j = result.iterator(); j.hasNext();) {
-				AnyType item = (AnyType) j.next();
+			for (Item next : result) {
+				AnyType item = (AnyType)next;
 
 				// first item
 				if (type == 0) {
@@ -1192,23 +1180,20 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 
 		ResultSequence rs = kind_test(buffer.getSequence(), NodeType.class);
 
-		List records = new ArrayList();
-		records.add(rs);
-		rs = FnRoot.fn_root(records, _ec);
-		return rs;
+		List<ResultSequence> records = Arrays.asList(rs);
+		return FnRoot.fn_root(records, _ec);
 	}
 
 	private ResultSequence descendant_or_self_node(ResultSequence rs) {
+		
 		ResultBuffer res = new ResultBuffer();
 		Axis axis = new DescendantOrSelfAxis();
 
 		// for all nodes, get descendant or self nodes
 		for (Iterator<Item> i = rs.iterator(); i.hasNext();) {
 			NodeType item = (NodeType) i.next();
-
 			axis.iterate(item, res, _dc.getLimitNode());
 		}
-
 		return res.getSequence();
 	}
 
