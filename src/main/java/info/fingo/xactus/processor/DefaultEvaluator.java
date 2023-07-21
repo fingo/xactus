@@ -165,6 +165,21 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 		return FnBoolean.fn_boolean(rs);
 	}
 	
+	public static ResultSequence contextResultSequence(TypeModel typeModel, Object... contextItems) {
+		
+		ResultBuffer rs = new ResultBuffer();
+		for (Object obj : contextItems) {
+			if (obj instanceof Node) {
+				rs.add(NodeType.dom_to_xpath((Node) obj, typeModel));
+			} else if (obj instanceof Item) {
+				rs.add((Item) obj);
+			} else if (obj != null) {
+				throw new XPathException("unsupported context item: " + obj.getClass().getSimpleName());
+			}
+		}
+		return rs.getSequence();
+	}
+	
 	private final StaticContext _sc;
 
 	private final DynamicContext _dc;
@@ -175,7 +190,7 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	// the parameter may become invalid on the next call... i.e. the
 	// previous parameter is not saved... so use with care! [remember...
 	// this thing is highly recursive]
-	private Object _param;
+	private Object _param = null;
 
 	private Focus _focus = new Focus(ResultBuffer.EMPTY);
 	
@@ -183,34 +198,30 @@ public class DefaultEvaluator implements XPathVisitor, Evaluator {
 	
 
 	public DefaultEvaluator(info.fingo.xactus.processor.DynamicContext dynamicContext, Document doc) {
+		
 		this(new StaticContextAdapter(dynamicContext), new DynamicContextAdapter(dynamicContext));
 
 		ResultSequence focusSequence = (doc != null) ? new DocType(doc, _sc.getTypeModel()) : ResultBuffer.EMPTY;
 		set_focus(new Focus(focusSequence));
 		dynamicContext.set_focus(focus());
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public DefaultEvaluator(StaticContext staticContext, DynamicContext dynamicContext, Object[] contextItems) {
 		
+		this(staticContext, dynamicContext, contextResultSequence(staticContext.getTypeModel(), contextItems));
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public DefaultEvaluator(StaticContext staticContext, DynamicContext dynamicContext, ResultSequence contextRS) {
+		
 		this(staticContext, dynamicContext);
-
-		// initialize context item with root of document
-		ResultBuffer rs = new ResultBuffer();
-		for (Object obj : contextItems) {
-			if (obj instanceof Node) {
-				rs.add(NodeType.dom_to_xpath((Node) obj, _sc.getTypeModel()));
-			}
-
-			if (obj instanceof Item) {
-				rs.add((Item) obj);
-			}
-		}
-
-		set_focus(new Focus(rs.getSequence()));
-		_param = null;
+		
+		set_focus(new Focus(contextRS));
 	}
 
 	private DefaultEvaluator(StaticContext staticContext, DynamicContext dynamicContext) {
