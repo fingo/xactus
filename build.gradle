@@ -27,9 +27,9 @@ extensions.configure(NexusPublishExtension) { NexusPublishExtension extension ->
 
 project.group = 'info.fingo.xactus'
 
-extensions.configure(JavaPluginExtension) { javaPluginExtension ->
-    javaPluginExtension.toolchain { javaToolchainSec ->
-        javaToolchainSec.languageVersion = JavaLanguageVersion.of(8)
+extensions.configure(JavaPluginExtension) {
+    it.toolchain { toolchain ->
+        toolchain.languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
 
@@ -48,7 +48,7 @@ interface Constants {
 
 def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
     jFlexExec ->
-        def outputDirectory = "$buildDir/jflex-generated"
+        def outputDirectory = "${project.layout.buildDirectory.get()}/jflex-generated"
         def classesDestinationDirectory = file("$outputDirectory/$Constants.CODE_GENERATION_TARGET_DIRECTORY")
         def inputFile = file('src/main/jflex/xpath.lex')
 
@@ -71,7 +71,7 @@ def generateJFlexTaskProvider = tasks.register('generateJFlex', JavaExec) {
 
 def generateJCupTaskProvider = tasks.register('generateJCup', JavaExec) {
     jCupExec ->
-        def outputDirectory = "$buildDir/jcup-generated"
+        def outputDirectory = "${project.layout.buildDirectory.get()}/jcup-generated"
         def classesDestinationDirectory = file("$outputDirectory/$Constants.CODE_GENERATION_TARGET_DIRECTORY")
         def inputFile = file('src/main/jcup/xpath.cup')
 
@@ -144,7 +144,7 @@ extensions.configure(JavaPluginExtension) {
 extensions.configure(PublishingExtension) { publishingExtension ->
     publishingExtension.repositories.maven { MavenArtifactRepository repo ->
         repo.name = 'local'
-        repo.url = uri(isSnapshot() ? "$buildDir/repos/snapshots" : "$buildDir/repos/releases")
+        repo.url = uri(isSnapshot() ? "${project.layout.buildDirectory.get()}/repos/snapshots" : "${project.layout.buildDirectory.get()}/repos/releases")
     }
 
     publishingExtension.publications.register(Constants.PUBLICATION_NAME, MavenPublication) {
