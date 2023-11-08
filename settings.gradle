@@ -2,7 +2,7 @@ import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 import com.gradle.scan.plugin.BuildScanExtension
 
 plugins {
-    id 'com.gradle.enterprise' version '3.12'
+    id 'com.gradle.enterprise' version '3.15.1'
 }
 
 rootProject.name = 'xactus'
@@ -11,7 +11,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             plugin('axion', 'pl.allegro.tech.build.axion-release').version('1.14.3')
-            plugin('nexus-publish', 'io.github.gradle-nexus.publish-plugin').version('1.1.0')
+            plugin('nexus-publish', 'io.github.gradle-nexus.publish-plugin').version('2.0.0-rc-1')
 
             library('xerces', 'xerces', 'xercesImpl').version('2.12.2')
             library('icu4j', 'com.ibm.icu', 'icu4j').version('71.1')
